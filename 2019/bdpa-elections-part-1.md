@@ -222,6 +222,13 @@ Deleted elections should only be visible to administrators. To other user types
 in the system, deleted elections should be treated as if they don't exist at
 all.
 
+To satisfy this requirement, you'll have to make many multiple calls to the [API
+/elections
+endpoint](https://electionshscc.docs.apiary.io/#reference/0/metadata-endpoint/list-all-elections-in-the-system)
+at some point to search through and sort all elections in the system. Consider
+using a short-lived (1-10 minute) caching strategy to reduce load on your app
+and the API.
+
 ## Requirement 6
 
 **When creating new accounts, administrators must provide the following: a
