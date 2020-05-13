@@ -36,22 +36,20 @@ complete listing of past election results. Moderators manage elections to
 determine which voters are allowed to vote in which elections. Administrators,
 along with having system-wide moderator privileges, can manage which users have
 moderator privileges as well as create new elections and manage existing ones.
-Administrators are also the only type that can create new users and _restrict_
-other users as well as change a user's type; however, administrators cannot
-modify the account details of other administrators or give other users the
-administrator type. The **root** user is a special administrator that can give
-other users the administrator type and view information that is normally
-private. There is only one root user in the system. Finally, reporters can view
-the history of past election results and nothing else.
+Administrators are also the only type that can create new users, _restrict_
+other users, and change a user's type. However, administrators cannot modify the
+account details of other administrators or give other users the administrator
+type. The **root** user is a special administrator that can give other users the
+administrator type and view information that is normally private. There is only
+one root user in the system. Finally, reporters can view the history of past
+election results and nothing else.
 
 Elections have timestamps (represented as the number of milliseconds elapsed
 since January 1, 1970 00:00:00 UTC) marking when they open to allow voting and
 when they close and permanently commit their results. Voters can only vote in
 open elections, though they can also change their vote rankings as many times as
 they want up until the election is closed. Reporters can only see closed
-elections. Voters can only see elections they are or were eligible to vote in.
-Moderators can see any election an administrator has assigned them to moderate.
-Administrators can see every election in the system.
+elections.
 
 If you have any questions, grammatical fixes, et cetera, please open an issue on
 GitHub or contact NHSCC staff via Slack.
