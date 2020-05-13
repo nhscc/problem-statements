@@ -1,4 +1,4 @@
-# BDPA National HSCC 2019 Problem Statement (part 1)
+# BDPA NHSCC 2019 Problem Statement (part 1)
 
 In recent years, adversaries with unlimited money and means are waging a
 non-stop global cyber war against every machine connected to the internet.
@@ -26,8 +26,9 @@ style="text-decoration:underline;">including the results of elections</span>**.
 Any data you get back from the API is guaranteed to be properly formatted ([see
 API documentation](https://electionshscc.docs.apiary.io)), so this should not be
 a problem. Additionally, you are only able to modify the election data of
-elections that were created with your [API key](https://electionshscc.docs.apiary.io/#introduction/requesting-a-key). All other election data returned
-from the API is read-only.
+elections that were created with your [API
+key](https://electionshscc.docs.apiary.io/#introduction/requesting-a-key). All
+other election data returned from the API is read-only.
 
 There are four _types_ of users: **voters**, **moderators**, **administrators**,
 and **reporters**. **Users can only be one type at a time.** Voters are the most
@@ -81,27 +82,31 @@ style="text-decoration:underline;">reporter</span>.**
 
 * View a complete paginated listing of past election results
     * This includes elections created by other teams
-* Manage elections to determine which voters are allowed to vote in which elections
-    * Only for elections created by your [API key](https://electionshscc.docs.apiary.io/#introduction/requesting-a-key)
+* Manage elections to determine which voters are allowed to vote in which
+  elections
+    * Only for elections created by your [API
+      key](https://electionshscc.docs.apiary.io/#introduction/requesting-a-key)
 
 **Administrators**
 
 * View a complete paginated listing of past election results
     * This includes elections created by other teams
-* The following apply only to elections created by your [API key](https://electionshscc.docs.apiary.io/#introduction/requesting-a-key):
+    * This includes deleted elections
+* The following apply only to elections created by your [API
+  key](https://electionshscc.docs.apiary.io/#introduction/requesting-a-key):
     * App-wide moderator privileges
     * Can manage which moderators moderate which elections
-    * Can create new elections and delete existing elections
+    * Can create new elections and un/delete existing elections
     * Can change information about existing elections
-* Can create, update, and delete users
-* Can _restrict_ existing users
-* Can change a user's type
-* Cannot modify the account details of other administrators
-* Cannot give other users the Administrator type
+* Can view a list of, create, update, un/restrict, and un/delete users
+    * This includes changing a user's type
+    * Deleted users should still show up in the list of users
+* **Cannot** modify the user data of other administrator type users
+* **Cannot** give other users the Administrator type
 
 **Reporters**
 
-* Can view the history of past election results and nothing else
+* Can view the history of past (closed) election results and nothing else
 
 Users can only have a single type at a time. You are free to create other types.
 
@@ -126,7 +131,7 @@ An election has at least the following components:
 * A unix epoch timestamp indicating when the election was created in the system
 * A unix epoch timestamp indicating when the election opens
 * A unix epoch timestamp indicating when the election closes
-* A boolean representing if the election was deleted or not 
+* A boolean representing if the election was deleted or not
 
 > Warning: All of the following information **must** be stored using the API.
 You can cache it locally, but it **must** also be put into the API. Only
@@ -157,13 +162,21 @@ number of votes cast. Finally, if the election is closed and the user viewing it
 voted in said election, their choice in the election will be most prominently
 marked.
 
-At the very least, Administrators should be able to delete elections created by
-your app and/or edit their titles or descriptions. When using the API to update
-your elections based on the actions of administrators, you must decide what edge
-cases like changing an election's _available options_, _opening time_, and
-_closing time_ means after an election has already opened, already closed, or
-has already accepted votes. **You are free to deal with these edge cases in _any
-way_ you see fit for your app**.
+> Warning: When displaying the results of an election, **you must protect the
+identities of your voters**! Do not reveal who voted for which options in the
+UI, just show aggregate results.
+
+Administrators must be able to delete open/upcoming elections created by your
+app. They must be able to edit their titles or descriptions. When using the API
+to update your elections based on the actions of administrators, you must decide
+what edge cases like changing an election's _available options_, _opening time_,
+and _closing time_ means after an election has already opened, already closed,
+or has already accepted votes. **You are free to deal with these and any other
+edge cases in _any way you see fit_**.
+
+Additionally, deleted elections should only be visible to administrators. To
+other user types in the system, deleted elections should be treated as if they
+don't exist at all.
 
 ## Requirement 4
 
@@ -172,8 +185,7 @@ way_ you see fit for your app**.
 When viewing their own personalized dashboard, users are presented with the
 following information:
 
-* **name**: the first and last name of the user, like "Ray Tiles"
-* **email**: the user's email address
+* **name**: the name of the user, like "Ray" or "Ray Tiles"
 * **last_login_ip**: the IP address that was last used to login as this user
 * **last_login_datetime**: a timestamp taken the last time the user was
   authenticated
@@ -190,7 +202,7 @@ are shown first).
 
 **<span style="text-decoration:underline;">For voters</span>**
 
-For voters, the dashboard will also show:
+The dashboard will show:
 
 * The most recent _open_ elections the user can currently participate in
 * _Closed_ elections they were eligible to participate in
@@ -198,7 +210,7 @@ For voters, the dashboard will also show:
 
 **<span style="text-decoration:underline;">For moderators</span>**
 
-For moderators, the dashboard will also show:
+The dashboard will show:
 
 * All the elections that the moderator has been assigned to oversee
 * Moderators will be able to add a user to an election or remove a user from an
@@ -206,8 +218,8 @@ For moderators, the dashboard will also show:
 
 **<span style="text-decoration:underline;">For administrators</span>**
 
-For administrators, along with the controls moderators have, the dashboard will
-allow administrators to view and modify users and elections in the system.
+* Along with the controls moderators have, the dashboard will allow
+  administrators to view and modify users and elections in the system
 
 ## Requirement 5
 
@@ -215,22 +227,17 @@ allow administrators to view and modify users and elections in the system.
 sorted by <span style="text-decoration:underline;">at least</span> the
 following: title, creation time, opening time, closing time.**
 
-Other useful metrics include allowing users to sort elections by ownership (i.e.
-only showing elections created by your app and not others), sorting by deleted
-status, etc. You might even allow for full-text searching of titles and
-descriptions and sort based on the results of users' searches; though
-impressive, this is not required.
-
-Deleted elections should only be visible to administrators. To other user types
-in the system, deleted elections should be treated as if they don't exist at
-all.
+> Other useful metrics might include allowing users to sort elections by
+ownership (i.e. only showing elections created by your app and not others),
+sorting by deleted status, etc. You might even allow for full-text searching of
+titles and descriptions and sort based on the results of users' searches.
 
 To satisfy this requirement, you'll have to make many multiple calls to the [API
 /elections
 endpoint](https://electionshscc.docs.apiary.io/#reference/0/metadata-endpoint/list-all-elections-in-the-system)
 at some point to search through and sort all elections in the system. Consider
-using a short-lived (1-10 minute) caching strategy to reduce load on your app
-and the API.
+using a short-lived (30 second to 10 minute) caching strategy to reduce load on
+your app and the API.
 
 ## Requirement 6
 
@@ -257,9 +264,9 @@ can be via sending the user an email (your system does not have to send actual
 emails, but log them to standard output or a logging file), security questions,
 etc.
 
-> Note: the **only** requirement for a secure password is that it is sufficiently
-long. 6-10 characters is weak. 11-16 is medium. 17+ is strong. Passwords should
-at least be _medium_ security to pass.
+> Note: the **only** requirement for a secure password is that it is
+sufficiently long. 6-10 characters is weak. 11-16 is medium. 17+ is strong.
+Passwords should at least be _medium_ security to pass.
 
 ## Requirement 7
 
@@ -283,9 +290,9 @@ and modify:
 * Address
 * Phone number
 
-> Note: only the root account can modify the information of an administrator that
-isn't themselves. Administrators cannot modify each other's information, but
-they can view it. Everyone can modify their own information.
+> Note: only the root account can modify the information of an administrator
+that isn't themselves. Administrators cannot modify each other's information,
+but they can view it. Everyone can modify their own information.
 
 ## Requirement 8
 
@@ -307,8 +314,8 @@ log out immediately.**
 Once an election is closed, its results become immutable, which means: none of
 the information about that election can be modified by administrators and the
 election itself cannot be deleted by administrators. The root user is exempt
-from most these restrictions; they can delete or modify some parts of closed
-elections (title, description, deleted flag).
+from most these restrictions; they can delete closed elections or modify some
+parts of them (title, description, deleted flag).
 
 This also implies that if a user voted in an election before their account was
 deleted, their vote must still count and the outcome of the election cannot
@@ -348,10 +355,6 @@ calculate the winner by the rules of the IRV algorithm:
    rank-1).
 5. Return to step 1 and repeat the process until only one choice remains or a
    choice gets more than 50% of the votes.
-
-> Warning: When displaying the results of an election, **you must protect the identities of
-your voters**! Do not reveal who voted for which options in the UI, just show
-aggregate results.
 
 For example, suppose an administrator created an election titled _What should we
 eat after the competition_? The administrator adds three choices to vote for:
@@ -617,8 +620,8 @@ Chicken still has 4 votes, but now pizza has 6 votes. Since Pizza has more than
 
 ## Requirement 12
 
-**Somewhere in the frontend UI of every\*\* view, the total number of elections in
-the system will always be visible.**
+**Somewhere in the frontend UI of every\*\* view, the total number of elections
+in the system will always be visible.**
 
 \*\*There are common sense exceptions to this, such as the login page where
 showing the total number of elections constitutes an information leak and should
@@ -662,4 +665,5 @@ viewports.**
 The solution will be viewed on a smartphone, tablet, and a desktop viewport. The
 design and functionality should not "break" across these viewports nor should
 the solution become non-functional. We recommend you design your application
-using [mobile-first principles](https://www.uxpin.com/studio/blog/a-hands-on-guide-to-mobile-first-design).
+using [mobile-first
+principles](https://www.uxpin.com/studio/blog/a-hands-on-guide-to-mobile-first-design).
