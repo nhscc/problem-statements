@@ -371,34 +371,34 @@ style="text-decoration:underline;">10</span> eligible voters. Voter 1 ranks the
 choices according to their tastes:
 
 <table>
-  <tr>
-   <td colspan="2">1 voter's choices
-   </td>
-  </tr>
-  <tr>
-   <td>Rank
-   </td>
-   <td>Choice
-   </td>
-  </tr>
-  <tr>
-   <td>1
-   </td>
-   <td>Pizza
-   </td>
-  </tr>
-  <tr>
-   <td>2
-   </td>
-   <td>Tacos
-   </td>
-  </tr>
-  <tr>
-   <td>3
-   </td>
-   <td>Chicken
-   </td>
-  </tr>
+    <tr>
+        <td colspan="2">1 voter's choices
+        </td>
+    </tr>
+    <tr>
+        <td>Rank
+        </td>
+        <td>Choice
+        </td>
+    </tr>
+    <tr>
+        <td>1
+        </td>
+        <td>Pizza
+        </td>
+    </tr>
+    <tr>
+        <td>2
+        </td>
+        <td>Tacos
+        </td>
+    </tr>
+    <tr>
+        <td>3
+        </td>
+        <td>Chicken
+        </td>
+    </tr>
 </table>
 
 Clearly, voter 1's favorite choice is Pizza, their second favorite is Tacos, and
@@ -410,115 +410,105 @@ style="text-decoration:underline;">10</span> different voters' rankings can be
 summarized as the following:
 
 <table>
-  <tr>
-   <td>
-
-<table>
-  <tr>
-   <td colspan="2">4 voters voted like this
-   </td>
-  </tr>
-  <tr>
-   <td>Rank
-   </td>
-   <td>Choice
-   </td>
-  </tr>
-  <tr>
-   <td>1
-   </td>
-   <td>Chicken
-   </td>
-  </tr>
-  <tr>
-   <td>2
-   </td>
-   <td>Pizza
-   </td>
-  </tr>
-  <tr>
-   <td>3
-   </td>
-   <td>Tacos
-   </td>
-  </tr>
+    <tr>
+        <td>
+            <table>
+                <tr>
+                    <td colspan="2">4 voters voted like this
+                    </td>
+                </tr>
+                <tr>
+                    <td>Rank
+                    </td>
+                    <td>Choice
+                    </td>
+                </tr>
+                <tr>
+                    <td>1
+                    </td>
+                    <td>Chicken
+                    </td>
+                </tr>
+                <tr>
+                    <td>2
+                    </td>
+                    <td>Pizza
+                    </td>
+                </tr>
+                <tr>
+                    <td>3
+                    </td>
+                    <td>Tacos
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            <table>
+                <tr>
+                    <td colspan="2">4 voters voted like this
+                    </td>
+                </tr>
+                <tr>
+                    <td>Rank
+                    </td>
+                    <td>Choice
+                    </td>
+                </tr>
+                <tr>
+                    <td>1
+                    </td>
+                    <td>Pizza
+                    </td>
+                </tr>
+                <tr>
+                    <td>2
+                    </td>
+                    <td>Tacos
+                    </td>
+                </tr>
+                <tr>
+                    <td>3
+                    </td>
+                    <td>Chicken
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            <table>
+                <tr>
+                    <td colspan="2">2 voters voted like this
+                    </td>
+                </tr>
+                <tr>
+                    <td>Rank
+                    </td>
+                    <td>Choice
+                    </td>
+                </tr>
+                <tr>
+                    <td>1
+                    </td>
+                    <td>Tacos
+                    </td>
+                </tr>
+                <tr>
+                    <td>2
+                    </td>
+                    <td>Pizza
+                    </td>
+                </tr>
+                <tr>
+                    <td>3
+                    </td>
+                    <td>Chicken
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 </table>
-
-
-   </td>
-   <td>
-
-<table>
-  <tr>
-   <td colspan="2">4 voters voted like this
-   </td>
-  </tr>
-  <tr>
-   <td>Rank
-   </td>
-   <td>Choice
-   </td>
-  </tr>
-  <tr>
-   <td>1
-   </td>
-   <td>Pizza
-   </td>
-  </tr>
-  <tr>
-   <td>2
-   </td>
-   <td>Tacos
-   </td>
-  </tr>
-  <tr>
-   <td>3
-   </td>
-   <td>Chicken
-   </td>
-  </tr>
-</table>
-
-
-   </td>
-   <td>
-
-<table>
-  <tr>
-   <td colspan="2">2 voters voted like this
-   </td>
-  </tr>
-  <tr>
-   <td>Rank
-   </td>
-   <td>Choice
-   </td>
-  </tr>
-  <tr>
-   <td>1
-   </td>
-   <td>Tacos
-   </td>
-  </tr>
-  <tr>
-   <td>2
-   </td>
-   <td>Pizza
-   </td>
-  </tr>
-  <tr>
-   <td>3
-   </td>
-   <td>Chicken
-   </td>
-  </tr>
-</table>
-
-
-   </td>
-  </tr>
-</table>
-
 
 If we just counted who got the most rank-1 votes (like a normal election),
 _Chicken_ and _Pizza_ would be tied for first place and no one would win.
@@ -529,99 +519,88 @@ votes to win), we **eliminate the choice with** **the least rank-1 (first place)
 votes.** Since Tacos only got 2 rank-1 votes, Tacos is eliminated. After running
 step #4 in the IRV algorithm, now the rankings look like this:
 
-
 <table>
-  <tr>
-   <td>
-
-<table>
-  <tr>
-   <td colspan="2">4 voters voted like this
-   </td>
-  </tr>
-  <tr>
-   <td>Rank
-   </td>
-   <td>Choice
-   </td>
-  </tr>
-  <tr>
-   <td>1
-   </td>
-   <td>Chicken
-   </td>
-  </tr>
-  <tr>
-   <td>2
-   </td>
-   <td>Pizza
-   </td>
-  </tr>
+    <tr>
+        <td>
+            <table>
+                <tr>
+                    <td colspan="2">4 voters voted like this
+                    </td>
+                </tr>
+                <tr>
+                    <td>Rank
+                    </td>
+                    <td>Choice
+                    </td>
+                </tr>
+                <tr>
+                    <td>1
+                    </td>
+                    <td>Chicken
+                    </td>
+                </tr>
+                <tr>
+                    <td>2
+                    </td>
+                    <td>Pizza
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            <table>
+                <tr>
+                    <td colspan="2">4 voters voted like this
+                    </td>
+                </tr>
+                <tr>
+                    <td>Rank
+                    </td>
+                    <td>Choice
+                    </td>
+                </tr>
+                <tr>
+                    <td>1
+                    </td>
+                    <td>Pizza
+                    </td>
+                </tr>
+                <tr>
+                    <td>2
+                    </td>
+                    <td>Chicken
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            <table>
+                <tr>
+                    <td colspan="2">2 voters voted like this
+                    </td>
+                </tr>
+                <tr>
+                    <td>Rank
+                    </td>
+                    <td>Choice
+                    </td>
+                </tr>
+                <tr>
+                    <td>1
+                    </td>
+                    <td>Pizza
+                    </td>
+                </tr>
+                <tr>
+                    <td>2
+                    </td>
+                    <td>Chicken
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 </table>
-
-
-   </td>
-   <td>
-
-<table>
-  <tr>
-   <td colspan="2">4 voters voted like this
-   </td>
-  </tr>
-  <tr>
-   <td>Rank
-   </td>
-   <td>Choice
-   </td>
-  </tr>
-  <tr>
-   <td>1
-   </td>
-   <td>Pizza
-   </td>
-  </tr>
-  <tr>
-   <td>2
-   </td>
-   <td>Chicken
-   </td>
-  </tr>
-</table>
-
-
-   </td>
-   <td>
-
-<table>
-  <tr>
-   <td colspan="2">2 voters voted like this
-   </td>
-  </tr>
-  <tr>
-   <td>Rank
-   </td>
-   <td>Choice
-   </td>
-  </tr>
-  <tr>
-   <td>1
-   </td>
-   <td>Pizza
-   </td>
-  </tr>
-  <tr>
-   <td>2
-   </td>
-   <td>Chicken
-   </td>
-  </tr>
-</table>
-
-
-   </td>
-  </tr>
-</table>
-
 
 Chicken still has 4 votes, but now pizza has 6 votes. Since Pizza has more than
 50% of the votes, the system indicates choice Pizza wins the election.
