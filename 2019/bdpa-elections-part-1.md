@@ -261,8 +261,7 @@ their password before they can interact with the rest of the system.
 
 If a user (who has an email address associated with their account) has forgotten
 their login credentials, there should be some way for them to be recovered. This
-can be via sending the user an email, security questions,
-etc.
+can be via sending the user an email, security questions, etc.
 
 > Note: Your system does not have to (and probably should not) send actual
 emails. Log the recovery messages to standard output or a logging file instead.
@@ -305,13 +304,13 @@ but they can view it. Everyone can modify their own information.
 **User accounts can be _restricted_ or _unrestricted_.**
 
 A _restricted_ user is not allowed to login. An _unrestricted_ user is allowed
-to login. Only administrators can (un)restrict users. Users can _never_ be both
+to login. Only administrators can un/restrict users. Users can _never_ be both
 an administrator and restricted.
 
 By default, new users will be unrestricted. Restricting and unrestricting a user
 will not alter the results of any elections in the system in any way. If a user
-is logged in and their account becomes restricted, **said user will be forced to
-log out immediately.**
+is logged in and their account becomes restricted, **they will be forced to log
+out when they next interact with the app.**
 
 ## Requirement 9
 
@@ -332,9 +331,10 @@ change.
 **All results and lists of items displayed in the frontend UI will be paginated
 <span style="text-decoration:underline;">where appropriate</span>.**
 
-Pagination is the strategy of showing a limited number of a large set of results
-and providing a navigation element where users can switch to different "pages"
-of that large set.
+[Pagination](https://www.smashingmagazine.com/2007/11/pagination-gallery-examples-and-good-practices/)
+is the strategy of showing a limited number of a large set of results and
+providing a navigation element where users can switch to different "pages" of
+that large set.
 
 A Google search result (which has multiple pages) is a good example of
 pagination. Facebook's infinity-scroll feature is another good example.
@@ -346,19 +346,21 @@ style="text-decoration:underline;">must rank all choices</span> in order of
 preference. When an election closes, the winner is determined via Instant-Runoff
 Voting.**
 
-When an eligible voter votes in an Instant-Runoff Voting (IRV) election, they do
-not just cast a single vote. They must rank their choices from most favored to
-least favored ranked 1 to _n_. After the election closes, the system will
-calculate the winner by the rules of the IRV algorithm:
+When an eligible voter votes in an [Instant-Runoff
+Voting](https://courses.lumenlearning.com/waymakermath4libarts/chapter/instant-runoff-voting)
+(IRV) election, they do not just cast a single vote. They must rank their
+choices from most favored to least favored ranked 1 to _N_, respectively. After
+the election closes, the system will calculate the winner by the rules of the
+IRV algorithm:
 
-1. All the top choices (meaning: rank-1) are counted.
+1. All the top choices (meaning: rank 1) are counted.
 2. If a choice gets over 50% of the vote, that choice is declared the winner and
    the election is over.
-3. If no choice gets over 50% of the vote, the choice with the least rank-1
+3. If no choice gets over 50% of the vote, the choice with the least rank 1
    votes is eliminated.
-4. Voters who had the eliminated choice as their rank-1 have their vote go to
-   their next top choice instead (meaning: their rank-2 becomes their new
-   rank-1).
+4. Voters who had the eliminated choice as their rank 1 have their vote go to
+   their next top choice instead (meaning: their rank 2 becomes their new rank
+   1).
 5. Return to step 1 and repeat the process until only one choice remains or a
    choice gets more than 50% of the votes.
 
@@ -624,10 +626,13 @@ step #4 in the IRV algorithm, now the rankings look like this:
 Chicken still has 4 votes, but now pizza has 6 votes. Since Pizza has more than
 50% of the votes, the system indicates choice Pizza wins the election.
 
+> [There is also a YouTube video explaining Instant-Runoff
+Voting](https://www.youtube.com/watch?v=6axH6pcuyhQ).
+
 ## Requirement 12
 
-**Somewhere in the frontend UI of every\*\* view, the total number of elections
-in the system will always be visible.**
+**Somewhere in the UI of every\*\* view, the total number of elections in the
+system will always be visible.**
 
 \*\*There are common sense exceptions to this, such as the login page where
 showing the total number of elections constitutes an information leak and should
@@ -640,8 +645,7 @@ be avoided.
 Ensure that you use up to date libraries and programming practices that protect
 your solution from common XSS, SQL injection, and related security
 vulnerabilities. This is doubly important given that your app is consuming
-information from other teams who might post any sort of information into the
-API.
+information from other teams who might put any sort of data into the system.
 
 Specifically: form inputs and the like must not be vulnerable to SQL injection
 attacks. User-generated outputs will not be vulnerable to XSS or similar
@@ -654,18 +658,27 @@ not required but will be looked upon very favorably if present.
 As for database security, any passwords present in the database must be hashed
 (or encrypted). We recommend using a [salted SHA-256 hash
 construction](https://auth0.com/blog/adding-salt-to-hashing-a-better-way-to-store-passwords/)
-or something similar.
+or something similar. Passwords stored in your database in clear-text (or simply
+re-encoded, like with base64) will cause your solution to lose points.
 
 > You know you've dramatically increased the security of your database when even
 > the administrators and DBAs can never see raw passwords!
 
 ## Requirement 14
 
-**The system should fail gracefully when exceptional conditions are encountered
-fetching from the API and elsewhere.**
+**The system should fail gracefully when exceptional conditions are
+encountered.**
 
-This includes API errors, login errors, loading screens, random exceptions, and
-the like.
+This includes API errors during fetch, login errors, loading screens when
+content needs to load, random exceptions, and the like. If at any time a user is
+presented with a non-app error page or a completely blank screen for more than a
+second or so, your solution will lose points.
+
+> Every so often, the API will randomly return an `HTTP 555` error to your app
+> instead of fulfilling a request. During judging, API requests and responses
+> will be manipulated by the judges to try and break your app. Your app should
+> be able to handle it gracefully. [This is a good
+> example](https://medium.com/@danielalvidrez/handling-error-responses-with-grace-b6fd3c5886f0).
 
 ## Requirement 15
 
