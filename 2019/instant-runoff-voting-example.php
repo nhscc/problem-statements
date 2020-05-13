@@ -14,7 +14,7 @@
     # You can run this example locally without Apache or any server by running
     # the following in the Windows command line or Linux shell:
     #
-    # php -S localhost:8080 irv.php
+    # php -S localhost:8080 instant-runoff-voting-example.php
     #
     # You can access the resulting page by navigating your browser to
     # http://localhost:8080 (or click the link now if you're using a modern IDE)
