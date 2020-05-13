@@ -372,32 +372,23 @@ choices according to their tastes:
 
 <table>
     <tr>
-        <td colspan="2">1 voter's choices
-        </td>
+        <td colspan="2">1 voter's choices</td>
     </tr>
     <tr>
-        <td>Rank
-        </td>
-        <td>Choice
-        </td>
+        <td>Rank</td>
+        <td>Choice</td>
     </tr>
     <tr>
-        <td>1
-        </td>
-        <td>Pizza
-        </td>
+        <td>1</td>
+        <td>Pizza</td>
     </tr>
     <tr>
-        <td>2
-        </td>
-        <td>Tacos
-        </td>
+        <td>2</td>
+        <td>Tacos</td>
     </tr>
     <tr>
-        <td>3
-        </td>
-        <td>Chicken
-        </td>
+        <td>3</td>
+        <td>Chicken</td>
     </tr>
 </table>
 
@@ -414,96 +405,69 @@ summarized as the following:
         <td>
             <table>
                 <tr>
-                    <td colspan="2">4 voters voted like this
-                    </td>
+                    <td colspan="2">4 voters voted like this</td>
                 </tr>
                 <tr>
-                    <td>Rank
-                    </td>
-                    <td>Choice
-                    </td>
+                    <td>Rank</td>
+                    <td>Choice</td>
                 </tr>
                 <tr>
-                    <td>1
-                    </td>
-                    <td>Chicken
-                    </td>
+                    <td>1</td>
+                    <td>Chicken</td>
                 </tr>
                 <tr>
-                    <td>2
-                    </td>
-                    <td>Pizza
-                    </td>
+                    <td>2</td>
+                    <td>Pizza</td>
                 </tr>
                 <tr>
-                    <td>3
-                    </td>
-                    <td>Tacos
-                    </td>
+                    <td>3</td>
+                    <td>Tacos</td>
                 </tr>
             </table>
         </td>
         <td>
             <table>
                 <tr>
-                    <td colspan="2">4 voters voted like this
-                    </td>
+                    <td colspan="2">4 voters voted like this</td>
                 </tr>
                 <tr>
-                    <td>Rank
-                    </td>
-                    <td>Choice
-                    </td>
+                    <td>Rank</td>
+                    <td>Choice</td>
                 </tr>
                 <tr>
-                    <td>1
-                    </td>
-                    <td>Pizza
-                    </td>
+                    <td>1</td>
+                    <td>Pizza</td>
                 </tr>
                 <tr>
-                    <td>2
-                    </td>
-                    <td>Tacos
-                    </td>
+                    <td>2</td>
+                    <td>Tacos</td>
                 </tr>
                 <tr>
-                    <td>3
-                    </td>
-                    <td>Chicken
-                    </td>
+                    <td>3</td>
+                    <td>Chicken</td>
                 </tr>
             </table>
         </td>
         <td>
             <table>
                 <tr>
-                    <td colspan="2">2 voters voted like this
-                    </td>
+                    <td colspan="2">2 voters voted like this</td>
                 </tr>
                 <tr>
-                    <td>Rank
-                    </td>
-                    <td>Choice
-                    </td>
+                    <td>Rank</td>
+                    <td>Choice</td>
                 </tr>
                 <tr>
-                    <td>1
-                    </td>
-                    <td>Tacos
-                    </td>
+                    <td>1</td>
+                    <td>Tacos</td>
                 </tr>
                 <tr>
-                    <td>2
-                    </td>
-                    <td>Pizza
-                    </td>
+                    <td>2</td>
+                    <td>Pizza</td>
                 </tr>
                 <tr>
-                    <td>3
-                    </td>
-                    <td>Chicken
-                    </td>
+                    <td>3</td>
+                    <td>Chicken</td>
                 </tr>
             </table>
         </td>
@@ -524,78 +488,57 @@ step #4 in the IRV algorithm, now the rankings look like this:
         <td>
             <table>
                 <tr>
-                    <td colspan="2">4 voters voted like this
-                    </td>
+                    <td colspan="2">4 voters voted like this</td>
                 </tr>
                 <tr>
-                    <td>Rank
-                    </td>
-                    <td>Choice
-                    </td>
+                    <td>Rank</td>
+                    <td>Choice</td>
                 </tr>
                 <tr>
-                    <td>1
-                    </td>
-                    <td>Chicken
-                    </td>
+                    <td>1</td>
+                    <td>Chicken</td>
                 </tr>
                 <tr>
-                    <td>2
-                    </td>
-                    <td>Pizza
-                    </td>
+                    <td>2</td>
+                    <td>Pizza</td>
                 </tr>
             </table>
         </td>
         <td>
             <table>
                 <tr>
-                    <td colspan="2">4 voters voted like this
-                    </td>
+                    <td colspan="2">4 voters voted like this</td>
                 </tr>
                 <tr>
-                    <td>Rank
-                    </td>
-                    <td>Choice
-                    </td>
+                    <td>Rank</td>
+                    <td>Choice</td>
                 </tr>
                 <tr>
-                    <td>1
-                    </td>
-                    <td>Pizza
-                    </td>
+                    <td>1</td>
+                    <td>Pizza</td>
                 </tr>
                 <tr>
-                    <td>2
-                    </td>
-                    <td>Chicken
-                    </td>
+                    <td>2</td>
+                    <td>Chicken</td>
                 </tr>
             </table>
         </td>
         <td>
             <table>
                 <tr>
-                    <td colspan="2">2 voters voted like this
-                    </td>
+                    <td colspan="2">2 voters voted like this</td>
                 </tr>
                 <tr>
-                    <td>Rank
-                    </td>
-                    <td>Choice
-                    </td>
+                    <td>Rank</td>
+                    <td>Choice</td>
                 </tr>
                 <tr>
-                    <td>1
-                    </td>
-                    <td>Pizza
-                    </td>
+                    <td>1</td>
+                    <td>Pizza</td>
                 </tr>
                 <tr>
-                    <td>2
-                    </td>
-                    <td>Chicken
-                    </td>
+                    <td>2</td>
+                    <td>Chicken</td>
                 </tr>
             </table>
         </td>
@@ -606,7 +549,7 @@ Chicken still has 4 votes, but now pizza has 6 votes. Since Pizza has more than
 50% of the votes, the system indicates choice Pizza wins the election.
 
 > [There is also a YouTube video explaining Instant-Runoff
-Voting](https://www.youtube.com/watch?v=6axH6pcuyhQ).
+Voting](https://www.youtube.com/watch?v=6axH6pcuyhQ)
 
 ## Requirement 12
 
