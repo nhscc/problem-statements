@@ -214,7 +214,7 @@
 <h3>What choice is the best choice?</h3>
 <form method="POST" action="#">
     <div>
-        <label>Choice A</label>
+        <label>Choice 1</label>
         <select name="choice-1">
             <option selected="selected" disabled="disabled" value="0">Rank this choice</option>
             <option value="1">Rank 1</option>
@@ -225,7 +225,7 @@
         </select>
     </div>
     <div>
-        <label>Choice B</label>
+        <label>Choice 2</label>
         <select name="choice-2">
             <option selected="selected" disabled="disabled" value="0">Rank this choice</option>
             <option value="1">Rank 1</option>
@@ -236,7 +236,7 @@
         </select>
     </div>
     <div>
-        <label>Choice C</label>
+        <label>Choice 3</label>
         <select name="choice-3">
             <option selected="selected" disabled="disabled" value="0">Rank this choice</option>
             <option value="1">Rank 1</option>
@@ -248,7 +248,7 @@
     </div>
     </div>
     <div>
-        <label>Choice D</label>
+        <label>Choice 4</label>
         <select name="choice-4">
             <option selected="selected" disabled="disabled" value="0">Rank this choice</option>
             <option value="1">Rank 1</option>
@@ -260,7 +260,7 @@
     </div>
     </div>
     <div>
-        <label>Choice E</label><!-- Try adding or removing some choices and modding the PHP above a little bit! -->
+        <label>Choice 5</label><!-- Try adding or removing some choices and modding the PHP above a little bit! -->
         <select name="choice-5">
             <option selected="selected" disabled="disabled" value="0">Rank this choice</option>
             <option value="1">Rank 1</option>
