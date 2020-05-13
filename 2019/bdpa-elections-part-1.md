@@ -25,17 +25,17 @@ display the election data from other chapters, <span
 style="text-decoration:underline;">including the results of elections</span>**.
 Any data you get back from the API is guaranteed to be properly formatted ([see
 API documentation](https://electionshscc.docs.apiary.io)), so this should not be
-a problem. Note, however, that you are only able to modify the election data of
-elections that were created with your API key. All other election data returned
+a problem. Additionally, you are only able to modify the election data of
+elections that were created with your [API key](https://electionshscc.docs.apiary.io/#introduction/requesting-a-key). All other election data returned
 from the API is read-only.
 
-There are at least four _types_ of users: **voters**, **moderators**,
-**administrators**, and **reporters**. **Users can only be one type at a time.**
-Voters are the most common type of user. They vote in elections and can view a
-complete listing of past election results. Moderators manage elections to
-determine which voters are allowed to vote in which elections. Administrators,
-along with having system-wide moderator privileges, can manage which users have
-moderator privileges as well as create new elections and manage existing ones.
+There are four _types_ of users: **voters**, **moderators**, **administrators**,
+and **reporters**. **Users can only be one type at a time.** Voters are the most
+common type of user. They vote in elections and can view a complete listing of
+past election results. Moderators manage elections to determine which voters are
+allowed to vote in which elections. Administrators, along with having
+system-wide moderator privileges, can manage which users have moderator
+privileges as well as create new elections and manage existing ones.
 Administrators are also the only type that can create new users, _restrict_
 other users, and change a user's type. However, administrators cannot modify the
 account details of other administrators or give other users the administrator
@@ -73,22 +73,26 @@ style="text-decoration:underline;">reporter</span>.**
 
 **Voters**
 
-* Vote in elections and can view a complete listing of past election results
-  (even those from other teams)
+* Vote in elections
+* View a complete paginated listing of past election results
+    * This includes elections created by other teams
 
 **Moderators**
 
-* Manage elections to determine which voters are allowed to vote in elections
-  created by your app
+* View a complete paginated listing of past election results
+    * This includes elections created by other teams
+* Manage elections to determine which voters are allowed to vote in which elections
+    * Only for elections created by your [API key](https://electionshscc.docs.apiary.io/#introduction/requesting-a-key)
 
 **Administrators**
 
-* Can view a list of every single election in the system (even those from other
-  teams)
-* App-wide moderator privileges
-* Can manage which users have moderator privileges for which elections
-* Can create new elections and delete existing elections
-* Change some information about existing elections
+* View a complete paginated listing of past election results
+    * This includes elections created by other teams
+* The following apply only to elections created by your [API key](https://electionshscc.docs.apiary.io/#introduction/requesting-a-key):
+    * App-wide moderator privileges
+    * Can manage which moderators moderate which elections
+    * Can create new elections and delete existing elections
+    * Can change information about existing elections
 * Can create, update, and delete users
 * Can _restrict_ existing users
 * Can change a user's type
@@ -124,22 +128,23 @@ An election has at least the following components:
 * A unix epoch timestamp indicating when the election closes
 * A boolean representing if the election was deleted or not 
 
-All of the following information **must** be stored using the API. You can cache
-it locally, but it **must** also be put into the API.
+> Warning: All of the following information **must** be stored using the API.
+You can cache it locally, but it **must** also be put into the API. Only
+accessing your local database without using the API will disqualify your
+solution.
 
 Feel free to add any other information necessary, but extra information cannot
-be stored using the API. Some election data will be split between [the elections
-API](https://electionshscc.docs.apiary.io) and your own local database. We
-recommend you store at least the following information in your own database:
+be stored using the API. Hence, some election data will be split between [the
+elections API](https://electionshscc.docs.apiary.io) and your own local
+database. We recommend you store at least the following information in your own
+database:
 
-* A mapping of voters that are eligible to vote in this election while it is
-  open
-* A mapping of moderators that have permission to add and remove users from the
-  list of eligible voters
+* A mapping between voters and the elections they're eligible to vote in
+* A mapping between moderators and the elections they moderate
 
 All users can view any elections returned by the API, _even if they were not
 created by your app_. Users interact differently with elections depending on
-their type. For elections owned by your app: moderators can add users to
+their type. For elections owned by your app: moderators can add voters to
 elections or remove them from elections; administrators can **create/delete**
 elections, and change **some parts** of an election; voters vote in these
 elections. All users can view the results of _all_ elections in the API,
@@ -252,7 +257,7 @@ can be via sending the user an email (your system does not have to send actual
 emails, but log them to standard output or a logging file), security questions,
 etc.
 
-Note: the **only** requirement for a secure password is that it is sufficiently
+> Note: the **only** requirement for a secure password is that it is sufficiently
 long. 6-10 characters is weak. 11-16 is medium. 17+ is strong. Passwords should
 at least be _medium_ security to pass.
 
@@ -278,7 +283,7 @@ and modify:
 * Address
 * Phone number
 
-Note: only the root account can modify the information of an administrator that
+> Note: only the root account can modify the information of an administrator that
 isn't themselves. Administrators cannot modify each other's information, but
 they can view it. Everyone can modify their own information.
 
@@ -304,6 +309,10 @@ the information about that election can be modified by administrators and the
 election itself cannot be deleted by administrators. The root user is exempt
 from most these restrictions; they can delete or modify some parts of closed
 elections (title, description, deleted flag).
+
+This also implies that if a user voted in an election before their account was
+deleted, their vote must still count and the outcome of the election cannot
+change.
 
 ## Requirement 10
 
@@ -339,6 +348,10 @@ calculate the winner by the rules of the IRV algorithm:
    rank-1).
 5. Return to step 1 and repeat the process until only one choice remains or a
    choice gets more than 50% of the votes.
+
+> Warning: When displaying the results of an election, **you must protect the identities of
+your voters**! Do not reveal who voted for which options in the UI, just show
+aggregate results.
 
 For example, suppose an administrator created an election titled _What should we
 eat after the competition_? The administrator adds three choices to vote for:
