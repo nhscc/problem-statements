@@ -31,7 +31,7 @@ key](https://electionshscc.docs.apiary.io/#introduction/requesting-a-key). All
 other election data returned from the API is read-only.
 
 There are four _types_ of users: **voters**, **moderators**, **administrators**,
-and **reporters**. **Users can only be one type at a time.** Voters are the most
+and **reporters**. Users can only be one type at a time. Voters are the most
 common type of user. They vote in elections and can view a complete listing of
 past election results. Moderators manage elections to determine which voters are
 allowed to vote in which elections. Administrators, along with having
@@ -74,9 +74,11 @@ style="text-decoration:underline;">reporter</span>.**
 
 **Voters**
 
-* Vote in elections
 * View a complete paginated listing of past election results
     * This includes elections created by other teams
+* Vote in elections
+    * Only for elections created by your [API
+      key](https://electionshscc.docs.apiary.io/#introduction/requesting-a-key)
 
 **Moderators**
 
@@ -133,10 +135,9 @@ An election has at least the following components:
 * A unix epoch timestamp indicating when the election closes
 * A boolean representing if the election was deleted or not
 
-> Warning: All of the following information **must** be stored using the API.
-You can cache it locally, but it **must** also be put into the API. Only
-accessing your local database without using the API will disqualify your
-solution.
+> Warning: All of the above information **must** be stored using the API. You
+can cache it locally, but it **must** also be put into the API. Only accessing
+your local database without using the API will disqualify your solution.
 
 Feel free to add any other information necessary, but extra information cannot
 be stored using the API. Hence, some election data will be split between [the
@@ -152,7 +153,7 @@ created by your app_. Users interact differently with elections depending on
 their type. For elections owned by your app: moderators can add voters to
 elections or remove them from elections; administrators can **create/delete**
 elections, and change **some parts** of an election; voters vote in these
-elections. All users can view the results of _all_ elections in the API,
+elections. All users can view the results of _all_ elections in the system,
 however.
 
 When viewing election results that are closed, the winning choice will be
@@ -183,22 +184,21 @@ don't exist at all.
 **Dashboard: each user has access to a personalized user dashboard.**
 
 When viewing their own personalized dashboard, users are presented with the
-following information:
+following information at least once:
 
 * **name**: the name of the user, like "Ray" or "Ray Tiles"
 * **last_login_ip**: the IP address that was last used to login as this user
 * **last_login_datetime**: a timestamp taken the last time the user was
   authenticated
 
-You are free to display any other relevant information. All users will have the
-ability to view the details and results of any elections that appear in their
-dashboard.
+You are free to display any other relevant information.
 
-When displaying non-closed elections in the frontend UI, they will be sorted in
-ascending order by their opening time (elections that opened/will open earlier
-in time are shown first). When displaying past elections, they will be sorted in
-descending order by their closing time (elections that have closed later in time
-are shown first).
+All users will have the ability to view the details and results of any elections
+that appear in their dashboard. When displaying non-closed elections in the
+frontend UI, they will be sorted in ascending order by their opening time
+(elections that opened/will open earlier in time are shown first). When
+displaying past elections, they will be sorted in descending order by their
+closing time (elections that have closed later in time are shown first).
 
 **<span style="text-decoration:underline;">For voters</span>**
 
@@ -237,7 +237,8 @@ To satisfy this requirement, you'll have to make many multiple calls to the [API
 endpoint](https://electionshscc.docs.apiary.io/#reference/0/metadata-endpoint/list-all-elections-in-the-system)
 at some point to search through and sort all elections in the system. Consider
 using a short-lived (30 second to 10 minute) caching strategy to reduce load on
-your app and the API.
+your app and the API. Take care to mind the API's [rate
+limits](https://electionshscc.docs.apiary.io/#introduction/rate-limits).
 
 ## Requirement 6
 
@@ -260,11 +261,13 @@ their password before they can interact with the rest of the system.
 
 If a user (who has an email address associated with their account) has forgotten
 their login credentials, there should be some way for them to be recovered. This
-can be via sending the user an email (your system does not have to send actual
-emails, but log them to standard output or a logging file), security questions,
+can be via sending the user an email, security questions,
 etc.
 
-> Note: the **only** requirement for a secure password is that it is
+> Note: Your system does not have to (and probably should not) send actual
+emails. Log the recovery messages to standard output or a logging file instead.
+
+> Note: The **only** requirement for a secure password is that it is
 sufficiently long. 6-10 characters is weak. 11-16 is medium. 17+ is strong.
 Passwords should at least be _medium_ security to pass.
 
@@ -277,6 +280,9 @@ website:
 
 * Username
 * Type
+
+> Note: Generally, usernames should not be associated with vote results. Protect
+> your voters' identities!
 
 User information that no one other than its owner and an administrator can see
 and modify:
@@ -646,13 +652,17 @@ use GET requests to modify internal data, and other security best practices are
 not required but will be looked upon very favorably if present.
 
 As for database security, any passwords present in the database must be hashed
-(or encrypted). We recommend using a salted SHA-256 hash construction or
-something similar.
+(or encrypted). We recommend using a [salted SHA-256 hash
+construction](https://auth0.com/blog/adding-salt-to-hashing-a-better-way-to-store-passwords/)
+or something similar.
+
+> You know you've dramatically increased the security of your database when even
+> the administrators and DBAs can never see raw passwords!
 
 ## Requirement 14
 
 **The system should fail gracefully when exceptional conditions are encountered
-in the API and elsewhere.**
+fetching from the API and elsewhere.**
 
 This includes API errors, login errors, loading screens, random exceptions, and
 the like.
