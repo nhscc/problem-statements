@@ -21,7 +21,7 @@ Your system will consist of a web portal where, _only _after logging in_,_ users
 can view the results of past elections and vote in current elections. You must
 query election data by making REST requests to the [elections
 API](https://electionshscc.docs.apiary.io). **Note that your app must be able to
-display the election data from other chapters, <span class="underline">including
+display the election data from other chapters, <span style="text-decoration: underline">including
 the results of elections</span>**. Any data you get back from the API is
 guaranteed to be properly formatted ([see API
 documentation](https://electionshscc.docs.apiary.io)), so this should not be a
@@ -67,9 +67,9 @@ view their own dashboard and a history of past elections (below).
 ## Requirement 2
 
 **The system will support 4 types for users: <span
-class="underline">voter</span>, <span class="underline">moderator</span>, <span
-class="underline">administrator</span>, and <span
-class="underline">reporter</span>.**
+style="text-decoration: underline">voter</span>, <span style="text-decoration: underline">moderator</span>, <span
+style="text-decoration: underline">administrator</span>, and <span
+style="text-decoration: underline">reporter</span>.**
 
 **Voters**
 
@@ -199,7 +199,7 @@ frontend UI, they will be sorted in ascending order by their opening time
 displaying past elections, they will be sorted in descending order by their
 closing time (elections that have closed later in time are shown first).
 
-**<span class="underline">For voters</span>**
+**<span style="text-decoration: underline">For voters</span>**
 
 The dashboard will show:
 
@@ -207,7 +207,7 @@ The dashboard will show:
 * _Closed_ elections they were eligible to participate in
 * _Upcoming_ elections they're eligible to participate in
 
-**<span class="underline">For moderators</span>**
+**<span style="text-decoration: underline">For moderators</span>**
 
 The dashboard will show:
 
@@ -215,7 +215,7 @@ The dashboard will show:
 * Moderators will be able to add a user to an election or remove a user from an
   election
 
-**<span class="underline">For administrators</span>**
+**<span style="text-decoration: underline">For administrators</span>**
 
 * Along with the controls moderators have, the dashboard will allow
   administrators to view and modify users and elections in the system
@@ -223,7 +223,7 @@ The dashboard will show:
 ## Requirement 5
 
 **History: each user can view a complete history of past elections that can be
-sorted by <span class="underline">at least</span> the following: title, creation
+sorted by <span style="text-decoration: underline">at least</span> the following: title, creation
 time, opening time, closing time.**
 
 > Other useful metrics might include allowing users to sort elections by
@@ -328,7 +328,7 @@ change.
 ## Requirement 10
 
 **All results and lists of items displayed in the frontend UI will be paginated
-<span class="underline">where appropriate</span>.**
+<span style="text-decoration: underline">where appropriate</span>.**
 
 [Pagination](https://www.smashingmagazine.com/2007/11/pagination-gallery-examples-and-good-practices/)
 is the strategy of showing a limited number of a large set of results and
@@ -340,7 +340,7 @@ pagination. Facebook's infinity-scroll feature is another good example.
 
 ## Requirement 11
 
-**When voting in an election, a voter <span class="underline">must rank all
+**When voting in an election, a voter <span style="text-decoration: underline">must rank all
 choices</span> in order of preference. When an election closes, the winner is
 determined via Instant-Runoff Voting.**
 
@@ -365,7 +365,7 @@ IRV algorithm:
 For example, suppose an administrator created an election titled _What should we
 eat after the competition_? The administrator adds three choices to vote for:
 pizza, chicken, and tacos. Further suppose there were <span
-class="underline">10</span> eligible voters. Voter 1 ranks the choices according
+style="text-decoration: underline">10</span> eligible voters. Voter 1 ranks the choices according
 to their tastes:
 
 <table>
@@ -395,7 +395,7 @@ their least favorite is Chicken.
 
 The other nine voters come up with their own ranks for the choices as well.
 Since many of them voted similarly to each other, the <span
-class="underline">10</span> different voters' rankings can be summarized as the
+style="text-decoration: underline">10</span> different voters' rankings can be summarized as the
 following:
 
 <table>
