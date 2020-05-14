@@ -1,11 +1,5 @@
 # BDPA NHSCC 2019 Problem Statement (part 1)
 
-<style>
-    .underline {
-        text-decoration: underline;
-    }
-</style>
-
 In recent years, adversaries with unlimited money and means are waging a
 non-stop global cyber war against every machine connected to the internet.
 Critical election infrastructure and related government systems are at risk. As
