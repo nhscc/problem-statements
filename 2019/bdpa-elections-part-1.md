@@ -607,6 +607,5 @@ viewports.**
 
 The solution will be viewed on a smartphone, tablet, and a desktop viewport. The
 design and functionality should not "break" across these viewports nor should
-the solution become non-functional. We recommend you design your application
-using [mobile-first
-principles](https://www.uxpin.com/studio/blog/a-hands-on-guide-to-mobile-first-design).
+the solution become non-functional. We recommend you design your app using
+[mobile-first principles](https://designshack.net/articles/mobile/mobilefirst).
