@@ -73,8 +73,11 @@ style="text-decoration: underline">reporter</span>.**
 
 **Voters**
 
-* View a complete paginated listing of past election results
+* View a complete paginated listing of elections
     * This includes elections created by other teams
+    * This includes all past elections
+    * This includes currently open and future elections that the voter can vote in
+    * This does not include deleted elections
 * Vote in elections
     * Only for elections created by your [API
       key](https://electionshscc.docs.apiary.io/#introduction/requesting-a-key)
@@ -83,6 +86,9 @@ style="text-decoration: underline">reporter</span>.**
 
 * View a complete paginated listing of past election results
     * This includes elections created by other teams
+    * This includes all past elections
+    * This includes currently open and future elections the moderator is moderating
+    * This does not include deleted elections
 * Manage elections to determine which voters are allowed to vote in which
   elections
     * Only for elections created by your [API
@@ -90,9 +96,10 @@ style="text-decoration: underline">reporter</span>.**
 
 **Administrators**
 
-* View a complete paginated listing of past election results
+* View a complete paginated listing of elections
     * This includes elections created by other teams
     * This includes deleted elections
+    * Essentially: this includes all elections in the system
 * The following apply only to elections created by your [API
   key](https://electionshscc.docs.apiary.io/#introduction/requesting-a-key):
     * App-wide moderator privileges
@@ -147,13 +154,13 @@ database:
 * A mapping between voters and the elections they're eligible to vote in
 * A mapping between moderators and the elections they moderate
 
-All users can view any elections returned by the API, _even if they were not
+Users can view any closed elections returned by the API, _even if they were not
 created by your app_. Users interact differently with elections depending on
 their type. For elections owned by your app: moderators can add voters to
 elections or remove them from elections; administrators can **create/delete**
 elections, and change **some parts** of an election; voters vote in these
-elections. All users can view the results of _all_ elections in the system,
-however.
+elections. All users can view the results of _all_ closed elections in the
+system, however.
 
 When viewing election results that are closed, the winning choice will be
 emphasized in the frontend UI. All eliminated choices will be clearly marked.
@@ -318,8 +325,9 @@ out when they next interact with the app.**
 Once an election is closed, its results become immutable, which means: none of
 the information about that election can be modified by administrators and the
 election itself cannot be deleted by administrators. The root user is exempt
-from most these restrictions; they can delete closed elections or modify some
-parts of them (title, description, deleted flag).
+from these restrictions; they can delete closed elections or modify some
+parts of them (title, description, deleted flag). Regardless, the outcomes of
+closed elections can never be modified.
 
 This also implies that if a user voted in an election before their account was
 deleted, their vote must still count and the outcome of the election cannot
