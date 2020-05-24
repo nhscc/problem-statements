@@ -76,7 +76,8 @@ style="text-decoration: underline">reporter</span>.**
 * View a complete paginated listing of elections
     * This includes elections created by other teams
     * This includes all past elections
-    * This includes currently open and future elections that the voter can vote in
+    * This includes currently open and future elections that the voter can vote
+      in
     * This does not include deleted elections
 * Vote in elections
     * Only for elections created by your [API
@@ -87,7 +88,8 @@ style="text-decoration: underline">reporter</span>.**
 * View a complete paginated listing of past election results
     * This includes elections created by other teams
     * This includes all past elections
-    * This includes currently open and future elections the moderator is moderating
+    * This includes currently open and future elections the moderator is
+      moderating
     * This does not include deleted elections
 * Manage elections to determine which voters are allowed to vote in which
   elections
