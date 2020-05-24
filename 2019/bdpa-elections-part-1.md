@@ -140,6 +140,10 @@ An election has at least the following components:
 * A unix epoch timestamp indicating when the election opens
 * A unix epoch timestamp indicating when the election closes
 * A boolean representing if the election was deleted or not
+* A mapping of voters to to votes (rankings)
+  * For example: `[{ voter_id: 'somegal425',
+  rankings: ['peanut butter', 'jelly', 'butter'] }, { voter_id: 'someguy3312',
+  rankings: ['butter', 'jelly', 'peanut butter'] }]`
 
 > Warning: All of the above information **must** be stored using the API. You
 can cache it locally, but it **must** also be put into the API. Only accessing
@@ -230,8 +234,8 @@ The dashboard will show:
 ## Requirement 5
 
 **History: each user can view a complete history of past elections that can be
-sorted by <span style="text-decoration: underline">at least</span> the following: title, creation
-time, opening time, closing time.**
+sorted by <span style="text-decoration: underline">at least</span> the
+following: title, creation time, opening time, closing time.**
 
 > Other useful metrics might include allowing users to sort elections by
 ownership (i.e. only showing elections created by your app and not others),
@@ -348,9 +352,9 @@ pagination. Facebook's infinity-scroll feature is another good example.
 
 ## Requirement 11
 
-**When voting in an election, a voter <span style="text-decoration: underline">must rank all
-choices</span> in order of preference. When an election closes, the winner is
-determined via Instant-Runoff Voting.**
+**When voting in an election, a voter <span style="text-decoration:
+underline">must rank all choices</span> in order of preference. When an election
+closes, the winner is determined via Instant-Runoff Voting.**
 
 When an eligible voter votes in an [Instant-Runoff
 Voting](https://courses.lumenlearning.com/waymakermath4libarts/chapter/instant-runoff-voting)
@@ -373,8 +377,8 @@ IRV algorithm:
 For example, suppose an administrator created an election titled _What should we
 eat after the competition_? The administrator adds three choices to vote for:
 pizza, chicken, and tacos. Further suppose there were <span
-style="text-decoration: underline">10</span> eligible voters. Voter 1 ranks the choices according
-to their tastes:
+style="text-decoration: underline">10</span> eligible voters. Voter 1 ranks the
+choices according to their tastes:
 
 <table>
     <tr>
@@ -403,8 +407,8 @@ their least favorite is Chicken.
 
 The other nine voters come up with their own ranks for the choices as well.
 Since many of them voted similarly to each other, the <span
-style="text-decoration: underline">10</span> different voters' rankings can be summarized as the
-following:
+style="text-decoration: underline">10</span> different voters' rankings can be
+summarized as the following:
 
 <table>
     <tr>
