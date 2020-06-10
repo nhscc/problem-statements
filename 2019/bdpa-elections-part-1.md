@@ -144,8 +144,8 @@ An election has at least the following components:
 * A boolean representing if the election was deleted or not
 * A mapping of voters to to votes (rankings)
   * For example: `[{ voter_id: 'somegal425',
-  rankings: ['peanut butter', 'jelly', 'butter'] }, { voter_id: 'someguy3312',
-  rankings: ['butter', 'jelly', 'peanut butter'] }]`
+  ranking: ['peanut butter', 'jelly', 'butter'] }, { voter_id: 'someguy3312',
+  ranking: ['butter', 'jelly', 'peanut butter'] }]`
 
 > Warning: All of the above information **must** be stored using the API. You
 can cache it locally, but it **must** also be put into the API. Only accessing
