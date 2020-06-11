@@ -569,9 +569,9 @@ Voting](https://www.youtube.com/watch?v=6axH6pcuyhQ)
 **Somewhere in the UI of every\*\* view, the total number of elections in the
 system will always be visible.**
 
-\*\*There are common sense exceptions to this, such as the login page where
-showing the total number of elections constitutes an information leak and should
-be avoided.
+\*\*There are some arguable exceptions to this, such as the login page where a
+team might argue showing the total number of elections constitutes an
+information leak and should be avoided.
 
 ## Requirement 13
 
@@ -586,9 +586,10 @@ Specifically: form inputs and the like must not be vulnerable to SQL injection
 attacks. User-generated outputs will not be vulnerable to XSS or similar
 attacks.
 
-Advanced security features, CSRF/token protection, CORS protection, inability to
-use GET requests to modify internal data, and other security best practices are
-not required but will be looked upon very favorably if present.
+Advanced security features and/or considerations, CSRF/token protection, CORS
+protection, inability to use GET requests to modify internal data, and other
+security best practices are not required but will be looked upon *very*
+favorably if present.
 
 As for database security, any passwords present in the database must be hashed
 (or encrypted). We recommend using a [salted SHA-256 hash
