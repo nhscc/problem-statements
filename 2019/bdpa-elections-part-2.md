@@ -159,4 +159,4 @@ imagine so long as it is not trivial for a bot to defeat.
 Before this change, voters could change their vote at any point up until the
 election they voted in closed. Now, voters will have only five minutes or until
 the election closes (whichever is sooner) to change their vote. After five
-minutes, their vote becomes immutable.
+minutes, their vote will become immutable.
