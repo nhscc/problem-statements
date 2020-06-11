@@ -140,7 +140,7 @@ An election has at least the following components:
 * A unix epoch timestamp indicating when the election closes
 * A boolean representing if the election was deleted or not
 * An array of options voters must rank from most favored to least favored
-* An array of objects representing that maps voters to their rankings
+* An array of objects that maps voters to their rankings
   * For example: `[{ voter_id: 'somegal425',
   ranking: ['peanut butter', 'jelly', 'butter'] }, { voter_id: 'someguy3312',
   ranking: ['butter', 'jelly', 'peanut butter'] }]`
