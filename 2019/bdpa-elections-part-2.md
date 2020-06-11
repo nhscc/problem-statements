@@ -88,13 +88,13 @@ the following voter data:
 
 ```JSON
 [
-    { voter_id: "voter1_<timestamp>", ranking: ["green", "blue"] },
-    { voter_id: "voter2_<timestamp>", ranking: ["blue"] },
-    { voter_id: "voter2_<timestamp>", ranking: ["blue", "green"] },
-    { voter_id: "voter3_<timestamp>", ranking: ["blue", "green", "red"] },
-    { voter_id: "voter4_<timestamp>", ranking: ["red", "blue", "green"] },
-    { voter_id: "voter5_<timestamp>", ranking: ["red", "green"] },
-    { voter_id: "voter6_<timestamp>", ranking: ["red"] },
+    { "voter_id": "voter1_<timestamp>", "ranking": ["green", "blue"] },
+    { "voter_id": "voter2_<timestamp>", "ranking": ["blue"] },
+    { "voter_id": "voter2_<timestamp>", "ranking": ["blue", "green"] },
+    { "voter_id": "voter3_<timestamp>", "ranking": ["blue", "green", "red"] },
+    { "voter_id": "voter4_<timestamp>", "ranking": ["red", "blue", "green"] },
+    { "voter_id": "voter5_<timestamp>", "ranking": ["red", "green"] },
+    { "voter_id": "voter6_<timestamp>", "ranking": ["red"] },
 ]
 ```
 
