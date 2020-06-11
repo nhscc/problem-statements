@@ -135,17 +135,18 @@ An election has at least the following components:
   API](https://electionshscc.docs.apiary.io), cannot be modified)**
 * A title
 * A description
-* An array of options voters must rank from most favored to least favored
-* An array of objects representing those ranked choices ([see API for example
-  output](https://electionshscc.docs.apiary.io/#reference/0/voters-endpoint))
 * A unix epoch timestamp indicating when the election was created in the system
 * A unix epoch timestamp indicating when the election opens
 * A unix epoch timestamp indicating when the election closes
 * A boolean representing if the election was deleted or not
-* A mapping of voters to votes (rankings)
+* An array of options voters must rank from most favored to least favored
+* An array of objects representing that maps voters to their rankings
   * For example: `[{ voter_id: 'somegal425',
   ranking: ['peanut butter', 'jelly', 'butter'] }, { voter_id: 'someguy3312',
   ranking: ['butter', 'jelly', 'peanut butter'] }]`
+  * Check out the [API data structure
+    reference](https://electionshscc.docs.apiary.io/#/data-structures/0/vote)
+    for more example inputs and outputs
 
 > Warning: All of the above information **must** be stored using the API. You
 can cache it locally, but it **must** also be put into the API. Only accessing
