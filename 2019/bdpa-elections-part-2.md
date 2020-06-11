@@ -104,7 +104,7 @@ the following:
 > Currently, choice `blue` is winning with 4 votes (3 voters chose it as their
 > first choice); choice `red` is in second place with 3 votes (3 voters chose it
 > as their first choice); choice `green` is in third place (eliminated in round
-> 1) (1 voter chose it as their first choice)
+> one) (1 voter chose it as their first choice)
 
 If this election were closed, the UI would communicate to the user something
 like the following:
@@ -112,7 +112,7 @@ like the following:
 > Official results: choice `blue` won with 4 votes (3 voters chose it as their
 > first choice); choice `red` came in second place with 3 votes (3 voters chose
 > it as their first choice); choice `green` came in third place (eliminated in
-> round 1) (1 voter chose it as their first choice)
+> round one) (1 voter chose it as their first choice)
 
 ## Change 6
 
