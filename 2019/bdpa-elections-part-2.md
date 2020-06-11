@@ -20,12 +20,12 @@ all the times an election's information (specifically: `title`, `description`,
 `opens`, `closes`, `deleted`) was modified and by which administrator account.
 
 Further, administrators will be able to trigger a per-election "undo" which
-reverses the most recent changes to an election's information (if any changes
+reverses the most recent change to an election's information (if any changes
 have been made). If an administrator triggers an "undo" and then triggers a
 second "undo" right after (i.e. election information was not changed further),
-it will "redo" the changes that were reversed with the first undo. If the
+it will "redo" the change that were reversed with the first undo. If the
 administrator triggers a third "undo," it will follow the same behavior as the
-first "undo". And so on and so forth.
+first "undo" and undo the redo. And so on and so forth with further "undo"s.
 
 When triggering an undo, administrators will be warned that they're reversing an
 election's most recent changes and must be given the choice to cancel the
