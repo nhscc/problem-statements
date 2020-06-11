@@ -52,8 +52,8 @@ open elections, though they can also change their vote rankings as many times as
 they want up until the election is closed. Reporters can only see closed
 elections.
 
-If you have any questions, grammatical fixes, et cetera, please open an issue on
-GitHub or contact NHSCC staff via Slack.
+If you have any questions, grammatical fixes, or other concerns, please [let us
+know](https://github.com/nhscc/problem-statements/issues).
 
 ## Requirement 1
 
