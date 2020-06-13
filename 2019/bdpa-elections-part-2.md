@@ -67,7 +67,7 @@ recent time their account was logged into.
 Before this change, an authorized user is shown the winner of an election
 they're viewing (if it's closed). The rest of the election view UI was left up
 to the developer. Now, when viewing elections, authorized users must be
-presented with at least the following information:
+presented with at least the following information if they are not already:
 
 ### Upcoming elections
 * When the election opens if the election is not open yet
@@ -113,6 +113,9 @@ like the following:
 > it as their first choice); choice `green` came in third place (eliminated in
 > round one) (1 voter chose it as their first choice)
 
+How you decide to communicate this information to the user is entirely up to
+your team.
+
 ## Change 6
 
 **Election, dashboard, and history view updates: the "star" button.**
@@ -148,7 +151,7 @@ Administrators can still create new accounts manually.
 
 The login and new registration views must be protected by a CAPTCHA of some
 kind. Do not use an external API like reCAPTCHA for this, you must build your
-own. It can be as simple (text-based) or as complex (image-based) as you can
+own. It can be as simple (text-based like "1 plus 1 = ?") or as complex (image-based and fancy) as you can
 imagine so long as it is not trivial for a bot to defeat.
 
 ## Change 10
@@ -157,5 +160,5 @@ imagine so long as it is not trivial for a bot to defeat.
 
 Before this change, voters could change their vote at any point up until the
 election they voted in closed. Now, voters will have only five minutes or until
-the election closes (whichever is sooner) to change their vote. After five
+the election closes (whichever is sooner) to change their vote after submitting it. After five
 minutes, their vote will become immutable.
