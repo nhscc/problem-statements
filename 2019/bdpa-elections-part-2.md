@@ -8,8 +8,8 @@ identified some changes they want to make to the original app specification.
 Management assures you the changes are tiny and will require very little work on
 your part.
 
-Please [let us know](https://github.com/nhscc/problem-statements/issues) if you
-have any questions or concerns.
+> Please [let us know](https://github.com/nhscc/problem-statements/issues) if
+> you have any questions or concerns.
 
 ## Change 1
 
