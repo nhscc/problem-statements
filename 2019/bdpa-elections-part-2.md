@@ -74,13 +74,13 @@ presented with at least the following information:
 
 ### Open and closed elections
 * For all possible choices in the election, show:
-  * What the choice's current IRV result is (sorted in descending order)
+  * What the choice's IRV result is (sorted in descending order)
     * Next to that number, also show the total number of voters who picked it as
-      their first choice (so: disregarding the IRV algorithm)
+      their first choice in the beginning
   * Which choice is currently winning if the election is open or which choice
     has won if the election is closed
   * The total number of voters who ranked each choice as their first choice
-    versus the current or final IRV result
+    versus the IRV result
 
 For example, suppose `Election #1` with options `["red", "green", "blue"]` has
 the following voter data:
