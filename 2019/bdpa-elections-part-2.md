@@ -22,10 +22,8 @@ all the times an election's information (specifically: `title`, `description`,
 Further, administrators will be able to trigger a per-election "undo" which
 reverses the most recent change to an election's information (if any changes
 have been made). If an administrator triggers an "undo" and then triggers a
-second "undo" right after (i.e. election information was not changed further),
-it will redo the change that were undone/reversed with the first undo. If the
-administrator triggers a third "undo," it will follow the same behavior as the
-first "undo" and undo the redo. And so on and so forth with further "undo"s.
+second "undo" right after,
+it will redo the change that was undone with the first undo.
 
 When triggering an undo, administrators will be warned that they're reversing an
 election's most recent changes and must be given the choice to cancel the
