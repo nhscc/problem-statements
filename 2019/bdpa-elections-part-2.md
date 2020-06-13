@@ -31,8 +31,8 @@ When triggering an undo, administrators will be warned that they're reversing an
 election's most recent changes and must be given the choice to cancel the
 operation before executing.
 
-This change only applies to elections created by your API key. You do not have
-to track changes or allow for "undos" of elections your team did not create.
+> This change only applies to elections created by your API key. You do not have
+> to track changes or allow for "undos" of elections your team did not create.
 
 ## Change 2
 
