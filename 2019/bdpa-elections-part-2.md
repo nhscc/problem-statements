@@ -81,8 +81,6 @@ presented with at least the following information:
     has won if the election is closed
   * The total number of voters who ranked each choice as their first choice
     versus the current or final IRV result
-* The total number of voters participating in the election versus the total
-  number of voters eligible to vote in the election.
 
 For example, suppose `Election #1` with options `["red", "green", "blue"]` has
 the following voter data:
