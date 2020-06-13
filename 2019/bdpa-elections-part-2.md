@@ -73,14 +73,14 @@ presented with at least the following information:
 * When the election opens if the election is not open yet
 
 ### Open and closed elections
+* The total number of voters participating in the election versus the total
+  number of voters eligible to vote in the election.
 * For all possible choices in the election, show:
   * What the choice's IRV result is (sorted in descending order)
     * Next to that number, also show the total number of voters who picked it as
       their first choice in the beginning
   * Which choice is currently winning if the election is open or which choice
     has won if the election is closed
-  * The total number of voters who ranked each choice as their first choice
-    versus the IRV result
 
 For example, suppose `Election #1` with options `["red", "green", "blue"]` has
 the following voter data:
