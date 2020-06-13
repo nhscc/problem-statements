@@ -73,8 +73,8 @@ presented with at least the following information:
 * When the election opens if the election is not open yet
 
 ### Open and closed elections
-* The total number of voters participating in the election versus the total
-  number of voters eligible to vote in the election.
+* The total number of eligible voters who voted in the election versus the total
+  number of eligible voters.
 * For all possible choices in the election, show:
   * What the choice's IRV result is (sorted in descending order)
     * Next to that number, also show the total number of voters who picked it as
