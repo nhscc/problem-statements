@@ -9,7 +9,10 @@ Management assures you the changes are tiny and will require very little work on
 your part.
 
 > Please [let us know](https://github.com/nhscc/problem-statements/issues) if
-> you have any questions or concerns.
+> you have any questions or concerns. You are also free to ask us any questions
+> you want at any point during the competition. If you are confused about
+> something or find a problem, do not hesitate to reach out ASAP on Slack, in
+> person, over chat or teleconferencing software, or otherwise.
 
 ## Change 1
 
