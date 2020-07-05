@@ -25,8 +25,8 @@ all the times an election's information (specifically: `title`, `description`,
 Further, administrators will be able to trigger a per-election "undo" which
 reverses the most recent change to an election's information (if any changes
 have been made). If an administrator triggers an "undo" and then triggers a
-second "undo" right after,
-it will redo the change that was undone with the first undo.
+second "undo" right after, it will redo the change that was undone with the
+first undo.
 
 When triggering an undo, administrators will be warned that they're reversing an
 election's most recent changes and must be given the choice to cancel the
@@ -154,8 +154,9 @@ Administrators can still create new accounts manually.
 
 The login and new registration views must be protected by a CAPTCHA of some
 kind. Do not use an external API like reCAPTCHA for this, you must build your
-own. It can be as simple (text-based like "1 plus 1 = ?") or as complex (image-based and fancy) as you can
-imagine so long as it is not trivial for a bot to defeat.
+own. It can be as simple (text-based like "1 plus 1 = ?") or as complex
+(image-based and fancy) as you can imagine so long as it is not trivial for a
+bot to defeat.
 
 ## Change 10
 
@@ -163,5 +164,5 @@ imagine so long as it is not trivial for a bot to defeat.
 
 Before this change, voters could change their vote at any point up until the
 election they voted in closed. Now, voters will have only five minutes or until
-the election closes (whichever is sooner) to change their vote after submitting it. After five
-minutes, their vote will become immutable.
+the election closes (whichever is sooner) to change their vote after submitting
+it. After five minutes, their vote will become immutable.
