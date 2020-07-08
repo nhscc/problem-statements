@@ -386,8 +386,8 @@ the No Fly List, which can be queried using [the
 API](https://hsccdfbb7244.docs.apiary.io).
 
 If the name, birthdate, and sex match a passenger's info, they should be denied.
-This should be the case even if the passenger's information is in a different
-case (i.e. they spell their name in all caps).
+This should happen even if the passenger's information is in a different case
+(i.e. they spell their name in all caps).
 
 > To test the No Fly List, you can use the following passenger information: name
 > (first middle last): Restricted User Flier; birthdate (day, month, year): 25,
