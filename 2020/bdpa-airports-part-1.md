@@ -176,7 +176,7 @@ Next, the user will be required to fill out:
     everything.
 * Select and confirm their seat
   * Seat numbers/letters, their prices, where the seats are on the airplane, and
-    the currently selected seat will all be presented somehow
+    the currently selected seat will all be presented somehow by your app
   * A graphical seat-map would be most impressive
 * How many bags they want to check and how many they want to carry on
   * The first carry-on bag is free, the second is $30
@@ -185,7 +185,8 @@ Next, the user will be required to fill out:
 * Users are limited to 2 carry-on bags and 5 checked bags
 
 All the seats for a flight will be the same price which can be found in the
-appropriate API response. Every flight has a total of 90 seats.
+appropriate API response. Every flight has a total of 90 seats thanks to
+pandemic restrictions.
 
 Finally, the user will be able to review their purchase before confirming.
 Afterwards, they will be directed to the ticket view for their flight. If
