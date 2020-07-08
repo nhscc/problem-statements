@@ -51,9 +51,12 @@ underline">admin</span>.**
 * Are unauthenticated users (i.e. don't have to login)
 * Can view, search, and sort through a complete paginated listing of recent and
   future flights
+  * This applies to *all* flights in the system, including flights not landing
+    at your airport
 * Can book flights by buying tickets
   * Only if they're not on the FAA No Fly List
   * Will get a confirmation number for their flight
+  * You should only allow bookings for flights that are landing at your airport
 * Can view details of a ticket they've purchased
   * Must provide their last name and a confirmation code
   * Can cancel/refund the ticket if the flight has not yet taken off
@@ -114,6 +117,9 @@ departing flights**:
   * The latest gate information is also shown
   * The name of the airport departing flights is departing to (e.g. CHI for BDPA
     Chicago Airport)
+
+> Note: you'll have to decide how to handle displaying flight data for flights
+> that are not arriving/departing from your airport.
 
 Anyone can see this view, including guests who are not logged in. By default,
 all flights are shown. Arrivals and departures will be shown separately. All
@@ -179,7 +185,7 @@ Next, the user will be required to fill out:
 * Users are limited to 2 carry-on bags and 5 checked bags
 
 All the seats for a flight will be the same price which can be found in the
-appropriate API response.
+appropriate API response. Every flight has a total of 90 seats.
 
 Finally, the user will be able to review their purchase before confirming.
 Afterwards, they will be directed to the ticket view for their flight. If
