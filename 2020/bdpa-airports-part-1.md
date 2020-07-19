@@ -160,7 +160,7 @@ its final state. This is the only point where a flight might be cancelled. If
 `status!="scheduled"`, a flight will **never enter** the cancelled state.
 
 At some point before it lands, the flight may become `status=="delayed"` and/or
-be assigned a gate; gates can be changed/be reassigned at any time! Once
+be assigned a gate; gates can be changed/reassigned at any time! Once
 `arriveAtReceiver` time elapses, the fight will become `status=="landed"`, which
 means the flight is on the ground but not yet at its gate. Once the flight pulls
 up to its assigned gate, it will become `status=="arrived"` (the gate for this
@@ -179,7 +179,7 @@ cancelled. If `status!="scheduled"`, a flight will **never enter** the cancelled
 state.
 
 At some point before it lands, the flight may become `status=="delayed"` and/or
-be assigned a gate; gates can be changed/be reassigned at any time! Once
+be assigned a gate; gates can be changed/reassigned at any time! Once
 `arriveAtReceiver` time elapses, the fight will become `status=="landed"`, which
 means the flight is on the ground but not yet at its gate. Once the flight pulls
 up to its assigned gate, it will become `status=="arrived"` (the gate for this
