@@ -165,7 +165,7 @@ be assigned a gate; gates can be changed/reassigned at any time! Once
 means the flight is on the ground but not yet at its gate. Once the flight pulls
 up to its assigned gate, it will become `status=="arrived"` (the gate for this
 flight will no longer change after this happens). At the end of the hour, the
-flight will become `status=="past"` and their gate will change to `null`.
+flight will become `status=="past"` and its gate will change to `null`.
 
 ### How Departures Work
 
