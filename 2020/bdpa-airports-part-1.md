@@ -112,7 +112,7 @@ departing flights**:
     * landed (but not at gate yet)
     * arrived
     * boarding
-    * departed (not in the air yet)
+    * departed (finished boarding, left airport)
 * If the flight is a departure:
   * The latest gate information is also shown
   * The name of the airport departing flights is departing to (e.g. CHI for BDPA
@@ -205,7 +205,8 @@ directly from the flights view, this step can be skipped since the desired
 flight is already known.
 
 > Note that your API key will only allow you to book flights that are departing
-> from the airport that your app was built for.
+> from the airport that your app was built for. These flights will have
+> `bookable==true`.
 
 Next, the user will be required to fill out:
 
@@ -240,7 +241,9 @@ Finally, the user will be able to review their purchase before confirming.
 Afterwards, they will be directed to the ticket view for their flight. If
 they’re logged in, the flight will be added to the user’s private account. Note
 that users must book flights **at least 24 hours before the flight’s departure
-time**.
+time**. This means the flight must be `status=="scheduled"` and
+`arriveAtReceiver` must be greater than 24 hours from now for customers to book
+tickets (and, of course, `bookable==true` must be the case for that flight).
 
 > Check out the [API data structure
 reference](https://hsccdfbb7244.docs.apiary.io/#/data-structures/0/vote) for
