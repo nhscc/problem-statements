@@ -42,6 +42,8 @@ competitions.
 📦 [Demo source code](https://github.com/nhscc/elections.solutions.hscc.bdpa.org)  
 🎒 [API source code](https://github.com/nhscc/elections.api.hscc.bdpa.org)
 
+<br />
+
 ### [**BDPA Airports**](/2020/airports)
 
 📑 [Problem statement](/2020/airports)  
@@ -51,5 +53,7 @@ competitions.
 \-\-\-\-  
 📦 [Demo source code](https://github.com/nhscc/airports.solutions.hscc.bdpa.org)  
 🎒 [API source code](https://github.com/nhscc/airports.api.hscc.bdpa.org)
+
+<br />
 
 <!-- prettier-ignore-end -->
