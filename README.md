@@ -16,9 +16,19 @@ excellent position to do well on the actual competition problem statement.
 
 ## This Year's Problem Statements
 
-<!-- Sample: _- TBA -_ <br /> Actual: _- TBA -_ -->
+<table>
+<tr>
+<th>
+<img width="441" height="1">
+<p align="center"><strong><a href="#"></a> (sample to be released in June)</strong></p>
+</th>
+<th>
+<img width="441" height="1">
+<p align="center"><strong><a href="#"></a> (actual to be released in July)</strong></p>
+</th>
+</tr>
 
-Sample: _- TBA -_ <br /> Actual: _- TBA -_
+</table>
 
 ## Past Problem Statements
 
@@ -31,29 +41,58 @@ competitions.
 [MongoDB Atlas](https://www.mongodb.com/cloud/atlas), or
 [Vercel](https://vercel.com/) go down</small>
 
-<!-- prettier-ignore-start -->
+---
 
-### [**BDPA Elections**](/2019/elections)
-
-📑 [Problem statement](/2019/elections)  
-🌍 [Live demo](https://elections.solutions.hscc.bdpa.org) (currently offline)  
-📚 [Interactive API docs](https://hscc4cfe8be7.docs.apiary.io/)  
-\-\-\-\-  
-📦 [Demo source code](https://github.com/nhscc/elections.solutions.hscc.bdpa.org)  
-🎒 [API source code](https://github.com/nhscc/elections.api.hscc.bdpa.org)
-
+<table>
+<tr>
+<th>
+<img width="441" height="1">
+<p align="center"><strong><a href="/2019/elections">BDPA Elections</a> (sample)</strong></p>
+</th>
+<th>
+<img width="441" height="1">
+<p align="center"><strong><a href="/2020/airports">BDPA Airports</a> (actual)</strong></p>
+</th>
+</tr>
+<tr>
+<td>
+<p>
+📑 <a href="/2019/elections">Problem statement</a>
 <br />
-
-### [**BDPA Airports**](/2020/airports)
-
-📑 [Problem statement](/2020/airports)  
-🌍 [Live demo](https://airports.solutions.hscc.bdpa.org) (currently offline)  
-📚 [Interactive API docs](https://hsccdfbb7244.docs.apiary.io/) (version 1)  
-📚 [Interactive API docs](https://hscc210ff8c0.docs.apiary.io/) (version 2)  
-\-\-\-\-  
-📦 [Demo source code](https://github.com/nhscc/airports.solutions.hscc.bdpa.org)  
-🎒 [API source code](https://github.com/nhscc/airports.api.hscc.bdpa.org)
-
+🌍 <a href="https://elections.solutions.hscc.bdpa.org">Live demo</a>
 <br />
-
-<!-- prettier-ignore-end -->
+📚 <a href="https://hscc4cfe8be7.docs.apiary.io/">Interactive API docs</a>
+</p>
+</td>
+<td>
+<img width="441" height="1">
+<p>
+📑 <a href="/2020/airports">Problem statement</a>
+<br />
+🌍 <a href="https://airports.solutions.hscc.bdpa.org">Live demo</a>
+<br />
+📚 <a href="https://hsccdfbb7244.docs.apiary.io/">Interactive API docs</a> (version 1)
+<br />
+📚 <a href="https://hscc210ff8c0.docs.apiary.io/">Interactive API docs</a> (version 2)
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<img width="441" height="1">
+<p>
+📦 <a href="https://github.com/nhscc/elections.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/elections.api.hscc.bdpa.org">API source code</a>
+</p>
+</td>
+<td>
+<img width="441" height="1">
+<p>
+📦 <a href="https://github.com/nhscc/airports.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/airports.api.hscc.bdpa.org">API source code</a>
+</p>
+</td>
+</tr>
+</table>

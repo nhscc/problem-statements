@@ -18,19 +18,41 @@ mind:
 
 ## Statements
 
-There was no sample problem statement released this year.
-
-<!-- prettier-ignore-start -->
-
-### [**BDPA Elections**](/2019/elections)
-
-📑 [Problem statement](/2019/elections)  
-🌍 [Live demo](https://elections.solutions.hscc.bdpa.org)  
-📚 [Interactive API docs](https://hscc4cfe8be7.docs.apiary.io/)  
-\-\-\-\-  
-📦 [Demo source code](https://github.com/nhscc/elections.solutions.hscc.bdpa.org)  
-🎒 [API source code](https://github.com/nhscc/elections.api.hscc.bdpa.org)
-
+<table>
+<tr>
+<th>
+<img width="441" height="1">
+<p align="center"><strong>(no sample released this year)</strong></p>
+</th>
+<th>
+<img width="441" height="1">
+<p align="center"><strong><a href="/2019/elections">BDPA Elections</a> (actual)</strong></p>
+</th>
+</tr>
+<tr>
+<td>
+</td>
+<td>
+<img width="441" height="1">
+<p>
+📑 <a href="/2019/elections">Problem statement</a>
 <br />
-
-<!-- prettier-ignore-end -->
+🌍 <a href="https://elections.solutions.hscc.bdpa.org">Live demo</a>
+<br />
+📚 <a href="https://hscc4cfe8be7.docs.apiary.io/">Interactive API docs</a>
+</p>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>
+<img width="441" height="1">
+<p>
+📦 <a href="https://github.com/nhscc/elections.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/elections.api.hscc.bdpa.org">API source code</a>
+</p>
+</td>
+</tr>
+</table>
