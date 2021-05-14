@@ -22,11 +22,11 @@ mind:
 <table>
 <tr>
 <th>
-<a disabled href="/"><img width="500" height="1" /></a>
+<img width="500" height="1" />
 <p align="center"><strong><a href="/2019/elections">BDPA Elections</a> (sample)</strong></p>
 </th>
 <th>
-<a disabled href="/"><img width="500" height="1" /></a>
+<img width="500" height="1" />
 <p align="center"><strong><a href="/2020/airports">BDPA Airports</a> (actual)</strong></p>
 </th>
 </tr>
@@ -41,7 +41,7 @@ mind:
 </p>
 </td>
 <td>
-<a disabled href="/"><img width="500" height="1" /></a>
+<img width="500" height="1" />
 <p>
 📑 <a href="/2020/airports">Problem statement</a>
 <br />
@@ -55,7 +55,7 @@ mind:
 </tr>
 <tr>
 <td>
-<a disabled href="/"><img width="500" height="1" /></a>
+<img width="500" height="1" />
 <p>
 📦 <a href="https://github.com/nhscc/elections.solutions.hscc.bdpa.org">Demo source code</a>
 <br />
@@ -63,7 +63,7 @@ mind:
 </p>
 </td>
 <td>
-<a disabled href="/"><img width="500" height="1" /></a>
+<img width="500" height="1" />
 <p>
 📦 <a href="https://github.com/nhscc/airports.solutions.hscc.bdpa.org">Demo source code</a>
 <br />
