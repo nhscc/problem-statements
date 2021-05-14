@@ -10,7 +10,8 @@ This year's problem statements were designed with the following challenges in
 mind:
 
 - Interacting with unreliable sometimes-unavailable external data sources
-- Implementing or tweaking a non-trivial algorithm
+- Implementing or tweaking a non-trivial algorithm (victory condition
+  calculations)
 - Implementing an authentication mechanism, i.e. login and registration
 - [Responsive UX](https://en.wikipedia.org/wiki/Responsive_web_design), i.e. the
   app is functional on mobile, tablet, and desktop screens
