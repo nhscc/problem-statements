@@ -22,11 +22,11 @@ mind:
 <table>
 <tr>
 <th>
-<img width="500" height="1" />
+<a disabled href="/"><img width="500" height="1" /></a>
 <p align="center"><strong>(no sample released this year)</strong></p>
 </th>
 <th>
-<img width="500" height="1" />
+<a disabled href="/"><img width="500" height="1" /></a>
 <p align="center"><strong><a href="/2019/elections">BDPA Elections</a> (actual)</strong></p>
 </th>
 </tr>
@@ -34,7 +34,7 @@ mind:
 <td>
 </td>
 <td>
-<img width="500" height="1" />
+<a disabled href="/"><img width="500" height="1" /></a>
 <p>
 📑 <a href="/2019/elections">Problem statement</a>
 <br />
@@ -48,7 +48,7 @@ mind:
 <td>
 </td>
 <td>
-<img width="500" height="1" />
+<a disabled href="/"><img width="500" height="1" /></a>
 <p>
 📦 <a href="https://github.com/nhscc/elections.solutions.hscc.bdpa.org">Demo source code</a>
 <br />
