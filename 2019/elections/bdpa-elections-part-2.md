@@ -9,10 +9,7 @@ Management assures you the changes are tiny and will require very little work on
 your part.
 
 > Please [let us know](https://github.com/nhscc/problem-statements/issues) if
-> you have any questions or concerns. You are also free to ask us any questions
-> you want at any point during the competition. If you are confused about
-> something or find a problem, do not hesitate to reach out ASAP on Slack, in
-> person, over chat or teleconferencing software, or otherwise.
+> you have any questions or concerns.
 
 ## Change 1
 
@@ -50,8 +47,8 @@ popular elections show up at the top of the list on demand.
 
 **Dashboard view update: expiration warnings.**
 
-Elections a voter is eligible to vote in *that they haven't voted in yet* that
-are closing *in an hour or less* will be specially marked in the UI somehow. The
+Elections a voter is eligible to vote in _that they haven't voted in yet_ that
+are closing _in an hour or less_ will be specially marked in the UI somehow. The
 goal is to alert voters that an election they should have voted in is about to
 end.
 
@@ -73,16 +70,18 @@ to the developer. Now, when viewing elections, authorized users must be
 presented with at least the following information if they are not already:
 
 ### Upcoming elections
-* When the election opens if the election is not open yet
+
+- When the election opens if the election is not open yet
 
 ### Open and closed elections
-* The total number of eligible voters who voted in the election versus the total
+
+- The total number of eligible voters who voted in the election versus the total
   number of eligible voters.
-* For all possible choices in the election, show:
-  * What the choice's IRV result is (sorted in descending order)
-    * Next to that number, also show the total number of voters who picked it as
+- For all possible choices in the election, show:
+  - What the choice's IRV result is (sorted in descending order)
+    - Next to that number, also show the total number of voters who picked it as
       their first choice in the beginning
-  * Which choice is currently winning if the election is open or which choice
+  - Which choice is currently winning if the election is open or which choice
     has won if the election is closed
 
 For example, suppose `Election #1` with options `["red", "green", "blue"]` has

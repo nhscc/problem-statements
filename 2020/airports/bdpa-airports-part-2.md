@@ -9,10 +9,7 @@ Management assures you the changes are tiny and will require very little work on
 your part.
 
 > Please [let us know](https://github.com/nhscc/problem-statements/issues) if
-> you have any questions or concerns. You (YES YOU, STUDENT) are free to ask us
-> any questions you want at any point during the competition. If you are
-> confused about something or encounter a problem, do not hesitate to reach out
-> ASAP on Slack!
+> you have any questions or concerns.
 
 ## Change 1
 
@@ -42,21 +39,21 @@ Along with guests, customers, and admins, there is now a 4th required user type:
 attendants. Admins create them and assign them to an airline. Attendants are
 somewhat similar to admins in that they can:
 
-* See a paginated list of all customer and ticket information for any flight
+- See a paginated list of all customer and ticket information for any flight
   belonging to their assigned airline
-  * They can view related customer information but cannot modify it
-* Create new tickets for flights belonging to their airline
-* View a ticket for flights belonging to their airline using its confirmation
+  - They can view related customer information but cannot modify it
+- Create new tickets for flights belonging to their airline
+- View a ticket for flights belonging to their airline using its confirmation
   code
-* Cancel tickets for upcoming flights belonging to their airline
-  * Cancelling a ticket will deactivate it in the system and allow the seat to
+- Cancel tickets for upcoming flights belonging to their airline
+  - Cancelling a ticket will deactivate it in the system and allow the seat to
     be purchased by someone else. The ticket will show up on the
     dashboard/ticket as "canceled" or "refunded" and the ticket will otherwise
     not be accessible.
-  * This is irreversible, though the user could always buy another ticket.
-* Search for a customer with their assigned airline using any user information
+  - This is irreversible, though the user could always buy another ticket.
+- Search for a customer with their assigned airline using any user information
   (email, address, name, etc)
-* Search for a ticket to a flight belonging to their assigned airline using any
+- Search for a ticket to a flight belonging to their assigned airline using any
   flight information (departing airport, arrival airport, etc)
 
 They should probably have their own dashboard.
@@ -70,12 +67,12 @@ they will be told their purchase was successful and they will be given their
 airline confirmation number. Customers will be able to navigate to a check-in
 view that accepts their last name and airline confirmation number and then:
 
-* If the flight departs within the next 24 hours, the customer is allowed to
+- If the flight departs within the next 24 hours, the customer is allowed to
   check in or cancel the ticket
-  * Checking in means:
-    * The customer can no longer check-in (and the UI will reflect this)
-    * The customer can now access their ticket view for the flight as normal
-* If the flight does not depart within the next 24 hours, the customer is
+  - Checking in means:
+    - The customer can no longer check-in (and the UI will reflect this)
+    - The customer can now access their ticket view for the flight as normal
+- If the flight does not depart within the next 24 hours, the customer is
   instructed to try again later
 
 Customers, when accessing their dashboard view and looking at upcoming flights,
@@ -94,8 +91,8 @@ checking in, they will be redirected to the check-in view.
 **Your application must be updated to use the new V2 API exclusively.**
 
 See the documentation for the new version of the API
-[here](https://hscc210ff8c0.docs.apiary.io). You will need to update the
-base address you're using from https://airports.api.hscc.bdpa.org/v1 to
+[here](https://hscc210ff8c0.docs.apiary.io). You will need to update the base
+address you're using from https://airports.api.hscc.bdpa.org/v1 to
 **https://airports.api.hscc.bdpa.org/v2**. The documentation also includes a
 brief migration guide.
 
@@ -119,6 +116,7 @@ will be deducted from their account; any FFMs the customer spent to purchase
 their ticket or in-flight extras will be refunded.
 
 Guests cannot use FFMs.
+
 ## Change 6
 
 **In the flight booking view, users can select from a class of seats and
@@ -128,10 +126,10 @@ in-flight extras can now be purchased.**
 data. This data will be used to indicate the four different seat classes in the
 UI:
 
-* Economy (default)
-* Exit row
-* Economy plus
-* First class
+- Economy (default)
+- Exit row
+- Economy plus
+- First class
 
 Each seat class will have a price associated with it, meaning all seats will not
 have the same price anymore. **This means the prices of flights are no longer
@@ -141,11 +139,11 @@ selected seat.** Also, flights are no longer limited to 90 seats.
 The API also includes data on a new feature: in-flight extras like wifi are now
 available for purchase. These can also be bought using either money or FFMs.
 Users are free to mix and match their purchases, choosing to pay with ffms for
-some items and dollars for others. See [the API
-documentation](https://hscc210ff8c0.docs.apiary.io) for how to determine which
-flights have which extras and at what cost.
+some items and dollars for others. See
+[the API documentation](https://hscc210ff8c0.docs.apiary.io) for how to
+determine which flights have which extras and at what cost.
 
-> Note that price data includes dollar amounts *and cost in FFMs* since users
+> Note that price data includes dollar amounts _and cost in FFMs_ since users
 > can use either to purchase tickets and extras.
 
 ## Change 7
@@ -157,12 +155,12 @@ On some side of the page (or fixed to the browser window), the customer will be
 able to see some information about their nearest upcoming flight, as well as
 their email address and other useful account information. Specifically:
 
-* Flight airline and number
-* Destination
-* Departure date and time
-  * If this is updated by the API, it will be updated in the view asynchronously
-* First name (e.g. "Hi, yourname!")
-* Email address
+- Flight airline and number
+- Destination
+- Departure date and time
+  - If this is updated by the API, it will be updated in the view asynchronously
+- First name (e.g. "Hi, yourname!")
+- Email address
 
 ## Change 8
 
@@ -179,8 +177,8 @@ depart in more than 36-hours.
 **Baggage fees and restriction information must be taken from the V2 API.**
 
 Before, carry-on and checked baggage prices were fixed. Now, the price for
-carry-ons and checked baggage will be taken from the new V2 API. See [the API
-documentation](https://hscc210ff8c0.docs.apiary.io) for details.
+carry-ons and checked baggage will be taken from the new V2 API. See
+[the API documentation](https://hscc210ff8c0.docs.apiary.io) for details.
 
 Similarly, the number of allowed carry-on and checked bags is no longer fixed
 and must be acquired from the API.
