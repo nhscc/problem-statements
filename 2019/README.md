@@ -9,7 +9,9 @@ with the new competition format and is okay to use as training material.
 This year's problem statements were designed with the following challenges in
 mind:
 
-- Interacting with unreliable sometimes-unavailable external data sources
+- Interacting with
+  [unsanitized](https://www.esecurityplanet.com/endpoint/prevent-web-attacks-using-input-sanitization)
+  sometimes-unavailable external data sources
 - Implementing or tweaking a non-trivial algorithm (victory condition
   calculations)
 - Implementing an authentication mechanism, i.e. login and registration
