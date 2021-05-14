@@ -23,17 +23,13 @@ including managing users and tickets. There is also a special **root** user, a
 special administrator that is the only user that can create and delete other
 administrator users.
 
-All time-based data in the API is represented as the number of milliseconds
-elapsed since January 1, 1970 00:00:00 UTC. This includes arrival and departure
-times. See [the API documentation](https://hsccdfbb7244.docs.apiary.io) for
-details.
-
-As for using a local database versus using
-[the API](https://hsccdfbb7244.docs.apiary.io), you **must** use
-[the API](https://hsccdfbb7244.docs.apiary.io) to complete this problem
-statement, though you will likely require a hybrid approach where you have your
-own database storing some data and using
-[the API](https://hsccdfbb7244.docs.apiary.io) to retrieve other data.
+Note that time-based data in the API is represented as the number of
+milliseconds elapsed since January 1, 1970 00:00:00 UTC. This includes arrival
+and departure times. See
+[the API documentation](https://hsccdfbb7244.docs.apiary.io) for details.
+Further note that you **must** use the API to complete this problem statement,
+though you will likely require a hybrid approach where you have your own
+database storing some data and using the API to retrieve other data.
 
 > If you have any questions, grammatical fixes, or other concerns, please
 > [reach out to us know](https://github.com/nhscc/problem-statements/issues).

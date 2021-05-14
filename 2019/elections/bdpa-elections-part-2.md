@@ -3,10 +3,8 @@
 The entity that contracted you, BDPA Elections, Inc., to build their election
 system applauds its successful rollout! User feedback indicates users are
 satisfied with your app UX and performance data shows response time tail
-latencies are very low. Everything's in the green! But your contractor has
-identified some changes they want to make to the original app specification.
-Management assures you the changes are tiny and will require very little work on
-your part.
+latencies are very low. But your contractor has identified some changes they
+want to make to the original app specification.
 
 > Please [let us know](https://github.com/nhscc/problem-statements/issues) if
 > you have any questions or concerns.
