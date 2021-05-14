@@ -59,7 +59,7 @@ competitions.
 <p>
 📑 <a href="/2019/elections">Problem statement</a>
 <br />
-🌍 <a href="https://elections.solutions.hscc.bdpa.org">Live demo</a>
+🌍 <a href="https://elections.solutions.hscc.bdpa.org">Live demo</a> (temporarily offline)
 <br />
 📚 <a href="https://hscc4cfe8be7.docs.apiary.io/">Interactive API docs</a>
 </p>
@@ -69,7 +69,7 @@ competitions.
 <p>
 📑 <a href="/2020/airports">Problem statement</a>
 <br />
-🌍 <a href="https://airports.solutions.hscc.bdpa.org">Live demo</a>
+🌍 <a href="https://airports.solutions.hscc.bdpa.org">Live demo</a> (temporarily offline)
 <br />
 📚 <a href="https://hsccdfbb7244.docs.apiary.io/">Interactive API docs</a> (version 1)
 <br />
