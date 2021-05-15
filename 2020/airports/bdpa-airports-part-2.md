@@ -6,9 +6,6 @@ satisfied with your app UX and performance data shows response time tail
 latencies are very low. But your contractor has identified some changes they
 want to make to the original app specification.
 
-> Please [let us know](https://github.com/nhscc/problem-statements/issues) if
-> you have any questions or concerns.
-
 ## Change 1
 
 **Customer accounts can now be _banned_ or _un-banned_ by admins; flyers can

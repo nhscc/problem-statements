@@ -47,9 +47,6 @@ open elections, though they can also change their vote rankings as many times as
 they want up until the election is closed. Reporters can only see closed
 elections.
 
-> If you have any questions, grammatical fixes, or other concerns, please
-> [reach out to us know](https://github.com/nhscc/problem-statements/issues).
-
 ## Requirement 1
 
 **Login: a user must authenticate before they can access the system.**

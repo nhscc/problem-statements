@@ -31,9 +31,6 @@ Further note that you **must** use the API to complete this problem statement,
 though you will likely require a hybrid approach where you have your own
 database storing some data and using the API to retrieve other data.
 
-> If you have any questions, grammatical fixes, or other concerns, please
-> [reach out to us know](https://github.com/nhscc/problem-statements/issues).
-
 ## Requirement 1
 
 **Your app will support 3 types for users: <span style="text-decoration:
