@@ -29,7 +29,7 @@ mind:
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2019/elections">BDPA Elections</a> (actual)</strong></p>
+<p align="center"><strong><a href="/2019">BDPA Elections</a> (actual)</strong></p>
 </th>
 </tr>
 <tr>

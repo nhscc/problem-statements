@@ -47,11 +47,11 @@ competitions.
 <tr>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2019/elections">BDPA Elections</a> (sample)</strong></p>
+<p align="center"><strong><a href="/2019">BDPA Elections</a> (sample)</strong></p>
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2020/airports">BDPA Airports</a> (actual)</strong></p>
+<p align="center"><strong><a href="/2020">BDPA Airports</a> (actual)</strong></p>
 </th>
 </tr>
 <tr>
