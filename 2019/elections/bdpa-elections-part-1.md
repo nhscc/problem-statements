@@ -1,5 +1,7 @@
 # BDPA NHSCC 2019 Problem Statement (part 1)
 
+> See also: [API documentation](https://hscc4cfe8be7.docs.apiary.io)
+
 In recent years, adversaries with unlimited money and means are waging a
 non-stop global cyber war against every machine connected to the internet. BDPA
 Elections, Inc. has been contracted by a billion dollar entity to build a secure
@@ -9,7 +11,7 @@ physical voting location. In order to ensure fairness, you've decided to
 implement a form of instant-runoff voting (IRV) to determine the election
 winner.
 
-Summary of requirements:
+<details><summary>Summary of requirements</summary>
 
 Your system will consist of a web portal where, _only \_after logging in_,\_
 users can view the results of past elections and vote in current elections. You
@@ -46,6 +48,8 @@ when they close and permanently commit their results. Voters can only vote in
 open elections, though they can also change their vote rankings as many times as
 they want up until the election is closed. Reporters can only see closed
 elections.
+
+</details>
 
 ## Requirement 1
 

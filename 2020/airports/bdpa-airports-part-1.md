@@ -1,12 +1,14 @@
 # BDPA NHSCC 2020 Problem Statement (part 1)
 
+> See also: [API documentation](https://hsccdfbb7244.docs.apiary.io)
+
 With many airports in a tough spot financially these days, BDPA Airports, Inc.
 wishes to capitalize on the moment and expand their network of airport
 franchises into various cities. Your team has been contracted by BDPA Airports,
 Inc to build a secure web portal for clients to view and book flights arriving
 and departing from your local BDPA airport.
 
-Summary of requirements:
+<details><summary>Summary of requirements</summary>
 
 Your app will consist of a web portal where users, _logged in or not_, can view
 all of the flights arriving and departing from your local airport. Logged in
@@ -30,6 +32,8 @@ and departure times. See
 Further note that you **must** use the API to complete this problem statement,
 though you will likely require a hybrid approach where you have your own
 database storing some data and using the API to retrieve other data.
+
+</details>
 
 ## Requirement 1
 

@@ -1,10 +1,13 @@
 # BDPA NHSCC 2019 Problem Statement (part 2)
 
-The entity that contracted you, BDPA Elections, Inc., to build their election
-system applauds its successful rollout! User feedback indicates users are
-satisfied with your app UX and performance data shows response time tail
-latencies are very low. But your contractor has identified some changes they
-want to make to the original app specification.
+> See also: [API documentation](https://hscc4cfe8be7.docs.apiary.io)
+
+BDPA Elections, Inc. applauds the successful rollout of its IRV election system!
+User feedback indicates users are satisfied with your app UX and performance
+data shows response time tail latencies are very low. But your contractor has
+identified some changes they want to make to the original app specification.
+
+There are 10 changes:
 
 ## Change 1
 
