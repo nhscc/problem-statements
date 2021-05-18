@@ -7,9 +7,7 @@ non-stop global cyber war against every machine connected to the internet. BDPA
 Elections, Inc. has been contracted by a billion dollar entity to build a secure
 electronic election system to their specifications. The system will allow an
 entity to host elections at scale without requiring voters to appear at a
-physical voting location. In order to ensure fairness, you've decided to
-implement a form of instant-runoff voting (IRV) to determine the election
-winner.
+physical voting location.
 
 <details><summary>Summary of requirements</summary>
 
@@ -20,9 +18,8 @@ must query election data by making REST requests to the
 be able to display the election data from other chapters,
 <span style="text-decoration:
 underline">including the results of elections</span>**. Any data you get back
-from the API is guaranteed to be properly formatted
-([see API documentation](https://hscc4cfe8be7.docs.apiary.io)), so this should
-not be a problem. Additionally, you are only able to modify the election data of
+from the API is guaranteed to be properly formatted, so this should not be a
+problem. Additionally, you are only able to modify the election data of
 elections that were created with your
 [API key](https://hscc4cfe8be7.docs.apiary.io/#introduction/requesting-a-key).
 All other election data returned from the API is read-only.

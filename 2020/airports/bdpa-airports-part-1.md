@@ -2,11 +2,11 @@
 
 > See also: [API documentation](https://hsccdfbb7244.docs.apiary.io)
 
-With many airports in a tough spot financially these days, BDPA Airports, Inc.
-wishes to capitalize on the moment and expand their network of airport
-franchises into various cities. Your team has been contracted by BDPA Airports,
-Inc to build a secure web portal for clients to view and book flights arriving
-and departing from your local BDPA airport.
+With many airports in a tough spot financially, BDPA Airports, Inc. wishes to
+capitalize on the moment and expand their network of airport franchises into
+various cities. Your team has been contracted by BDPA Airports, Inc to build a
+secure web portal for clients to view and book flights arriving and departing
+from your local BDPA airport.
 
 <details><summary>Summary of requirements</summary>
 
