@@ -89,7 +89,7 @@ unique (i.e. there can only be one root user).
 list of all "recent" and future flights.**
 
 By "recent" we mean: flights will not show up in this view if their status is
-"past".
+`past`.
 
 The public flight view shows the following information **for both arriving and
 departing flights**:
@@ -100,19 +100,21 @@ departing flights**:
 - The flight number (e.g. UA1664)
 - The latest status of the flight
   - Possible statuses:
-    - past (completed flight)
-    - scheduled (future flight)
-    - cancelled
-    - delayed
-    - on time
-    - landed (but not at gate yet)
-    - arrived
-    - boarding
-    - departed (finished boarding, left airport)
-- If the flight is a departure:
-  - The latest gate information is also shown
-  - The name of the airport departing flights is departing to (e.g. CHI for BDPA
-    Chicago Airport)
+    - `past` (completed flight)
+    - `scheduled` (future flight)
+    - `cancelled`
+    - `delayed`
+    - `on time`
+    - `landed` (but not at gate yet)
+    - `arrived`
+    - `boarding`
+    - `departed` (finished boarding, left airport)
+
+And if the flight is specifically a departure:
+
+- The latest gate information is also shown
+- The name of the airport departing flights is departing to (e.g. CHI for BDPA
+  Chicago Airport)
 
 > Note: you'll have to decide how to handle displaying flight data for flights
 > that are not arriving/departing from your airport.
@@ -129,7 +131,7 @@ sends customers and guests to a flight booking view so they can book the flight
 they clicked on. However, **tickets can only be purchased if the flight is
 scheduled to depart in more than 24-hours from the time of booking**.
 
-> Warning: flights with status "past" will be deleted from the API after 7 days,
+> Warning: flights with status `past` will be deleted from the API after 7 days,
 > so ensure your solution does not rely on past flights existing perpetually.
 > Customers must still see a complete history of their past bookings where
 > appropriate.
@@ -363,26 +365,28 @@ Admins can also:
 accounts.**
 
 There is an open registration feature. Anyone can register for a new customer
-account. When they do, they must provide the following (asterisk means
-**required**):
+account. When they do, they must provide the following:
 
 - Title
-- First name\*
+- First name <sup>\<required\></sup>
 - Middle name
-- Last name\*
+- Last name <sup>\<required\></sup>
 - Suffix
-- Date of birth\* (month, day, year)
-- Sex\*
-- Street address\*, city\*, state\*, zip\*, country\*
+- Date of birth <sup>\<required\></sup> (month, day, year)
+- Sex <sup>\<required\></sup>
+- Street address <sup>\<required\></sup>, city <sup>\<required\></sup>, state
+  <sup>\<required\></sup>, zip <sup>\<required\></sup>, country
+  <sup>\<required\></sup>
 - Phone number
-- Email address\*
-- Password\*
+- Email address <sup>\<required\></sup>
+- Password <sup>\<required\></sup>
   - Password strength must be indicated as well. Weak passwords will be
-    rejected. A weak password is <=10 characters. A strong password is above 17
+    rejected. A weak password is ≤10 characters. A strong password is above 17
     characters.
-- At least three security questions\*
+- At least three security questions <sup>\<required\></sup>
   - The user inputs custom security questions and answers
-- The answer to a simple CAPTCHA challenge of some type\* (e.g. "what is 2+2=?")
+- The answer to a simple CAPTCHA challenge of some type <sup>\<required\></sup>
+  - Example: `what is 2+2=?`
   - You must not call out to any API for this, your team must make the CAPTCHA
 
 When admins create new accounts, they must provide at minimum **a first, middle,

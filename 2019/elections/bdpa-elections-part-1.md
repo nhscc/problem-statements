@@ -268,11 +268,11 @@ If a user (who has an email address associated with their account) has forgotten
 their login credentials, there should be some way for them to be recovered. This
 can be via sending the user an email, security questions, etc.
 
-> Note: Your system does not have to (and probably should not) send actual
+> Note: your system does not have to (and probably should not) send actual
 > emails. Log the recovery messages to standard output or a logging file
 > instead.
 
-> Note: The **only** requirement for a secure password is that it is
+> Note: the **only** requirement for a secure password is that it is
 > sufficiently long. 6-10 characters is weak. 11-16 is medium. 17+ is strong.
 > Passwords should at least be _medium_ security to pass.
 
@@ -286,7 +286,7 @@ website:
 - Username
 - Type
 
-> Note: Generally, usernames should not be associated with vote results. Protect
+> Note: generally, usernames should not be associated with vote results. Protect
 > your voters' identities!
 
 User information that no one other than its owner and an administrator can see
@@ -558,12 +558,11 @@ Chicken still has 4 votes, but now pizza has 6 votes. Since Pizza has more than
 
 ## Requirement 12
 
-**Somewhere in the UI of every\*\* view, the total number of elections in the
-system will always be visible.**
+**Somewhere in the UI of every<sup>1</sup> view, the total number of elections
+in the system will always be visible.**
 
-\*\*There are some arguable exceptions to this, such as the login page where a
-team might argue showing the total number of elections constitutes an
-information leak and should be avoided.
+<sup>1</sup>There are some exceptions to this, like the login page where showing
+the total number of elections would be a dangerous information leak.
 
 ## Requirement 13
 

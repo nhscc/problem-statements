@@ -15,20 +15,19 @@ There are 10 changes:
 
 There must be a new view accessible only to administrators that shows a list of
 all the times an election's information (specifically: `title`, `description`,
-`opens`, `closes`, `deleted`) was modified and by which administrator account.
+`opens`, `closes`, `deleted`) was modified by an administrator account.
 
 Further, administrators will be able to trigger a per-election "undo" which
-reverses the most recent change to an election's information (if any changes
-have been made). If an administrator triggers an "undo" and then triggers a
-second "undo" right after, it will redo the change that was undone with the
-first undo.
+reverses the most recent change to an election's information (if any admin
+changes have been made). If an administrator triggers an "undo" and then
+triggers a second "undo" right after, it will redo the change that was undone
+with the first undo.
 
 When triggering an undo, administrators will be warned that they're reversing an
 election's most recent changes and must be given the choice to cancel the
 operation before executing.
 
-> This change only applies to elections created by your API key. You do not have
-> to track changes or allow for "undos" of elections your team did not create.
+> This change only applies to elections created by your API key.
 
 ## Change 2
 
@@ -36,9 +35,8 @@ operation before executing.
 
 Users will be able to sort paginated elections by "popularity," which is defined
 here as "the total number of votes cast". That is: the most popular election is
-the election with the most voters having voted in it. How popular an election is
-is determined by how many voters voted in that election. Users will be able to
-sort the elections in the system by their popularity so that the most or least
+the election with the most voters having voted in it. Users will be able to sort
+the elections in the system by their popularity so that the most or least
 popular elections show up at the top of the list on demand.
 
 ## Change 3
@@ -151,7 +149,7 @@ Administrators can still create new accounts manually.
 
 The login and new registration views must be protected by a CAPTCHA of some
 kind. Do not use an external API like reCAPTCHA for this, you must build your
-own. It can be as simple (text-based like "1 plus 1 = ?") or as complex
+own. It can be as simple (text-based like `1 plus 1 = ?`) or as complex
 (image-based and fancy) as you can imagine so long as it is not trivial for a
 bot to defeat.
 
