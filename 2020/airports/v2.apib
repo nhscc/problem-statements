@@ -1,0 +1,748 @@
+FORMAT: 1A
+HOST: https://airports.api.hscc.bdpa.org/v2
+
+# BDPA Airports API (VERSION 2)
+
+> Version 1 documentation can be found [here](https://hsccdfbb7244.docs.apiary.io).
+
+Based on [simple REST
+principles](https://searchapparchitecture.techtarget.com/definition/RESTful-API),
+the BDPA Airports API returns JSON data responses to requests. This is the API
+used by teams and their apps for the 2020 BDPA National High School Computer
+Competition. It holds all of the airline and flight data teams' apps must
+interact with. The API is live and will ideally remain online indefinitely.
+
+The base address of BDPA Airports API is https://airports.api.hscc.bdpa.org/X
+where `X` is the version of the API you want to use (either `v1` or `v2`). Each
+version of the API provides a set of endpoints with their own unique path and
+requirements.
+
+[The source code behind the API is available on
+GitHub](https://github.com/nhscc/airports.api.hscc.bdpa.org). If you have any
+troubles, please open an issue there.
+
+## Migration Guide
+
+Changes between version 1 and version 2:
+
+- Two new metadata endpoints: `/info/all-extras` and `/info/seat-classes`
+- Deprecation of the following endpoints: `/flights/all`, `/flights/search`, and
+`/flights/with-ids`
+- A new unified `/flights` endpoint
+- The `seatPrice` key no longer exists in flight data returned by the API
+- The `baggage`, `ffms`, `seats`, `extras` keys now exist in flight data
+returned by the API
+
+The old `/flights/*` endpoints have been replaced with the new unified
+`/flights` endpoint. Any API calls using the deprecated endpoints need to be
+updated to use the new endpoint.
+
+All of the functionality of the old `/flights/*` endpoints is available using
+the new unified endpoint. The deprecated `/flights/all` can be emulated using
+`/flights` without query parameters. The deprecated `/flights/search` can be
+emulated using `/flights` directly with `match`, `regexMatch`, and `sort` query
+parameters. The deprecated `/flights/with-ids` endpoint can be emulated using
+`match` or `regexMatch` query parameters. [See
+examples](#/reference/0/flights-endpoint/flights-endpoint).
+
+Flight data has changed somewhat as well. The V2 API's flight objects do not
+give you a single seat price anymore. The `seatPrice` key/property no longer
+exists on the object. You should get the seat price from the type of seat chosen
+referencing the `seats` key. Similarly, baggage cost is no longer constant and
+can be calculated by referencing the `baggage` key. The price of the new
+"extras" are similarly available under the `extras` key. The frequent flier
+miles awarded for buying a seat on the flight is under the `ffms` key. [See data
+structures for new keys](#/data-structures).
+
+## Requesting a Key
+
+To access the majority of this API's endpoints requires a key. If your team
+wants a key, or needs to replace a lost or stolen key, please contact NHSCC
+staff through Slack or [open an issue on
+GitHub](https://github.com/nhscc/airports.api.hscc.bdpa.org).
+
+When you get your key, include it in your requests' header as `key:
+your-special-api-key-here` and you will be immediately authenticated into the
+system.
+
+## Rules of API Access
+
+1. Do not bombard the API with requests or you risk permanent IP/subnet ban.
+   **Limit your apps to no more than 10 requests per second per API key**. If
+   your app ends up sending too many requests over some time period, you'll get
+   a `HTTP 429` response along with a monotonically increasing soft ban
+   (starting at 15 minutes). Similarly, the size of requests is strictly
+   limited, so you must limit the amount of data you're sending. When you send a
+   request that is too large (>100KB), it will fail with a `HTTP 413` response.
+
+2. **Do not reveal your API key to anyone** not on your own team. It is how the
+   API identifies your team. Do not upload it to GitHub or leave it lying around
+   in your source code. Save it to a file and `.gitignore` it or save it to an
+   environment variable.
+
+3. Since the API is live, you might be able to see or interact
+   with content posted by other teams. If this is the case, please do not post
+   anything inappropriate.
+
+4. If you have a relevant feature request or you encounter any vulnerabilities,
+   errors, or other issues, don't hesitate to contact NHSCC staff via Slack or
+   [open an issue on
+   GitHub](https://github.com/nhscc/airports.api.hscc.bdpa.org). For significant
+   enough finds, bonus points may be awarded. On the other hand, abusing any
+   vulnerability or bug may result in disqualification.
+
+5. **The API was built to randomly return errors every so often**. That means
+   your app must be prepared to deal with `HTTP 555` and other bad responses.
+   However, if you're consistently getting `HTTP 5xx` errors back to back, then
+   something is wrong. Please report this if it happens.
+
+6. All responses are raw JSON. All request payloads must be sent as raw JSON.
+   `JSON.stringify()` and `JSON.parse()` or whatever language equivalent is
+   available to you is your friend!
+
+## Request Methods
+
+This API is based on [simple REST
+principles](https://searchapparchitecture.techtarget.com/definition/RESTful-API).
+Resources are accessed via standard HTTPS requests in UTF-8 format to an API
+endpoint. This API understands the following HTTP request methods:
+
+| METHOD | MEANING |
+|-----   |-----    |
+| GET    | Return data about something |
+| POST   | Create something new        |
+| PUT    | Modify something            |
+| DELETE | Delete something            |
+
+## Rate Limits
+
+As said earlier, do not bombard the API with requests. If you do, the API will
+soft ban you for fifteen minutes the first time before accepting requests from
+your API key or IP address again. Each following time this happens within a
+certain period, your ban time will quadruple.
+
+So **limit your apps to no more than 10 requests per second per API key**. You
+know you've been soft banned if you receive an `HTTP 429` response. Check the
+JSON response for the `retryAfter` key, which holds a number representing how
+long your API key and/or IP are banned from making further requests (in
+milliseconds).
+
+## Pagination
+
+Endpoints that might return a lot of data are paginated (via [range
+queries](https://en.wikipedia.org/wiki/Range_query_(database))). Such endpoints
+optionally accept an `after` parameter, which is a `flight_id` that determines
+which item is returned first (the first item will be the first `flight_id` that
+comes *after* the `after` `flight_id`). Hence, `after`s are special strings and
+not numbers. Omitting the `after` parameter returns the first 100 flights in the
+system in ascending order.
+
+For example, given the following dataset and an API with a default result size
+(or "page" size) of 3:
+
+```JavaScript
+[
+    { item_id: 0xabc123, name: 'Item 1 name' },
+    { item_id: 0xabc124, name: 'Item 2 name' },
+    { item_id: 0xabc125, name: 'Item 3 name' },
+    { item_id: 0xabc126, name: 'Item 4 name' },
+    { item_id: 0xabc127, name: 'Item 5 name' },
+]
+```
+
+Suppose we issued the following requests to an API:
+
+`/api?after=0xabc123`: responds with a list of 3 items: *0xabc124* through *0xabc126*  
+`/api?after=0xabcXYZ`: responds with a list of 0 items since `item_id` *0xabcXYZ* doesn't exist  
+`/api?after=0xabc124`: responds with a list of 3 items: *0xabc125* through *0xabc127*  
+`/api?after=0xabc127`: responds with a list of 0 items since there is nothing after *0xabc127*  
+`/api?after=0xabc125`: responds with a list of 2 items: *0xabc126* and *0xabc127*  
+
+## Status Codes
+
+This API will issue responses with one of the following status codes:
+
+| STATUS | MEANING |
+|-----   |-----    |
+| 200    | Your request completed successfully. |
+| 400    | Your request was malformed or otherwise bad. Check the requirements. |
+| 401    | Session is not authenticated. Put your API key in the header! |
+| 403    | Session is not authorized. You tried to do something you can't do. |
+| 404    | The resource (or endpoint) was not found. Check your syntax. |
+| 405    | Bad method. The endpoint does not support your request's method. |
+| 413    | Your request was too large and was dropped. Max body size is 100KB. |
+| 429    | You've been rate limited. Try your request again after a few minutes. |
+| 5xx    | Something happened on the server that is outside your control. |
+
+## Response Schema
+
+All responses issued by the API will follow one of the two following schemas.
+
+### Success Schema
+
+When a request you've issued succeeds, the response will look like the
+following:
+
+```json
+{
+    "success": "true",
+    // any other data you requested
+}
+```
+
+Note that all time data is represented as the number of milliseconds elapsed
+since January 1, 1970 00:00:00 UTC, or the same thing that is returned by
+JavaScript's `Date.now()` method.
+
+### Error Schema
+
+When a request you've issued fails, along with the non-200 status code, the
+response will look like the following:
+
+```json
+{
+    "error": "an error message describing what went wrong",
+    // any other relevant data (like retryAfter)
+}
+```
+
+## CORS Support
+
+The API has full support for Cross Origin Resource Sharing (CORS) for AJAX requests.
+
+## Tips for Debugging
+
+- Are you using the right method?
+- Use this documentation (click "see example," then click "Try console") or use [Postman](https://www.postman.com/) to play with the API.
+- Expect a raw JSON response body that you must parse manually, not raw text or something else.
+- Are you sending properly formatted JSON payloads in your request body when necessary?
+- Try outputting to stdout, use `console.log`, or output to some log file when API requests are made and responses received.
+- All time data is represented as [the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now).
+- Are you sending the correct headers? You need to specify the `key: your-special-api-key-here` header for all requests and the `'content-type': 'application/json'` header when making POST and PUT requests.
+- Are you [encoding your URI components](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) properly, especially when you're trying to send the API [JSON objects](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON) via [GET request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods)?
+
+## Globally Unique IDs
+
+To retrieve data about one or more flights, you must know that flight's
+`flight_id`. These IDs are globally unique within the API. That is: no two
+flights will ever have the same ID in any instance. Use this fact to your
+advantage.
+
+## Metadata Endpoints [/info]
+
+These endpoints deal with summary metadata about the system.
+
+### /airlines Endpoint [GET /info/airlines]
+
+Returns a list of all airlines in the system including their code prefix, which
+is the first letter in the flight number of all their flights.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + airlines (array[Airline]) - A list of the airlines currently active in the system.
+
+    + Body
+
+            {
+                "airlines": [
+                    {
+                        "name": "Delta",
+                        "codePrefix": "D"
+                    },
+                    {
+                        "name": "American",
+                        "codePrefix": "A"
+                    },
+                    {
+                        "name": "United",
+                        "codePrefix": "U"
+                    },
+                    {
+                        "name": "Southwest",
+                        "codePrefix": "S"
+                    },
+                    {
+                        "name": "Frontier",
+                        "codePrefix": "F"
+                    },
+                    {
+                        "name": "Spirit",
+                        "codePrefix": "P"
+                    }
+                ],
+                "success": true
+            }
+
+### /airports Endpoint [GET /info/airports]
+
+Returns a list of all airports in the system along with their locations and
+three-letter short names.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + airports (array[Airport]) - A list of the airports currently active in the system.
+    + Body
+
+            {
+                "airports": [
+                    {
+                        "name": "First Chapter Airport",
+                        "shortName": "F1A",
+                        "city": "Los Angeles",
+                        "state": "CA",
+                        "country": "USA"
+                    },
+                    {
+                        "name": "Second Chapter Airport",
+                        "shortName": "SCA",
+                        "city": "Chicago",
+                        "state": "IL",
+                        "country": "USA"
+                    },
+                    {
+                        "name": "Third Chapter Airport",
+                        "shortName": "TC3",
+                        "city": "New York",
+                        "state": "NY",
+                        "country": "USA"
+                    },
+                    {
+                        "name": "Fourth Chapter Airport",
+                        "shortName": "CHF",
+                        "city": "Atlanta",
+                        "state": "GA",
+                        "country": "USA"
+                    }
+                ],
+                "success": true
+            }
+
+### /all-extras Endpoint [GET /info/all-extras]
+
+Returns a list of all possible in-flight extras in the system.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + extras (array[string]) - A list of the names all [extras](#/data-structures/0/extra-item) available for purchase.
+
+    + Body
+
+            {
+                "extras": [ "extra #1", "extra #2", "extra #3" ],
+                "success": true
+            }
+
+### /no-fly-list Endpoint [GET /info/no-fly-list]
+
+Returns a list of objects with (name, sex, birthdate) pairs representing
+passengers that should not be able to book any flight.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + noFlyList (array[NoFlyListEntry]) - A list of people who, if their passenger information matches one of the entries, should not be allowed to book a flight.
+
+    + Body
+
+            {
+                "noFlyList": [
+                    {
+                        "name": {
+                            "first": "Donald",
+                            "middle": "John",
+                            "last": "Trump"
+                        },
+                        "sex": "male",
+                        "birthdate": {
+                            "day": 14,
+                            "month": 6,
+                            "year": 1946
+                        }
+                    },
+                    {
+                        "name": {
+                            "first": "Restricted",
+                            "middle": "User",
+                            "last": "Flier"
+                        },
+                        "sex": "male",
+                        "birthdate": {
+                            "day": 25,
+                            "month": 12,
+                            "year": 1985
+                        }
+                    }
+                ],
+                "success": true
+            }
+
+### /seat-classes Endpoint [GET /info/seat-classes]
+
+Returns a list of all possible types of seats that can be booked.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + seats (array[string]) - A list of the names of [seat types](#/data-structures/0/seat-type) available for purchase.
+
+    + Body
+
+            {
+                "seats": [ "seat-type-1", "seat-type-2", "seat-type-3" ],
+                "success": true
+            }
+
+## Flights Endpoint [/flights{?after,match,regexMatch,sort}]
+
+### /flights Endpoint [GET]
+
+With this endpoint you can search through all flight data in the system.
+
+Without any parameters, it returns all flights in the system in ascending order (oldest first). Returns at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`. Other available parameters are: `match`, `regexMatch`, and `sort`. `sort` can be either `asc` or `desc` and determines the sort order (sorted by creation timestamp) of the flights returned from the API.
+
+Note that the values of `match` and `regexMatch` **must be [URI encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) [JSON objects](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON)**! If they aren't, you'll receive an error.
+
+Examples:
+
+Suppose you want to *match* all the flights that have a status of `"cancelled"`.
+
+1. Come up with the JSON object to describe your query:
+
+```JavaScript
+var myQueryObject = { "status": "cancelled" }
+```
+
+2. Stringify the JSON object and then URI encode it in whatever language you're using.
+
+```JavaScript
+var myQuery = encodeURIComponent(JSON.stringify(myQueryObject))
+```
+
+3. Add the stringified JSON to your request URL and send it
+
+```JavaScript
+var myURL = "https://airports.api.hscc.bdpa.org/v2/flights?match=" + myQuery
+
+sendRequestToAPI(myURL)
+```
+
+You can also use `match` queries to search for flights with numbers greater than or less than some other number:
+
+```JavaScript
+var myQueryObject = { "ffms": { "$gt": 5000 } }
+```
+
+This means "return all the flights that award more than 5000 frequent flier miles". Along with `"$gt"` for "greater than," there's also `"$gte"` for "greater than or equal to," `"$lt"` for "less than," and `"$lte"` for "less than or equal to". If you've used MongoDB before, these should look familiar.
+
+Note that any `match` filters are applied **in a case sensitive manner**, meaning `"united"` won't match `"United"`, so watch out! If you want case-insensitive searching or you're an otherwise advanced programmer, you can use Regular Expressions via `regexMatch`. Unlike `match`, `regexMatch` does not allow for less than/greater than queries.
+
+For example, if you wanted to find all the *Delta flights* (`match`) that are *currently on the ground* (`regexMatch`) at *`"ATL"` airport* (`match` again) but *only at a gate that begins with A* (`regexMatch` again) with *the most recent flights appearing first* (`sort`), you could use the following:
+
+```JavaScript
+var myNormalQueryObject = { "airline": "Delta", "landingAt": "ATL" }
+var myRegexQueryObject = { "gate": "^A", "status": "landed|arrived|boarding" }
+
+var myNormalQuery = encodeURIComponent(JSON.stringify(myNormalQueryObject))
+var myRegexQuery = encodeURIComponent(JSON.stringify(myRegexQueryObject))
+
+var myURL = "https://airports.api.hscc.bdpa.org/v2/flights?match=" + myNormalQuery + "&regexMatch=" + myRegexQuery + "sort=desc"
+
+sendRequestToAPI(myURL)
+```
+
+> Note: you can search by `flight_id` using `regexMatch` and the `|` operator, achieving similar functionality to the old `/flights/with-ids` endpoint; i.e. `{ "flight_id": "5f04f0607a927fab9cfbddfd|5f04f0607a927fab9cfbddfe" }`. Note that no regex operators other than `|` will work when searching by `flight_id`!
+
+> Notice: when testing using this Apiary documentation, they are nice enough to handle the URI encode and JSON stringify steps for you! All you have to do is type in a proper JSON object for the request to succeed. You can even copy and paste the `myXQueryObject`s from the examples above directly into the Try Console! Try it out by clicking "See an example" and then "Try console".
+
++ Parameters
+    + after (optional, flight_id) - <span style="color: gray">[optional]</span> Return only those flights that occur *after* `flight_id` in the result list.
+    + match (optional, string) - <span style="color: gray">[optional]</span> A URI encoded JSON object describing the flight properties you're looking for. Case sensitive. Can also do greater than/less than queries as well. **If you're using the Apiary Try Console, you do not have to URI encode or stringify the JSON object, just type it in directly!**
+    + regexMatch (optional, string) - <span style="color: gray">[optional]</span> A URI encoded JSON object describing the flight properties that you're looking for. Case-*insensitive* regular expressions can be used here. You **cannot** do greater than/less than queries and **all regexes must be strings** (no numbers). **If you're using the Apiary Try Console, you do not have to URI encode or stringify the JSON object, just type it in directly!**
+    + sort (optional, string) - <span style="color: gray">[optional]</span> Determines the sort order. Possible values are: `asc` or `desc`.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + flights (array[Flight]) - A list of flight objects. Empty if there are no flights left to show or your search query returned no results.
+
+    + Body
+
+            {
+                "success": true,
+                "flights": [
+                    {
+                        "type": "departure",
+                        "airline": "Delta",
+                        "comingFrom": "SCA",
+                        "landingAt": "CHF",
+                        "departingTo": "F1A",
+                        "flightNumber": "D1759",
+                        "flight_id": "5f04f0607a927fab9cfbddfd",
+                        "bookable": false,
+                        "arriveAtReceiver": 1594160038503,
+                        "departFromSender": 1594151700108,
+                        "departFromReceiver": 1594160938503,
+                        "status": "past",
+                        "gate": null,
+                        "baggage": {
+                          "checked": {
+                            "max": 8,
+                            "prices": [
+                              52,
+                              61,
+                              113,
+                              214,
+                              386,
+                              693,
+                              1088,
+                              1841
+                            ]
+                          },
+                          "carry": {
+                            "max": 4,
+                            "prices": [
+                              2,
+                              3,
+                              3,
+                              6
+                            ]
+                          }
+                        },
+                        "ffms": 4304,
+                        "seats": {
+                          "economy": {
+                            "total": 63,
+                            "priceDollars": 112.78,
+                            "priceFfms": 9914
+                          },
+                          "exit row": {
+                            "total": 14,
+                            "priceDollars": 201.04,
+                            "priceFfms": 12868
+                          },
+                          "economy plus": {
+                            "total": 12,
+                            "priceDollars": 365.67,
+                            "priceFfms": 13666
+                          },
+                          "first class": {
+                            "total": 11,
+                            "priceDollars": 729.94,
+                            "priceFfms": 16852
+                          }
+                        },
+                        "extras": {
+                          "blanket": {
+                            "priceDollars": 2.98,
+                            "priceFfms": 133
+                          },
+                          "headphones": {
+                            "priceDollars": 6.5600000000000005,
+                            "priceFfms": 203
+                          },
+                          "wifi": {
+                            "priceDollars": 14.54,
+                            "priceFfms": 322
+                          },
+                          "extra food": {
+                            "priceDollars": 27.69,
+                            "priceFfms": 612
+                          }
+                        }
+                    },
+                    {
+                        "type": "arrival",
+                        "airline": "Spirit",
+                        "comingFrom": "SCA",
+                        "landingAt": "CHF",
+                        "departingTo": null,
+                        "flightNumber": "P9573",
+                        "flight_id": "5f04f0607a927fab9cfbddfe",
+                        "bookable": false,
+                        "arriveAtReceiver": 1594161359678,
+                        "departFromSender": 1594149044209,
+                        "departFromReceiver": null,
+                        "status": "cancelled",
+                        "gate": null,
+                        "baggage": {
+                          "checked": {
+                            "max": 8,
+                            "prices": [
+                              52,
+                              61,
+                              113,
+                              214,
+                              386,
+                              693,
+                              1088,
+                              1841
+                            ]
+                          },
+                          "carry": {
+                            "max": 4,
+                            "prices": [
+                              2,
+                              3,
+                              3,
+                              6
+                            ]
+                          }
+                        },
+                        "ffms": 5430,
+                        "seats": {
+                          "economy": {
+                            "total": 63,
+                            "priceDollars": 112.78,
+                            "priceFfms": 9914
+                          },
+                          "exit row": {
+                            "total": 14,
+                            "priceDollars": 201.04,
+                            "priceFfms": 12868
+                          },
+                          "economy plus": {
+                            "total": 12,
+                            "priceDollars": 365.67,
+                            "priceFfms": 13666
+                          },
+                          "first class": {
+                            "total": 11,
+                            "priceDollars": 729.94,
+                            "priceFfms": 16852
+                          }
+                        },
+                        "extras": {
+                          "blanket": {
+                            "priceDollars": 2.98,
+                            "priceFfms": 133
+                          },
+                          "headphones": {
+                            "priceDollars": 6.5600000000000005,
+                            "priceFfms": 203
+                          },
+                          "wifi": {
+                            "priceDollars": 14.54,
+                            "priceFfms": 322
+                          },
+                          "extra food": {
+                            "priceDollars": 27.69,
+                            "priceFfms": 612
+                          }
+                        }
+                    }
+                ]
+            }
+
+## Data Structures
+
+### Flight (object)
+
++ flight_id (string) - A unique immutable MongoDB ID representing the flight. Generated automatically by the server. Example: `5ec8adf06e38137ff2e58769`.
++ type (string) - The type of flight. Flights can either be an `"arrival"` or a `"departure"`.
++ airline (string) - The airline that owns this flight. For example: `"Delta"`
++ comingFrom (string) - The `shortName` of the airport this plane is flying in from. Example: `"ATL"`.
++ landingAt (string) - The `shortName` of the airport this plane is currently flying to. Example: `"MDW"`.
++ departingTo (string) - The `shortName` of the airport this plane will depart to afterwards. If `type="arrival"` then this will always be `null` since this flight isn't departing after landing. Example: `"LAX"`.
++ flightNumber (string) - The unique flight code given to this plane by its airline. For example: `"U5946"`
++ departFromSender (number) - When this flight took off from the `comingFrom` airport [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server. Guaranteed to be smaller than `arriveAtReceiver`. Example: `1579345900650`.
++ arriveAtReceiver (number) - When this flight will arrive at the `landingAt` airport [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server. Guaranteed to be smaller than `departFromReceiver`. Example: `1579345900650`.
++ departFromReceiver (number) - When this flight will depart from the `landingAt` airport [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now) and start flying towards `departingTo`. Generated automatically by the server. Example: `1579345900650`.
++ status (string) - The current status of this flight. Possible values are: `"past"`, `"scheduled"`, `"cancelled"`, `"delayed"`, `"on time"`, `"landed"`, `"arrived"`, `"boarding"`, and `"departed"`.
++ gate (string) - A string representing the gate this plane is currently docked at or `null` if there is no gate determination. Example: `"C17"`.
++ bookable (boolean) - `true` if this flight is landing at your team's airport (and so you should allow people to book tickets for it), otherwise `false`.
++ baggage (object) - An object where the keys are the names of the bag type and the values are [BaggageType](#/data-structures/0/baggage-type) objects containing the maximum number of bags that can be brought by a single passenger and how much it costs to bring X bags.
++ ffms (number) - The number of Frequent Flier Miles that are awarded to a user when they book a ticket on this flight. Example: `4456`.
++ seats (object) - An object where the keys are the names of the seat type and the values are [SeatType](#/data-structures/0/seat-type) objects containing how many seats of that type are available and how much each costs both in dollars and frequent flier miles.
++ extras (object) - An object where the keys are the names of the item and the values are [ExtraItem](#/data-structures/0/extra-item) objects containing how much each item costs both in dollars and frequent flier miles.
+
+### Airport (object)
+
++ name (string) - The full name of this airport. Example: `"BDPA Chicago Airport"`.
++ shortName (string) - The three letter "short name" of this airport. Example: `"ORD"`.
++ city (string) - The city in which this airport resides. Example: `"Chicago"`.
++ state (string) - The state in which this airport resides. Example: `"IL"`.
++ country (string) - The country in which this airport resides. Example: `"USA"`.
+
+### Airline (object)
+
++ name (string) - The name of this airline. Example: `"United"`.
++ codePrefix (string) - A letter prefixed to the flight numbers of all planes owned by this airline. Example: `"U"`.
+
+### NoFlyListEntry (object)
+
++ name (object) - A first, middle, and last name. Example: `{ "first": "Restricted", "middle": "User", "last": "Person" }`.
++ sex (string) - Either `"male"` or `"female"` (we're not concerned with gender here)
++ birthdate (object) - A day, month, and year. Example: `{ "day": 14, "month": 6, "year": 1946 }`.
+
+### BaggageType (object)
+
++ max (number) - The maximum number of this type of bag that can be brought by a single passenger. Example: `8`.
++ prices (array[number]) - A list representing the price of bringing X bags on the flight. For example: if someone wants to bring 5 bags, the price is the sum of the 1st through 5th elements (indices 0 through 4) in the `prices` array. Example: `[ 52, 61, 113, 214, 386, 693, 1088, 1841 ]` (and `max = 8` in this example), so bringing 2 bags costs `52 + 61 = $113`
+
+### SeatType (object)
+
++ total (number) - The total number of this type of seat available on this flight. Example: `66`.
++ priceDollars (number) - The price of this type of seat in dollars. Example: `543.66`.
++ priceFfms (number) - The price of this type of seat in frequent flier miles. Example: `30455`.
+
+### ExtraItem (object)
+
++ priceDollars (number) - The price of this item in dollars. Example: `5.50`.
++ priceFfms (number) - The price of this item in frequent flier miles. Example: `720`.
