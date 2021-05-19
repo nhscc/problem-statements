@@ -37,12 +37,12 @@ database storing some data and using the API to retrieve other data.
 
 ## Requirement 1
 
-**Your app will support 3 types for users: <span style="text-decoration:
+**Your app will support 3 types of users: <span style="text-decoration:
 underline">guest</span>, <span style="text-decoration:
 underline">customer</span>, and <span style="text-decoration:
 underline">admin</span>.**
 
-**Guests**
+### Guests
 
 - Are unauthenticated users (i.e. don't have to login)
 - Can view, search, and sort through a complete paginated listing of recent and
@@ -59,7 +59,7 @@ underline">admin</span>.**
 - Can view any flight's information
 - Can create a new customer account
 
-**Customer**
+### Customer
 
 - Are authenticated users (i.e. must login)
 - Can do everything a guest type user can do (except create a new account)
@@ -67,7 +67,7 @@ underline">admin</span>.**
 - Can delete their account
 - Can view a complete paginated listing of flights they've booked
 
-**Admins**
+### Admins
 
 - Are authenticated users (i.e. must login)
 - Can access the administration view

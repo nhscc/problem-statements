@@ -59,7 +59,7 @@ view their own dashboard and a history of past elections (below).
 
 ## Requirement 2
 
-**The system will support 4 types for users: <span style="text-decoration:
+**The system will support 4 types of users: <span style="text-decoration:
 underline">voter</span>, <span style="text-decoration:
 underline">moderator</span>, <span style="text-decoration:
 underline">administrator</span>, and <span style="text-decoration:
