@@ -541,8 +541,7 @@ second or so, your solution will lose points.
 
 ## Requirement 15
 
-**The front-end UI will be responsive to mobile, tablet, and desktop
-viewports.**
+**The frontend UI will be responsive to mobile, tablet, and desktop viewports.**
 
 The solution will be viewed on a smartphone, tablet, and a desktop viewport. The
 design and functionality will not "break" across these viewports nor will the
