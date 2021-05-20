@@ -15,12 +15,10 @@ Your system will consist of a web portal where, _only \_after logging in_,\_
 users can view the results of past elections and vote in current elections. You
 must query election data by making REST requests to the
 [elections API](https://hscc4cfe8be7.docs.apiary.io). **Note that your app must
-be able to display the election data from other chapters,
-<span style="text-decoration:
-underline">including the results of elections</span>**. Any data you get back
-from the API is guaranteed to be properly formatted, so this should not be a
-problem. Additionally, you are only able to modify the election data of
-elections that were created with your
+be able to display the election data from other chapters, including the results
+of elections**. Any data you get back from the API is guaranteed to be properly
+formatted, so this should not be a problem. Additionally, you are only able to
+modify the election data of elections that were created with your
 [API key](https://hscc4cfe8be7.docs.apiary.io/#introduction/requesting-a-key).
 All other election data returned from the API is read-only.
 
@@ -59,11 +57,8 @@ view their own dashboard and a history of past elections (below).
 
 ## Requirement 2
 
-**The system will support 4 types of users: <span style="text-decoration:
-underline">voter</span>, <span style="text-decoration:
-underline">moderator</span>, <span style="text-decoration:
-underline">administrator</span>, and <span style="text-decoration:
-underline">reporter</span>.**
+**The system will support 4 types of users: voter, moderator, administrator, and
+reporter.**
 
 **Voters**
 
@@ -206,7 +201,7 @@ frontend UI, they will be sorted in ascending order by their opening time
 displaying past elections, they will be sorted in descending order by their
 closing time (elections that have closed later in time are shown first).
 
-**<span style="text-decoration: underline">For voters</span>**
+**For voters**
 
 The dashboard will show:
 
@@ -214,7 +209,7 @@ The dashboard will show:
 - _Closed_ elections they were eligible to participate in
 - _Upcoming_ elections they're eligible to participate in
 
-**<span style="text-decoration: underline">For moderators</span>**
+**For moderators**
 
 The dashboard will show:
 
@@ -222,7 +217,7 @@ The dashboard will show:
 - Moderators will be able to add a user to an election or remove a user from an
   election
 
-**<span style="text-decoration: underline">For administrators</span>**
+**For administrators**
 
 - Along with the controls moderators have, the dashboard will allow
   administrators to view and modify users and elections in the system
@@ -230,8 +225,8 @@ The dashboard will show:
 ## Requirement 5
 
 **History: each user can view a complete history of past elections that can be
-sorted by <span style="text-decoration: underline">at least</span> the
-following: title, creation time, opening time, closing time.**
+sorted by at least the following: title, creation time, opening time, closing
+time.**
 
 > Other useful metrics might include allowing users to sort elections by
 > ownership (i.e. only showing elections created by your app and not others),
@@ -336,7 +331,7 @@ change.
 ## Requirement 10
 
 **All results and lists of items displayed in the frontend UI will be paginated
-<span style="text-decoration: underline">where appropriate</span>.**
+where appropriate.**
 
 [Pagination](https://www.smashingmagazine.com/2007/11/pagination-gallery-examples-and-good-practices/)
 is the strategy of showing a limited number of a large set of results and
@@ -344,13 +339,13 @@ providing a navigation element where users can switch to different "pages" of
 that large set.
 
 A Google search result (which has multiple pages) is a good example of
-pagination. Facebook's infinity-scroll feature is another good example.
+pagination. Facebook's infinite scroll feature is another good example.
 
 ## Requirement 11
 
-**When voting in an election, a voter <span style="text-decoration:
-underline">must rank all choices</span> in order of preference. When an election
-closes, the winner is determined via Instant-Runoff Voting.**
+**When voting in an election, a voter must rank all choices in order of
+preference. When an election closes, the winner is determined via Instant-Runoff
+Voting.**
 
 When an eligible voter votes in an
 [Instant-Runoff Voting](https://courses.lumenlearning.com/waymakermath4libarts/chapter/instant-runoff-voting)
@@ -372,9 +367,8 @@ IRV algorithm:
 
 For example, suppose an administrator created an election titled _What should we
 eat after the competition_? The administrator adds three choices to vote for:
-pizza, chicken, and tacos. Further suppose there were <span
-style="text-decoration: underline">10</span> eligible voters. Voter 1 ranks the
-choices according to their tastes:
+pizza, chicken, and tacos. Further suppose there were 10 eligible voters. Voter
+1 ranks the choices according to their tastes:
 
 <table>
     <tr>
@@ -402,9 +396,8 @@ Clearly, voter 1's favorite choice is Pizza, their second favorite is Tacos, and
 their least favorite is Chicken.
 
 The other nine voters come up with their own ranks for the choices as well.
-Since many of them voted similarly to each other, the <span
-style="text-decoration: underline">10</span> different voters' rankings can be
-summarized as the following:
+Since many of them voted similarly to each other, the 10 different voters'
+rankings can be summarized as the following:
 
 <table>
     <tr>

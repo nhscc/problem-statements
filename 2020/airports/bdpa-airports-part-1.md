@@ -37,10 +37,7 @@ database storing some data and using the API to retrieve other data.
 
 ## Requirement 1
 
-**Your app will support 3 types of users: <span style="text-decoration:
-underline">guest</span>, <span style="text-decoration:
-underline">customer</span>, and <span style="text-decoration:
-underline">admin</span>.**
+**Your app will support 3 types of users: guest, customer, and admin.**
 
 ### Guests
 
@@ -464,7 +461,7 @@ use security questions to recover their account.
 ## Requirement 11
 
 **All views displaying flight/ticket information will ensure that information
-updates <span style="text-decoration: underline">asynchronously</span>.**
+updates asynchronously.**
 
 Whenever a flight's information in
 [the API](https://hsccdfbb7244.docs.apiary.io) (or your database) changes, the
@@ -493,7 +490,7 @@ updates.
 ## Requirement 12
 
 **All results and lists of items displayed in the frontend UI will be paginated
-<span style="text-decoration: underline">where appropriate</span>.**
+where appropriate.**
 
 [Pagination](https://www.smashingmagazine.com/2007/11/pagination-gallery-examples-and-good-practices/)
 is the strategy of showing a limited number of a large set of results and
@@ -501,7 +498,7 @@ providing a navigation element where users can switch to different "pages" of
 that large set.
 
 A Google search result (which has multiple pages) is a good example of
-pagination. Instagram's infinity-scroll feature is another good example.
+pagination. Instagram's infinite scroll feature is another good example.
 
 ## Requirement 13
 
