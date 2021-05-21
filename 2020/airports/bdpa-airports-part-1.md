@@ -498,27 +498,35 @@ pagination. Instagram's infinite scroll feature is another good example.
 
 ## Requirement 13
 
-**Security: no XSS, SQL injection, or related security vulnerabilities.**
+**Security: no [XSS](https://owasp.org/www-community/attacks/xss),
+[SQLI](https://owasp.org/www-community/attacks/SQL_Injection),
+[insecure database](https://haveibeenpwned.com), or
+[other trivial security vulnerabilities](https://owasp.org/www-project-top-ten).**
 
-Ensure that you use up to date libraries and programming practices that protect
-your solution from common XSS, SQL injection, and related security
-vulnerabilities. Specifically: form inputs and the like must not be vulnerable
-to SQL injection attacks. User-generated outputs will not be vulnerable to XSS
-or similar attacks.
+The app will use modern software engineering practices that protect from common
+[XSS](https://owasp.org/www-community/attacks/xss),
+[SQL injection](https://owasp.org/www-community/attacks/SQL_Injection), and
+[other security vulnerabilities](https://owasp.org/www-project-top-ten).
+Specifically: **form inputs** and the like **will not be vulnerable to SQL
+injection attacks. User-generated outputs will not be vulnerable to XSS or
+similar attacks.**
 
-Advanced security features and/or considerations, CSRF/token protection, CORS
-protection, inability to use GET requests to modify internal data, and other
-security best practices are not required but will be looked upon _very_
-favorably if present.
+As for database security, any passwords present in the database must be
+[hashed](https://auth0.com/blog/hashing-passwords-one-way-road-to-security)
+(**not** encrypted). We recommend using a
+[salted SHA-256 hash construction](https://auth0.com/blog/adding-salt-to-hashing-a-better-way-to-store-passwords)
+or something similar. You don't need to do anything fancy.
+[There](https://nakedsecurity.sophos.com/2013/11/20/serious-security-how-to-store-your-users-passwords-safely)
+[are](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
+[many](https://www.vaadata.com/blog/how-to-securely-store-passwords-in-database)
+[tutorials](https://dev.to/kmistele/how-to-securely-hash-and-store-passwords-in-your-next-application-4e2f)
+for how to safely store passwords and other credentials in a database.
 
-As for database security, any passwords present in the database must be hashed
-(or encrypted). We recommend using a
-[salted SHA-256 hash construction](https://auth0.com/blog/adding-salt-to-hashing-a-better-way-to-store-passwords/)
-or something similar. Passwords stored in your database in clear-text (or simply
-re-encoded, like with base64) will cause your solution to lose points.
-
-> You know you've dramatically increased the security of your database when even
-> the admins and DBAs can never see raw passwords!
+> Passwords stored in your database in
+> [cleartext](https://simple.wikipedia.org/wiki/Cleartext), hashed incorrectly,
+> or re-encoded (e.g. with
+> [base64](https://base64.guru/blog/base64-encryption-is-a-lie)) will earn your
+> team zero points for this requirement.
 
 ## Requirement 14
 
