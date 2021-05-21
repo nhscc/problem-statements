@@ -35,6 +35,9 @@ database storing some data and using the API to retrieve other data.
 
 </details>
 
+> We're looking for feedback! If you have any opinions or ideas,
+> [start a discussion](https://github.com/nhscc/problem-statements/discussions/new).
+
 ## Requirement 1
 
 **Your app will support 3 types of users: guest, customer, and admin.**

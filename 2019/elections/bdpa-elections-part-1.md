@@ -46,6 +46,9 @@ elections.
 
 </details>
 
+> We're looking for feedback! If you have any opinions or ideas,
+> [start a discussion](https://github.com/nhscc/problem-statements/discussions/new).
+
 ## Requirement 1
 
 **Login: a user must authenticate before they can access the system.**
