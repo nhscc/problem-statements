@@ -436,15 +436,19 @@ the No Fly List, which can be queried using the API.
 
 If the name, birthdate, and sex match a passenger's info, they should be denied.
 This should happen even if the passenger's information is in a different case
-(i.e. they spell their name in all caps).
+(i.e. they spell their name in ALL CAPS).
 
-> To test the No Fly List, you can use the following passenger information: name
-> (first middle last): Restricted User Flier; birthdate (day, month, year): 25,
-> 12, 1985; sex: male. This passenger will always exist in the No Fly List and
-> should be denied the ability to book flights when encountered.
+To test the No Fly List, you can use the following passenger information:
 
-> The passenger flying is different than the customer account. A customer can
-> buy a ticket for a different person.
+- **name** (first middle last): Restricted User Flier
+- **birthdate** (day, month, year): 25, 12, 1985
+- **sex**: male
+
+This passenger will always exist in the No Fly List and should be denied the
+ability to book flights when encountered.
+
+> Keep in mind the passenger flying is different than the customer account. A
+> customer can buy a ticket for a different person.
 
 ## Requirement 10
 
@@ -452,8 +456,8 @@ This should happen even if the passenger's information is in a different case
 questions to recover their account.**
 
 If a customer has forgotten their login credentials, they will be able to
-recover their account using their security questions. Admins and others cannot
-use security questions to recover their account.
+recover their account using their security questions. Admins and others
+**cannot** use security questions to recover their account.
 
 ## Requirement 11
 
@@ -488,13 +492,14 @@ updates.
 **Results and lists of items displayed in the frontend UI will be paginated
 where appropriate.**
 
-[Pagination](https://www.smashingmagazine.com/2007/11/pagination-gallery-examples-and-good-practices/)
+[Pagination](https://www.smashingmagazine.com/2007/11/pagination-gallery-examples-and-good-practices)
 is the strategy of showing a limited number of a large set of results and
 providing a navigation element where users can switch to different "pages" of
-that large set.
-
-A Google search result (which has multiple pages) is a good example of
-pagination. Instagram's infinite scroll feature is another good example.
+that large set. A Google search result (which has multiple pages) is a good
+example of pagination.
+[Infinite scroll](https://infinite-scroll.com/demo/full-page), a specific
+pagination implementation used by the likes of Facebook/Instagram and Twitter,
+is another good example.
 
 ## Requirement 13
 
@@ -530,24 +535,33 @@ for how to safely store passwords and other credentials in a database.
 
 ## Requirement 14
 
-**Your app will fail gracefully when exceptional conditions are encountered.**
+**The app will
+[fail gracefully](https://getbootstrap.com/docs/5.0/forms/validation/#server-side)
+when exceptional conditions are encountered.**
 
-This includes API errors during fetch, login errors, random exceptions, loading
-screens when content needs to load, and the like. If at any time a user is
-presented with a non-app error page or a completely blank screen for more than a
-second or so, your solution will lose points.
+This includes handling API errors during fetch, login errors, random exceptions,
+[showing spinners](https://getbootstrap.com/docs/4.4/components/spinners) when
+content needs to load, etc.
 
-> Every so often, [the API](https://hsccdfbb7244.docs.apiary.io) will randomly
-> return a `HTTP 555` error to your app instead of fulfilling a request. During
-> judging, API requests and responses will be manipulated by the judges to try
-> and break your app. Your app will be able to handle it gracefully.
-> [This is a good example of graceful graphical error handling](https://medium.com/@danielalvidrez/handling-error-responses-with-grace-b6fd3c5886f0).
+> Every so often,
+> [the API will respond with an `HTTP 555` error](https://hsccdfbb7244.docs.apiary.io/#/introduction/rules-of-api-access)
+> instead of fulfilling a request. Further, API requests and responses will be
+> manipulated by the judges in an attempt to break the app. If at any time a
+> user is presented with a _non-app_ error page or a completely blank screen for
+> [more than a second or so](https://www.websitebuilderexpert.com/building-websites/website-load-time-statistics),
+> your solution may lose points on this requirement.
 
 ## Requirement 15
 
-**The frontend UI will be responsive to mobile, tablet, and desktop viewports.**
+**The frontend UI will be responsive to mobile, tablet, and desktop
+[viewports](https://www.w3schools.com/css/css_rwd_viewport.asp).**
 
-The solution will be viewed on a smartphone, tablet, and a desktop viewport. The
-design and functionality will not "break" across these viewports nor will the
-solution become non-functional. We recommend you design your app using
-[mobile-first principles](https://designshack.net/articles/mobile/mobilefirst).
+The app will be pleasant to the eye when viewed on a smartphone, tablet, and a
+desktop viewport. The design and functionality will not "break" across these
+viewports nor will the app become non-functional.
+
+> Judges will view and interact with the app through
+> [emulated phone and tablet viewports](https://developers.google.com/web/tools/chrome-devtools/device-mode).
+> If the app breaks when viewed, it will lose points on this and other
+> requirements. We recommend using
+> [mobile-first software design principles](https://designshack.net/articles/mobile/mobilefirst).

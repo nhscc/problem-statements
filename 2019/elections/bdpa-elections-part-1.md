@@ -329,16 +329,13 @@ change.
 
 ## Requirement 10
 
-**Results and lists of items displayed in the frontend UI will be paginated
-where appropriate.**
+> During the competition, this was requirement #12.
 
-[Pagination](https://www.smashingmagazine.com/2007/11/pagination-gallery-examples-and-good-practices/)
-is the strategy of showing a limited number of a large set of results and
-providing a navigation element where users can switch to different "pages" of
-that large set.
+**Somewhere in the UI of every<sup>1</sup> view, the total number of elections
+in the system will always be visible.**
 
-A Google search result (which has multiple pages) is a good example of
-pagination. Facebook's infinite scroll feature is another good example.
+<sup>1</sup>There are some exceptions to this, like the login page where showing
+the total number of elections would be a dangerous information leak.
 
 ## Requirement 11
 
@@ -550,11 +547,19 @@ Chicken still has 4 votes, but now pizza has 6 votes. Since Pizza has more than
 
 ## Requirement 12
 
-**Somewhere in the UI of every<sup>1</sup> view, the total number of elections
-in the system will always be visible.**
+> During the competition, this was requirement #10.
 
-<sup>1</sup>There are some exceptions to this, like the login page where showing
-the total number of elections would be a dangerous information leak.
+**Results and lists of items displayed in the frontend UI will be paginated
+where appropriate.**
+
+[Pagination](https://www.smashingmagazine.com/2007/11/pagination-gallery-examples-and-good-practices)
+is the strategy of showing a limited number of a large set of results and
+providing a navigation element where users can switch to different "pages" of
+that large set. A Google search result (which has multiple pages) is a good
+example of pagination.
+[Infinite scroll](https://infinite-scroll.com/demo/full-page), a specific
+pagination implementation used by the likes of Facebook/Instagram and Twitter,
+is another good example.
 
 ## Requirement 13
 
@@ -590,26 +595,33 @@ for how to safely store passwords and other credentials in a database.
 
 ## Requirement 14
 
-**The system should fail gracefully when exceptional conditions are
-encountered.**
+**The app will
+[fail gracefully](https://getbootstrap.com/docs/5.0/forms/validation/#server-side)
+when exceptional conditions are encountered.**
 
-This includes API errors during fetch, login errors, loading screens when
-content needs to load, random exceptions, and the like. If at any time a user is
-presented with a non-app error page or a completely blank screen for more than a
-second or so, your solution will lose points.
+This includes handling API errors during fetch, login errors, random exceptions,
+[showing spinners](https://getbootstrap.com/docs/4.4/components/spinners) when
+content needs to load, etc.
 
-> Every so often, the API will randomly return an `HTTP 555` error to your app
-> instead of fulfilling a request. During judging, API requests and responses
-> will be manipulated by the judges to try and break your app. Your app should
-> be able to handle it gracefully.
-> [This is a good example](https://medium.com/@danielalvidrez/handling-error-responses-with-grace-b6fd3c5886f0).
+> Every so often,
+> [the API will respond with an `HTTP 555` error](https://hscc4cfe8be7.docs.apiary.io/#/introduction/rules-of-api-access)
+> instead of fulfilling a request. Further, API requests and responses will be
+> manipulated by the judges in an attempt to break the app. If at any time a
+> user is presented with a _non-app_ error page or a completely blank screen for
+> [more than a second or so](https://www.websitebuilderexpert.com/building-websites/website-load-time-statistics),
+> your solution may lose points on this requirement.
 
 ## Requirement 15
 
-**The frontend UI should be responsive to mobile, tablet, and desktop
-viewports.**
+**The frontend UI will be responsive to mobile, tablet, and desktop
+[viewports](https://www.w3schools.com/css/css_rwd_viewport.asp).**
 
-The solution will be viewed on a smartphone, tablet, and a desktop viewport. The
-design and functionality should not "break" across these viewports nor should
-the solution become non-functional. We recommend you design your app using
-[mobile-first principles](https://designshack.net/articles/mobile/mobilefirst).
+The app will be pleasant to the eye when viewed on a smartphone, tablet, and a
+desktop viewport. The design and functionality will not "break" across these
+viewports nor will the app become non-functional.
+
+> Judges will view and interact with the app through
+> [emulated phone and tablet viewports](https://developers.google.com/web/tools/chrome-devtools/device-mode).
+> If the app breaks when viewed, it will lose points on this and other
+> requirements. We recommend using
+> [mobile-first software design principles](https://designshack.net/articles/mobile/mobilefirst).
