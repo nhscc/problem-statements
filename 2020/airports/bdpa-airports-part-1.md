@@ -28,10 +28,10 @@ administrator users.
 Note that time-based data in the API is represented as the number of
 milliseconds elapsed since January 1, 1970 00:00:00 UTC. This includes arrival
 and departure times. See
-[the API documentation](https://hsccdfbb7244.docs.apiary.io) for details.
-Further note that you **must** use the API to complete this problem statement,
-though you will likely require a hybrid approach where you have your own
-database storing some data and using the API to retrieve other data.
+[the API documentation](https://hsccdfbb7244.docs.apiary.io/#/introduction/tips-for-debugging)
+for details. Further note that you **must** use the API to complete this problem
+statement, though you will likely require a hybrid approach where you have your
+own database storing some data and using the API to retrieve other data.
 
 </details>
 
@@ -213,7 +213,7 @@ Next, the user will be required to fill out:
   - [Name (first, optional middle, last), sex, birthday (day, month, year)](https://amstat.tandfonline.com/doi/full/10.1080/2330443X.2017.1389620)
   - Also: phone number, email address
 - Provide payment information
-  - Flight price is taken from [the API](https://hsccdfbb7244.docs.apiary.io)
+  - Flight price is taken from the API
   - Card number, expiration date, CVC code, cardholder name, billing address and
     zip
   - The form will accept fake credit/debit card information. **Please do not
@@ -247,16 +247,13 @@ tickets (and, of course, `bookable==true` must be the case for that flight).
 > [API data structure reference](https://hsccdfbb7244.docs.apiary.io/#/data-structures/0/vote)
 > for example response schemas.
 
-> Warning: flight information **must be retrieved using
-> [the API](https://hsccdfbb7244.docs.apiary.io)**. You can cache it locally
-> after the fact, but it **must** come from
-> [the API](https://hsccdfbb7244.docs.apiary.io) originally. Only accessing your
-> local database (and/or generating your own flight data) without using
-> [the API](https://hsccdfbb7244.docs.apiary.io) will disqualify your solution.
+> Warning: flight information **must be retrieved using the API**. You can cache
+> it locally after the fact, but it **must** come from the API originally. Only
+> accessing your local database (and/or generating your own flight data) without
+> using the API will disqualify your solution.
 
 Feel free to add any other information necessary, but extra information cannot
-be stored using [the API](https://hsccdfbb7244.docs.apiary.io). Hence, some data
-will be split between [the API](https://hsccdfbb7244.docs.apiary.io) and your
+be stored using the API. Hence, some data will be split between the API and your
 own local database.
 
 ## Requirement 4
@@ -270,12 +267,10 @@ following information at minimum:
 - Flight airline and number
 - Destination (city, state, country, airport)
 - Departure and arrival date and time
-  - If this is updated by [the API](https://hsccdfbb7244.docs.apiary.io), it
-    will be updated in the view asynchronously
+  - If this is updated by the API, it will be updated in the view asynchronously
 - Passenger name
 - Gate number
-  - If this is updated by [the API](https://hsccdfbb7244.docs.apiary.io), it
-    will be updated in the view asynchronously
+  - If this is updated by the API, it will be updated in the view asynchronously
 - Confirmation number
 - Current flight status
 
@@ -437,8 +432,7 @@ Additional constraints:
 booking a ticket.**
 
 Ensure that no flight can be booked for a passenger whose information matches in
-the No Fly List, which can be queried using
-[the API](https://hsccdfbb7244.docs.apiary.io).
+the No Fly List, which can be queried using the API.
 
 If the name, birthdate, and sex match a passenger's info, they should be denied.
 This should happen even if the passenger's information is in a different case
@@ -466,8 +460,7 @@ use security questions to recover their account.
 **All views displaying flight/ticket information will ensure that information
 updates asynchronously.**
 
-Whenever a flight's information in
-[the API](https://hsccdfbb7244.docs.apiary.io) (or your database) changes, the
+Whenever a flight's information in the API (or your database) changes, the
 flight information on your pages must _eventually_ update to match the new
 information **without the page refreshing** or the user doing anything extra
 (like pressing a refresh button). This type of automatic updating is
@@ -475,10 +468,10 @@ information **without the page refreshing** or the user doing anything extra
 flow of the web page.
 
 For example, if a customer is viewing their ticket and their flight’s gate
-changes in [the API](https://hsccdfbb7244.docs.apiary.io), the new gate number
-will replace the old gate number on the customer’s ticket view. This way, when
-the user looks down at their phone after a moment, they'll see the latest gate
-number and not get confused. They’ll be happy. We want happy customers.
+changes in the API, the new gate number will replace the old gate number on the
+customer’s ticket view. This way, when the user looks down at their phone after
+a moment, they'll see the latest gate number and not get confused. They’ll be
+happy. We want happy customers.
 
 On the other hand, when data updates are synchronous, the customer would have to
 do something like refresh the page to see the updated ticket view with the new
@@ -492,7 +485,7 @@ updates.
 
 ## Requirement 12
 
-**All results and lists of items displayed in the frontend UI will be paginated
+**Results and lists of items displayed in the frontend UI will be paginated
 where appropriate.**
 
 [Pagination](https://www.smashingmagazine.com/2007/11/pagination-gallery-examples-and-good-practices/)

@@ -89,9 +89,9 @@ checking in, they will be redirected to the check-in view.
 
 **Your application must be updated to use the new V2 API exclusively.**
 
-See the documentation for the new version of the API
-[here](https://hscc210ff8c0.docs.apiary.io). You will need to update the base
-address you're using from https://airports.api.hscc.bdpa.org/v1 to
+See [the documentation](https://hscc210ff8c0.docs.apiary.io) for the new version
+of the API. You will need to update the base address you're using from
+https://airports.api.hscc.bdpa.org/v1 to
 **https://airports.api.hscc.bdpa.org/v2**. The documentation also includes a
 brief migration guide.
 
