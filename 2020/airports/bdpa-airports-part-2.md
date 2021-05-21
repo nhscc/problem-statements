@@ -8,6 +8,9 @@ satisfied with your app UX and performance data shows response time tail
 latencies are very low. But your contractor has identified some changes they
 want to make to the original app specification.
 
+> We're looking for feedback! If you have any opinions or ideas,
+> [start a discussion](https://github.com/nhscc/problem-statements/discussions/new).
+
 There are 10 changes:
 
 ## Change 1
