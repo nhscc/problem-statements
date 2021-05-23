@@ -7,7 +7,7 @@ HOST: https://airports.api.hscc.bdpa.org/v1
 > [start a discussion](https://github.com/nhscc/problem-statements/discussions/new).
 
 Based on [simple REST
-principles](https://searchapparchitecture.techtarget.com/definition/RESTful-API),
+principles](https://restfulapi.net),
 the BDPA Airports API returns JSON data responses to requests. This is the API
 used by teams and their apps for the 2020 BDPA National High School Computer
 Competition. It holds all of the airline and flight data teams' apps must
@@ -67,7 +67,7 @@ system.
 ## Request Methods
 
 This API is based on [simple REST
-principles](https://searchapparchitecture.techtarget.com/definition/RESTful-API).
+principles](https://restfulapi.net).
 Resources are accessed via standard HTTPS requests in UTF-8 format to an API
 endpoint. This API understands the following HTTP request methods:
 
@@ -177,7 +177,7 @@ The API has full support for Cross Origin Resource Sharing (CORS) for AJAX reque
 ## Tips for Debugging
 
 - Are you using the right method?
-- Use this documentation (click "see example," then click "Try console") or use [Postman](https://www.postman.com/downloads/) to play with the API.
+- Use this documentation (click "see example," then click "Try console") or use [Postman](https://www.postman.com/downloads) to play with the API.
 - Expect a raw JSON response body that you must parse manually, not raw text or something else.
 - Are you sending properly formatted JSON payloads in your request body when necessary?
 - Try outputting to stdout, use `console.log`, or output to some log file when API requests are made and responses received.

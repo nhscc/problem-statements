@@ -39,7 +39,7 @@ competitions.
 <small><sup>1</sup> Unless
 [GitHub Actions](https://github.com/features/actions),
 [MongoDB Atlas](https://www.mongodb.com/cloud/atlas), or
-[Vercel](https://vercel.com/) go down</small>
+[Vercel](https://vercel.com) go down</small>
 
 ---
 
