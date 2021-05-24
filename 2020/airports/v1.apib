@@ -196,7 +196,7 @@ advantage.
 
 These endpoints deal with summary metadata about the system.
 
-### /airlines Endpoint [GET /info/airlines]
+### /info/airlines Endpoint [GET /info/airlines]
 
 + Request
 
@@ -244,7 +244,7 @@ See an example
                 "success": true
             }
 
-### /airports Endpoint [GET /info/airports]
+### /info/airports Endpoint [GET /info/airports]
 
 + Request
 
@@ -295,7 +295,7 @@ See an example
                 "success": true
             }
 
-### /no-fly-list Endpoint [GET /info/no-fly-list]
+### /info/no-fly-list Endpoint [GET /info/no-fly-list]
 
 + Request
 
@@ -349,7 +349,7 @@ See an example
 
 With these endpoints you can access all flight data in the system.
 
-### /all Endpoint [GET /flights/all{?after}]
+### /flights/all Endpoint [GET /flights/all{?after}]
 
 Returns all flights in the system in ascending order (oldest first). Returns at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
 
@@ -442,7 +442,7 @@ See an example
                 ]
             }
 
-### /search Endpoint [GET /flights/search{?after,match,regexMatch,sort}]
+### /flights/search Endpoint [GET /flights/search{?after,match,regexMatch,sort}]
 
 This endpoint allows you to search through all flights in the system. Without any parameters, it acts just like the `/all` endpoint. Returns at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`. Other available parameters are: `match`, `regexMatch`, and `sort`. `sort` can be either `asc` or `desc` and determines the sort order (sorted by creation timestamp) of the flights returned from the API. `match` and `regexMatch` let you filter out which flights you want returned in the response.
 
@@ -590,7 +590,7 @@ See an example
                 ]
             }
 
-### /with-ids Endpoint [GET /flights/with-ids{?ids}]
+### /flights/with-ids Endpoint [GET /flights/with-ids{?ids}]
 
 Returns a list of flights corresponding to the `ids` parameter. Results will probably not be in order. Like `match` and `regexMatch`, `ids` must be URI encoded and JSON serialized. Unlike `match` or `regexMatch`, it is an array.
 
