@@ -1,3 +1,59 @@
 # BDPA NHSCC 2021 Problem Statements
 
-_TBA_
+[**Barker**](/2021/barker) (sample) was released during the 2021 competition.
+
+## Key Challenges
+
+This year's problem statements were designed with the following challenges in
+mind:
+
+- Interacting with
+  [unsanitized](https://www.esecurityplanet.com/endpoint/prevent-web-attacks-using-input-sanitization)
+  sometimes-unavailable external data sources
+- Storing, sorting, caching, and filtering large amounts of rapidly evolving
+  data
+- Implementing flexible authentication, i.e. optional login and registration
+- [Responsive UX](https://en.wikipedia.org/wiki/Responsive_web_design), i.e. the
+  app is functional on mobile, tablet, and desktop screens
+- Observing basic application, database, and repository security best practices
+
+## Statements
+
+<table>
+<tr>
+<th>
+<img width="500" height="1" />
+<p align="center"><strong><a href="/2021">Barker</a> (sample)</strong></p>
+</th>
+<th>
+<img width="500" height="1" />
+<p align="center"><strong>(actual to be released in July)</strong></p>
+</th>
+</tr>
+<tr>
+<td>
+<img width="500" height="1" />
+<p>
+📑 <a href="/2021/barker">Problem statement</a>
+<br />
+🌍 <a href="https://barker.solutions.hscc.bdpa.org">Live demo</a> (temporarily offline)
+<br />
+📚 <a href="https://hscckhug3eb6.docs.apiary.io/">Interactive API docs</a>
+</p>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<img width="500" height="1" />
+<p>
+📦 <a href="https://github.com/nhscc/barker.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/barker.api.hscc.bdpa.org">API source code</a>
+</p>
+</td>
+<td>
+</td>
+</tr>
+</table>

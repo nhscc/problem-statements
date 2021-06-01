@@ -1,0 +1,1343 @@
+FORMAT: 1A
+HOST: https://barker.api.hscc.bdpa.org/v1
+
+# Barker API
+
+> We're looking for feedback! If you have any opinions or ideas,
+> [start a discussion](https://github.com/nhscc/problem-statements/discussions/new).
+
+Based on [simple REST
+principles](https://restfulapi.net),
+the Barker API returns JSON data responses to requests. This is the API used
+by teams and their apps for the 2021 BDPA National High School Computer
+Competition. It holds all of the Bark data teams' apps must interact with. The API
+is live and will ideally remain online indefinitely.
+
+The base address of Barker API is https://barker.api.hscc.bdpa.org/V
+where `V` is the version of the API you want to use. There is currently only one
+version, so `V = v1`. Each version of the API provides a set of endpoints with
+their own unique path and requirements.
+
+[The source code behind the API is available on
+GitHub](https://github.com/nhscc/barker.api.hscc.bdpa.org). If you have any
+trouble, [open an issue
+there](https://github.com/nhscc/barker.api.hscc.bdpa.org/issues/new) or
+[start a
+discussion](https://github.com/nhscc/problem-statements/discussions/new)
+
+## Requesting a Key
+
+To access the majority of this API's endpoints requires a key. If your team
+needs a key, or to replace a lost or stolen key, please contact NHSCC
+staff through Slack or [open an issue on
+GitHub](https://github.com/nhscc/barker.api.hscc.bdpa.org).
+
+When you get your key, include it in your requests' header as `key:
+your-special-api-key-here` and you will be immediately authenticated into the
+system.
+
+## Rules of API Access
+
+1. Do not bombard the API with requests or you risk permanent IP/subnet ban.
+   **Limit your apps to no more than 10 requests per second per API key**. If
+   your app ends up sending too many requests over some time period, you'll get
+   a `HTTP 429` response along with a monotonically increasing soft ban
+   (starting at 15 minutes). Similarly, the size of requests is strictly
+   limited, so you must limit the amount of data you're sending. When you send a
+   request that is too large (>100KB), it will fail with a `HTTP 413` response.
+
+2. **Do not reveal your API key to anyone** not on your own team. It is how the
+   API identifies your team. Do not upload it to GitHub or leave it lying around
+   in your source code. Save it to a file and `.gitignore` it or save it to an
+   environment variable.
+
+3. Since the API is live, you might be able to see or interact
+   with content posted by other teams. If this is the case, please do not post
+   anything inappropriate.
+
+4. If you have a relevant feature request or you encounter any vulnerabilities,
+   errors, or other issues, don't hesitate to contact NHSCC staff via Slack or
+   [open an issue on
+   GitHub](https://github.com/nhscc/barker.api.hscc.bdpa.org). For significant
+   enough finds, bonus points may be awarded. On the other hand, abusing any
+   vulnerability or bug may result in disqualification.
+
+5. **The API was built to randomly return errors every so often**. That means
+   your app must be prepared to deal with `HTTP 555` and other bad responses.
+   However, if you're consistently getting `HTTP 5xx` errors back to back, then
+   something is wrong. Please report this if it happens.
+
+6. All responses are raw JSON. All request payloads must be sent as raw JSON.
+   `JSON.stringify()` and `JSON.parse()` or whatever language equivalent is
+   available to you is your friend!
+
+## Request Methods
+
+This API is based on [simple REST
+principles](https://restfulapi.net).
+Resources are accessed via standard HTTPS requests in UTF-8 format to an API
+endpoint. This API understands the following HTTP request methods:
+
+| METHOD | MEANING |
+|-----   |-----    |
+| GET    | Return data about something |
+| POST   | Create something new        |
+| PUT    | Modify something            |
+| DELETE | Delete something            |
+
+## Rate Limits
+
+As said earlier, do not bombard the API with requests. If you do, the API will
+soft ban you for fifteen minutes the first time before accepting requests from
+your API key or IP address again. Each following time this happens within a
+certain period, your ban time will quadruple.
+
+So **limit your apps to no more than 10 requests per second per API key**. You
+know you've been soft banned if you receive an `HTTP 429` response. Check the
+JSON response for the `retryAfter` key, which represents for how long your API
+key and/or IP are banned from making further requests (in milliseconds).
+
+## Pagination
+
+Endpoints that might return a lot of data are paginated (via [range
+queries](https://en.wikipedia.org/wiki/Range_query_(database))). Such endpoints
+optionally accept an `after` parameter, which is a `bark_id` that determines
+which Bark is returned first. That is: the first Bark returned will be the first
+`bark_id` that comes *after* the `after` `bark_id`. Omitting the `after`
+parameter returns the first 100 Barks in the system in ascending order.
+
+For example, given the following dataset and an API with a default result size
+(or "page" size) of 3:
+
+```JavaScript
+[
+    { item_id: 0xabc123, name: 'Item 1 name' },
+    { item_id: 0xabc124, name: 'Item 2 name' },
+    { item_id: 0xabc125, name: 'Item 3 name' },
+    { item_id: 0xabc126, name: 'Item 4 name' },
+    { item_id: 0xabc127, name: 'Item 5 name' },
+]
+```
+
+Suppose we issued the following requests to an API:
+
+`/api?after=0xabc123`: responds with an array of 3 items: *0xabc124* through *0xabc126*
+`/api?after=0xabcXYZ`: responds with an array of 0 items since `item_id` *0xabcXYZ* doesn't exist
+`/api?after=0xabc124`: responds with an array of 3 items: *0xabc125* through *0xabc127*
+`/api?after=0xabc127`: responds with an array of 0 items since there is nothing after *0xabc127*
+`/api?after=0xabc125`: responds with an array of 2 items: *0xabc126* and *0xabc127*
+
+## Status Codes
+
+This API will issue responses with one of the following status codes:
+
+| STATUS | MEANING |
+|-----   |-----    |
+| 200    | Your request completed successfully. |
+| 400    | Your request was malformed or otherwise bad. Check the requirements. |
+| 401    | Session is not authenticated. Put your API key in the header! |
+| 403    | Session is not authorized. You tried to do something you can't do. |
+| 404    | The resource (or endpoint) was not found. Check your syntax. |
+| 405    | Bad method. The endpoint does not support your request's method. |
+| 413    | Your request was too large and was dropped. Max body size is 100KB. |
+| 429    | You've been rate limited. Try your request again after a few minutes. |
+| 4xx    | Your request was malformed in some way. |
+| 5xx    | Something happened on the server that is outside your control. |
+
+## Response Schema
+
+All responses issued by the API will follow one of the two following schemas.
+
+### Success Schema
+
+When a request you've issued succeeds, the response will look like the
+following:
+
+```json
+{
+    "success": "true",
+    // any other data you requested
+}
+```
+
+Note that all time data is represented as the number of milliseconds elapsed
+since January 1, 1970 00:00:00 UTC, or the same thing that is returned by
+JavaScript's `Date.now()` method.
+
+### Error Schema
+
+When a request you've issued fails, along with the non-200 status code, the
+response will look like the following:
+
+```json
+{
+    "error": "an error message describing what went wrong",
+    // any other relevant data (like retryAfter)
+}
+```
+
+## CORS Support
+
+The API has full support for Cross Origin Resource Sharing (CORS) for AJAX requests.
+
+## Tips for Debugging
+
+- Are you using the right method?
+- Use this documentation (click "see example," then click "Try console") or use [Postman](https://www.postman.com/downloads) to play with the API.
+- Expect a raw JSON response body that you must parse manually, not raw text or something else.
+- Are you sending properly formatted JSON payloads in your request body when necessary?
+- Try outputting to stdout, use `console.log`, or output to some log file when API requests are made and responses received.
+- All time data is represented as [the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now).
+- Are you sending the correct headers? You need to specify the `key: your-special-api-key-here` header for all requests and the `'content-type': 'application/json'` header when making POST and PUT requests.
+- Are you [encoding your URI components](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) properly, especially when you're trying to send the API [JSON objects](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON) via [GET request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods)?
+
+## Globally Unique IDs
+
+To retrieve data about one or more Barks or users or other unique items, you
+must know that item's `<item>_id`. These and other IDs are globally unique
+within the API. That is: no two items will ever have the same ID in any
+instance. Use this fact to your advantage.
+
+## Metadata Endpoints [/info]
+
+These endpoints deal with summary metadata about the system.
+
+### /info (GET) [GET /info]
+
+Returns summary system metadata.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + totalBarks (number) - Total number of Barks in the system.
+        + totalUsers (number) - Total number of users in the system.
+
+    + Body
+
+            {
+                "totalBarks": 115,
+                "totalUsers": 42,
+                "success": true
+            }
+
+## Bark Endpoints [/barks]
+
+These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-whats-the-difference) on one or more Barks.
+
+### /barks (GET) [GET /barks{?after}]
+
+Returns all Barks in the system in chronological order beginning with the most recent.
+
++ Parameters
+    + after (optional, bark_id) - <span style="color: gray">[optional]</span> Return only those Barks that occur *after* `bark_id` in the result list.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + barks (array[Bark]) - An array of Bark objects. Empty if there are no Barks left to show.
+
+    + Body
+
+            {
+                "success": true,
+                "barks": [
+                    {
+                        "bark_id": "5ec8adf06e38137ff2e58998",
+                        "owner": "5ec8adf06e38137ff2e58770",
+                        "createdAt": "1621893619835",
+                        "content": "This is my first bark!",
+                        "likes": 0,
+                        "rebarks": 0,
+                        "barkbacks": 0,
+                        "deleted": false,
+                        "private": false,
+                        "barkbackTo": null,
+                        "rebarkOf": null,
+                    },
+                    {
+                        "bark_id": "5ec8adf06e38137ff2e58999",
+                        "owner": "5ec8adf06e38137ff2e12345",
+                        "createdAt": "1621893627690",
+                        "content": "This is another bark",
+                        "likes": 1,
+                        "rebarks": 2,
+                        "barkbacks": 4,
+                        "deleted": false,
+                        "private": false,
+                        "barkbackTo": "5ec8adf06e38137ff2e58998",
+                        "rebarkOf": null,
+                    }
+                ]
+            }
+
+### /barks (POST) [POST /barks]
+
+Creates a new Bark, rebark, or backback.
+
+> Notice: due to financial constraints, the oldest Barks in the system will be dropped from the API to make room for the new.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
+    + Attributes
+        + owner: `5ec8adf06e38137ff2e58770` (string) - The `user_id` of the user that created this Bark.
+        + content (string) - The raw **non-empty** contents of the Bark.
+        + private (boolean) - `true` if this Bark is private or `false` otherwise.
+        + barkbackTo: `5ec8adf06e38137ff2e58769` (string, nullable) - The `bark_id` of the Bark this Bark is responding to or `null` if this is not a bark-back.
+        + rebarkOf: `5ec8adf06e38137ff2e58769` (string, nullable) - The `bark_id` of the original Bark this Bark rebarked or `null` if this is not a rebark.
+
+    + Body
+
+            {
+                "owner": "5ec8adf06e38137ff2e58770",
+                "content": "This is my first bark!",
+                "private": false,
+                "barkbackTo": null,
+                "rebarkOf": null
+            }
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + bark (Bark) - The newly created Bark object.
+
+    + Body
+
+            {
+                "success": true,
+                "bark": {
+                    "bark_id": "5ec8adf06e38137ff2e58999",
+                    "owner": "5ec8adf06e38137ff2e58770",
+                    "createdAt": "1621893619835",
+                    "content": "This is my first bark!",
+                    "likes": 0,
+                    "rebarks": 0,
+                    "barkbacks": 0,
+                    "deleted": false,
+                    "private": false,
+                    "barkbackTo": null,
+                    "rebarkOf": null,
+                }
+            }
+
+### /barks/:bark_id1/:bark_id2/.../:bark_idN (GET) [GET /barks/{bark_id}]
+
+Returns one or more Barks identified by the `bark_id` parameter(s). You can pass multiple `bark_id`s to this endpoint, each separated by a `/`.
+
++ Parameters
+    + `bark_id`: `5eee34b3ca37750008547371` (bark_id) - <span style="color: darkred">[required]</span> ID of the Bark to return.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + barks (array[Bark]) - An array of Bark objects.
+
+    + Body
+
+            {
+                "success": true,
+                "barks": [
+                    {
+                        "bark_id": "5ec8adf06e38137ff2e58998",
+                        "owner": "5ec8adf06e38137ff2e58770",
+                        "createdAt": "1621893619835",
+                        "content": "This is my first bark!",
+                        "likes": 0,
+                        "rebarks": 0,
+                        "barkbacks": 0,
+                        "deleted": false,
+                        "private": false,
+                        "barkbackTo": null,
+                        "rebarkOf": null,
+                    },
+                    {
+                        "bark_id": "5ec8adf06e38137ff2e58999",
+                        "owner": "5ec8adf06e38137ff2e12345",
+                        "createdAt": "1621893627690",
+                        "content": "This is another bark",
+                        "likes": 1,
+                        "rebarks": 2,
+                        "barkbacks": 4,
+                        "deleted": false,
+                        "private": false,
+                        "barkbackTo": "5ec8adf06e38137ff2e58998",
+                        "rebarkOf": null,
+                    }
+                ]
+            }
+
+### /barks/:bark_id1/:bark_id2/.../:bark_idN (DELETE) [DELETE /barks/{bark_id}]
+
+Deletes one or more Barks identified by the `bark_id` parameter(s). You can pass multiple `bark_id`s to this endpoint, each separated by a `/`.
+
++ Parameters
+    + `bark_id`: `5eee34b3ca37750008547371` (bark_id) - <span style="color: darkred">[required]</span> ID of the Bark to return.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /barks/:bark_id/likes (GET) [GET /barks/{bark_id}/likes{?after}]
+
+Returns a list of `user_id`s that have liked a specific Bark. If you're just looking for the _number_ of likes a Bark has, use the [`GET /barks/:bark_id`](#/reference/0/bark-endpoints/barks-bark-id-1-bark-id-2-bark-id-n-get) endpoint instead.
+
++ Parameters
+    + after (optional, user_id) - <span style="color: gray">[optional]</span> Return only those users that occur *after* `user_id` in the result list.
+    + `bark_id`: `5eee34b3ca37750008547371` (bark_id) - <span style="color: darkred">[required]</span> ID of the specific Bark.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + users (array[string]) - An array of `user_id`s. Empty if there are no users left to show.
+
+    + Body
+
+            {
+                "success": true,
+                "users": [
+                    "5eee34b3ca37750008547372",
+                    "5eee34b3ca37750008547373",
+                    "5eee34b3ca37750008547374"
+                ]
+            }
+
+### /barks/:bark_id/likes/:user_id (GET) [GET /barks/{bark_id}/likes/{user_id}]
+
+Responds with a `200` status code if user `user_id` has liked `bark_id` or `404`
+otherwise.
+
++ Parameters
+    + `bark_id`: `5eee34b3ca37750008547371` (bark_id) - <span style="color: darkred">[required]</span> ID of the Bark.
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the user.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /barks/:bark_id/likes/:user_id (DELETE) [DELETE /barks/{bark_id}/likes/{user_id}]
+
+Removes a user's like from (or "unlike") a Bark.
+
++ Parameters
+    + `bark_id`: `5eee34b3ca37750008547371` (bark_id) - <span style="color: darkred">[required]</span> ID of the Bark.
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the user.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /barks/:bark_id/likes/:user_id (PUT) [PUT /barks/{bark_id}/likes/{user_id}]
+
+Adds a user's like to a Bark.
+
++ Parameters
+    + `bark_id`: `5eee34b3ca37750008547371` (bark_id) - <span style="color: darkred">[required]</span> ID of the Bark.
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the user.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /barks/search (GET) [GET /barks/search{?after,match,regexMatch}]
+
+This endpoint allows you to search through all Barks in the system. Without any parameters, functionality is identical to [`GET /barks`](#/reference/0/bark-endpoints/barks-get).
+
+Returns at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`. The other available parameters are `match` and `regexMatch`, which let you filter which Barks are returned via query matching.
+
+Note that the values of `match` and `regexMatch` **must be [URI encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) [JSON objects](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON)**! If they aren't, you'll receive an error.
+
+Examples:
+
+Suppose you want to *match* all the Barks belonging to a specific user. There are several ways this might be accomplished, _some more performant than others_. One such way is by using this endpoint to perform a [brute-force search](https://en.wikipedia.org/wiki/Brute-force_search):
+
+1. Come up with the JSON object to describe your query:
+
+```JavaScript
+let myQueryObject = { "owner": "5ec8adf06e38137ff2e58769" }
+```
+
+2. Stringify the JSON object and then URI encode it in whatever language you're using.
+
+```JavaScript
+let myQuery = encodeURIComponent(JSON.stringify(myQueryObject))
+```
+
+3. Add the stringified JSON to your request URL and send it
+
+```JavaScript
+let myURL = "https://barker.api.hscc.bdpa.org/v1/barks/search?match=" + myQuery
+
+sendRequestToAPI(myURL)
+```
+
+You can also use `match` queries to search for Barks where some numerical property is greater than or less than some threshold. For example:
+
+```JavaScript
+let myQueryObject = {
+    "createdAt": {
+        "$gt": (new Date('6/1/2021 3:00:00 PM PST')).getTime()
+    }
+}
+```
+
+This means _return all the Barks that were created after 6/1/2021 3:00:00 PM PST_. Along with `"$gt"` for "greater than," there's also `"$gte"` for "greater than or equal to," `"$lt"` for "less than," and `"$lte"` for "less than or equal to". If you've used MongoDB before, these should look familiar.
+
+Note that any `match` filters are applied **in a case sensitive manner**, meaning `"hello world"` won't match `"Hello World"`, so watch out! If you want case-insensitive searching or you're an otherwise advanced programmer, you can use [regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions) via `regexMatch`. Unlike `match`, `regexMatch` does not allow for less than/greater than queries.
+
+For example, if you wanted to find _all Barks from the past week_ (`match`) that are _owned by the users "anissa" or "jennifer"_ (`—m̶a̶t̶c̶h̶` **nope**, the "or" makes it a `regexMatch`), are _bark-backs to a specific Bark owned by the user "khalil"_ (`match` again), and _contain a word that ends in an exclamation point_ (`regexMatch` again):
+
+```JavaScript
+const anissaUserId        = "5ec8adf06e38137ff2e58869"
+const jenniferUserId      = "5ec8adf06e38137ff2e58870"
+const khalilLatestBarkId  = "5ec8adf06e38137ff2e58888"
+
+const lastWeek = new Date()
+lastWeek.setDate((new Date()).getDate() - 7)
+
+const myNormalQueryObject = {
+    "createdAt": {
+        "$gt": lastWeek.getTime()
+    },
+    "barkbackTo": khalilLatestBarkId,
+    // We also need to make sure the Bark "exists"
+    "deleted": false
+}
+
+const myRegexQueryObject = {
+    "owner": `${anissaUserId}|${jenniferUserId}`,
+    // Regex explained interactively: https://regex101.com/r/D7vNPM/1
+    "content": "(^| )[a-z0-9]+!( |$)"
+}
+
+const myNormalQuery = encodeURIComponent(JSON.stringify(myNormalQueryObject))
+const myRegexQuery = encodeURIComponent(JSON.stringify(myRegexQueryObject))
+
+const myURL = "https://barker.api.hscc.bdpa.org/v1/barks/search?match=" + myNormalQuery + "&regexMatch=" + myRegexQuery
+
+sendRequestToAPI(myURL)
+```
+
+> Notice: when testing using this Apiary documentation, they are nice enough to handle the URI encode and JSON stringify steps for you! All you have to do is type in a proper JSON object for the request to succeed. You can even copy and paste the `myXQueryObject`s from the examples above directly into the Try Console! Try it out by clicking "See an example" and then "Try console".
+
++ Parameters
+    + after (optional, bark_id) - <span style="color: gray">[optional]</span> Return only those Barks that occur *after* `bark_id` in the result list.
+    + match (optional, string) - <span style="color: gray">[optional]</span> A URI encoded JSON object describing the Bark properties you're looking for. Case sensitive. Can also do greater than/less than queries as well. **If you're using the Apiary Try Console, you do not have to URI encode or stringify the JSON object, just type it in directly!**
+    + regexMatch (optional, string) - <span style="color: gray">[optional]</span> A URI encoded JSON object describing the Bark properties that you're looking for. Case-*insensitive* regular expressions can be used here. You **cannot** do greater than/less than queries and **all regexes must be strings** (no numbers). **If you're using the Apiary Try Console, you do not have to URI encode or stringify the JSON object, just type it in directly!**
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + barks (array[Bark]) - An array of Bark objects matching your query. Empty if there are no Barks left to show or your query returned no results.
+
+    + Body
+
+            {
+                "success": true,
+                "barks": [
+                    {
+                        "bark_id": "5ec8adf06e38137ff2e58998",
+                        "owner": "5ec8adf06e38137ff2e58770",
+                        "createdAt": "1621893619835",
+                        "content": "This is my first bark!",
+                        "likes": 0,
+                        "rebarks": 0,
+                        "barkbacks": 0,
+                        "deleted": false,
+                        "private": false,
+                        "barkbackTo": null,
+                        "rebarkOf": null,
+                    },
+                    {
+                        "bark_id": "5ec8adf06e38137ff2e58999",
+                        "owner": "5ec8adf06e38137ff2e12345",
+                        "createdAt": "1621893627690",
+                        "content": "This is another bark",
+                        "likes": 1,
+                        "rebarks": 2,
+                        "barkbacks": 4,
+                        "deleted": false,
+                        "private": false,
+                        "barkbackTo": "5ec8adf06e38137ff2e58998",
+                        "rebarkOf": null,
+                    }
+                ]
+            }
+
+## User Endpoints [/users]
+
+These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-whats-the-difference) on a user.
+
+### /users (GET) [GET /users{?after}]
+
+Returns all users in the system in chronological order beginning with the most recent.
+
+Returns are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + after (optional, user_id) - <span style="color: gray">[optional]</span> Return only those users that occur *after* `user_id` in the result list.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + users (array[User]) - An array of user objects. Empty if there are no users left to show.
+
+    + Body
+
+            {
+                "success": true,
+                "users": [
+                    {
+                        "user_id": "5eee34b3ca37750008547372",
+                        "name": "Dummy User One",
+                        "email": "dummy@email.com",
+                        "phone": "123-456-7890",
+                        "username": "dummyuser1",
+                        "packmates": 1,
+                        "following": 2,
+                        "bookmarked": 0,
+                        "liked": 5,
+                        "deleted": false
+                    },
+                    {
+                        "user_id": "5eee34b3ca37750008547372",
+                        "name": "Dummy User Two",
+                        "email": "dummy2@email.com",
+                        "phone": "123-654-7890",
+                        "username": "dummyuser2",
+                        "packmates": 14,
+                        "following": 22,
+                        "bookmarked": 10,
+                        "liked": 9,
+                        "deleted": false
+                    }
+                ]
+            }
+
+### /users (POST) [POST /users]
+
+Creates a new user.
+
+> Notice: due to financial constraints, the oldest users in the system will be dropped from the API to make room for the new.
+
+> Note that the API does not manage user credentials. Passwords must be stored locally.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
+    + Attributes
+        + name: `"Hillary Clinton"` (string) - The full name of the user.
+        + email: `"h@hillaryclinton.com"` (string) - The user's email address.
+        + phone: `"312-555-5555"` (string) - The user's well-formatted phone number.
+        + username: `"thehill"` (string) - The user's unique username within the system.
+
+    + Body
+
+            {
+                "name": "Hillary Clinton",
+                "email": "h@hillaryclinton.com",
+                "phone": "312-555-5555",
+                "username": "thehill"
+            }
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + user (User) - The newly created user object.
+
+    + Body
+
+            {
+                "success": true,
+                "user": {
+                    "user_id": "5eee34b3ca37750008547372",
+                    "name": "Hillary Clinton",
+                    "email": "h@hillaryclinton.com",
+                    "phone": "312-555-5555",
+                    "username": "thehill",
+                    "packmates": 0,
+                    "following": 0,
+                    "bookmarked": 0,
+                    "liked": 0,
+                    "deleted": false
+                }
+            }
+
+### /users/:user_id (GET) [GET /users/{user_id}]
+
+Returns the user identified by the `user_id` parameter.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the user.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + user (User) - The requested user object.
+
+    + Body
+
+            {
+                "success": true,
+                "user": {
+                    "user_id": "5eee34b3ca37750008547372",
+                    "name": "Dummy User",
+                    "email": "dummy@email.com",
+                    "phone": "123-456-7890",
+                    "username": "dummyuser",
+                    "packmates": 1,
+                    "following": 2,
+                    "bookmarked": 0,
+                    "liked": 5,
+                    "deleted": false
+                }
+            }
+
+### /users/:user_id (DELETE) [DELETE /users/{user_id}]
+
+Sets the specified user's `deleted` flag to `true`. To delete a user's Barks as well, use the [`DELETE /barks/:bark_id`](#/reference/0/bark-endpoints/barks-bark-id-1-bark-id-2-bark-id-n-delete) endpoint.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the specified user.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:user_id (PUT) [PUT /users/{user_id}]
+
+Sets the specified user's `name`, `email`, and `phone` properties.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the specified user.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + name: `"Elizabeth Warren"` (string) - The full name of the user.
+        + email: `"liz@ewarren.com"` (string) - The user's email address.
+        + phone: `"978-555-5555"` (string) - The user's well-formatted phone number.
+
+    + Body
+
+            {
+                "name": "Elizabeth Warren",
+                "email": "liz@ewarren.com",
+                "phone": "978-555-5555"
+            }
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:user_id/liked (GET) [GET /users/{user_id}/liked{?after}]
+
+Returns IDs of the Barks a specific user (`user_id`) has liked. If you're just looking for the _number_ of Barks liked by this user, use the [`GET /users/:user_id`](#/reference/0/user-endpoints/users-user-id-get) endpoint instead.
+
+Returns are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + after (optional, user_id) - <span style="color: gray">[optional]</span> Return only those users that occur *after* `user_id` in the result list.
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the specific user.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + barks (array[string]) - An array of `bark_id`s. Empty if there are no barks left to show.
+
+    + Body
+
+            {
+                "success": true,
+                "barks": [
+                    "5eee34b3ca37750008547372",
+                    "5eee34b3ca37750008547373",
+                    "5eee34b3ca37750008547374"
+                ]
+            }
+
+### /users/:user_id/liked/:bark_id (GET) [GET /users/{user_id}/liked/{bark_id}]
+
+Responds with a `200` status code if user `user_id` has liked `bark_id` or a
+`404` otherwise.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the user.
+    + `bark_id`: `5eee34b3ca37750008547373` (bark_id) - <span style="color: darkred">[required]</span> ID of the supposedly liked Bark.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:user_id/following (GET) [GET /users/{user_id}/following{?includeIndirect,after}]
+
+Returns IDs of the users a specific user (`user_id`) is following. If you're just looking for the _number_ of users followed, use the [`GET /users/:user_id`](#/reference/0/user-endpoints/users-user-id-get) endpoint instead.
+
+Returns are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + after (optional, user_id) - <span style="color: gray">[optional]</span> Return only those users that occur *after* `user_id` in the result list.
+    + includeIndirect (optional, boolean) - <span style="color: gray">[optional]</span> Both direct _and indirect_ follows are returned.
+        + Default: `false`
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the specific user.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + users (array[string]) - An array of `user_id`s. Empty if there are no users left to show.
+
+    + Body
+
+            {
+                "success": true,
+                "users": [
+                    "5eee34b3ca37750008547372",
+                    "5eee34b3ca37750008547373",
+                    "5eee34b3ca37750008547374"
+                ]
+            }
+
+### /users/:user_id/following/:followed_id (GET) [GET /users/{user_id}/following/{followed_id}]
+
+Responds with a `200` status code if user `user_id` is a follower of
+`followed_id` or a `404` otherwise.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the user who is following.
+    + `followed_id`: `5eee34b3ca37750008547373` (user_id) - <span style="color: darkred">[required]</span> ID of the user who is followed.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:user_id/following/:followed_id (DELETE) [DELETE /users/{user_id}/following/{followed_id}]
+
+Removes a user (`user_id`) such that they are no longer a follower of `followed_id`.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the user who is following.
+    + `followed_id`: `5eee34b3ca37750008547373` (user_id) - <span style="color: darkred">[required]</span> ID of the user who is followed.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:user_id/following/:followed_id (PUT) [PUT /users/{user_id}/following/{followed_id}]
+
+Adds a user (`user_id`) as a follower of another user (`followed_id`).
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the follower user.
+    + `followed_id`: `5eee34b3ca37750008547373` (user_id) - <span style="color: darkred">[required]</span> ID of the followed user.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:user_id/pack (GET) [GET /users/{user_id}/pack{?after}]
+
+Returns a list of IDs belonging to a specific user's (`user_id`) Pack. If you're just looking for the _number_ of packmates a user has, use the [`GET /users/:user_id`](#/reference/0/user-endpoints/users-user-id-get) endpoint instead.
+
+Returns are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + after (optional, user_id) - <span style="color: gray">[optional]</span> Return only those users that occur *after* `user_id` in the result list.
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the specific user.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + users (array[string]) - An array of `user_id`s. Empty if there are no users left to show.
+
+    + Body
+
+            {
+                "success": true,
+                "users": [
+                    "5eee34b3ca37750008547372",
+                    "5eee34b3ca37750008547373",
+                    "5eee34b3ca37750008547374"
+                ]
+            }
+
+### /users/:user_id/pack/:packmate_id (GET) [GET /users/{user_id}/pack/{packmate_id}]
+
+Responds with a `200` status code if user `user_id` has `packmate_id` in their
+Pack or `404` otherwise.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the user who owns the Pack.
+    + `packmate_id`: `5eee34b3ca37750008547373` (user_id) - <span style="color: darkred">[required]</span> ID of the user within the Pack.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:user_id/pack/:packmate_id (DELETE) [DELETE /users/{user_id}/pack/{packmate_id}]
+
+Removes a user (`packmate_id`) from another user's (`user_id`) Pack.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the user who owns the Pack.
+    + `packmate_id`: `5eee34b3ca37750008547373` (user_id) - <span style="color: darkred">[required]</span> ID of the user within the Pack.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:user_id/pack/:packmate_id (PUT) [PUT /users/{user_id}/pack/{packmate_id}]
+
+Adds a user (`packmate_id`) to another user's (`user_id`) Pack.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the user who owns the Pack.
+    + `packmate_id`: `5eee34b3ca37750008547373` (user_id) - <span style="color: darkred">[required]</span> ID of the user to add to the Pack.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:user_id/bookmarks (GET) [GET /users/{user_id}/bookmarks{?after}]
+
+Returns a list of `bark_id`s bookmarked by a specific user. If you're just looking for the _number_ of bookmarked Barks a user has, use the [`GET /users/:user_id`](#/reference/0/user-endpoints/users-user-id-get) endpoint instead.
+
+> Note that the API does not keep a timestamp of when a Bark was added or removed as a bookmark.
+
+Returns are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + after (optional, bark_id) - <span style="color: gray">[optional]</span> Return only those Barks that occur *after* `bark_id` in the result list.
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the specific user.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + barks (array[string]) - An array of `bark_id`s. Empty if there are no barks left to show.
+
+    + Body
+
+            {
+                "success": true,
+                "barks": [
+                    "5eee34b3ca37750008547372",
+                    "5eee34b3ca37750008547373",
+                    "5eee34b3ca37750008547374"
+                ]
+            }
+
+### /users/:user_id/bookmarks/:bark_id (GET) [GET /users/{user_id}/bookmarks/{bark_id}]
+
+Responds with a `200` status code if user `user_id` has bookmarked `bark_id` or
+`404` otherwise.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the specific user.
+    + `bark_id`: `5eee34b3ca37750008547373` (bark_id) - <span style="color: darkred">[required]</span> ID of the Bark.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:user_id/bookmarks/:bark_id (DELETE) [DELETE /users/{user_id}/bookmarks/{bark_id}]
+
+Removes a Bark from a user's bookmarks.
+
+> Note that the API does not keep a timestamp of when a Bark was added or removed as a bookmark.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the specific user.
+    + `bark_id`: `5eee34b3ca37750008547373` (bark_id) - <span style="color: darkred">[required]</span> ID of the Bark.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:user_id/bookmarks/:bark_id (PUT) [PUT /users/{user_id}/bookmarks/{bark_id}]
+
+Adds a Bark to a user's bookmarks.
+
+> Note that the API does not keep a timestamp of when a Bark was added or removed as a bookmark.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the specific user.
+    + `bark_id`: `5eee34b3ca37750008547373` (bark_id) - <span style="color: darkred">[required]</span> ID of the Bark.
+
++ Request
+
+    + Headers
+
+            key: your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+## Data Structures
+
+### Bark (object)
+
++ bark_id: `5ec8adf06e38137ff2e58769` (string) - A unique immutable MongoDB ID representing this Bark. Generated automatically by the server.
++ owner: `5ec8adf06e38137ff2e58770` (string) - The `user_id` of the user that created this Bark.
++ content (string) - The raw non-empty contents of the Bark.
++ createdAt: `1579345900650` (number) - When this Bark was created [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now).
++ likes (number) - The current number of likes this Bark has received.
++ rebarks (number) - The current number of rebarks this Bark has received.
++ barkbacks (number) - The current number of bark-backs this Bark has received.
++ deleted (boolean) - `true` if this Bark was deleted or `false` otherwise.
++ private (boolean) - `true` if this Bark is private or `false` otherwise.
++ barkbackTo: `5ec8adf06e38137ff2e58769` (string, nullable) - The `bark_id` of the Bark this Bark is responding to or `null` if this is not a bark-back.
++ rebarkOf: `5ec8adf06e38137ff2e58769` (string, nullable) - The `bark_id` of the original Bark this Bark rebarked or `null` if this is not a rebark.
+
+### User (object)
+
++ name: `"Barack Obama"` (string) - The full name of the user.
++ email: `"o@barackobama.com"` (string) - The user's email address.
++ phone: `"773-555-5555"` (string) - The user's well-formatted phone number.
++ username: `"Oforce1"` (string) - The user's unique username within the system.
++ packmates (number) - The current number of users added to this user's Pack.
++ following (number) - The current number of Barks this user is following.
++ bookmarked (number) - The current number of Barks this user has bookmarked.
++ liked (number) - The current number of Barks this user has liked.
++ deleted (boolean) - `true` if this user was deleted or `false` otherwise.

@@ -20,7 +20,7 @@ excellent position to do well on the actual competition problem statement.
 <tr>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="#"></a> (sample to be released in June)</strong></p>
+<p align="center"><strong><a href="/2021">Barker</a> (sample)</strong></p>
 </th>
 <th>
 <img width="500" height="1" />
@@ -93,6 +93,43 @@ competitions.
 <br />
 🎒 <a href="https://github.com/nhscc/airports.api.hscc.bdpa.org">API source code</a>
 </p>
+</td>
+</tr>
+</table>
+<table>
+<tr>
+<th>
+<img width="500" height="1" />
+<p align="center"><strong><a href="/2021">Barker</a> (sample)</strong></p>
+</th>
+<th>
+<img width="500" height="1" />
+</th>
+</tr>
+<tr>
+<td>
+<img width="500" height="1" />
+<p>
+📑 <a href="/2021/barker">Problem statement</a>
+<br />
+🌍 <a href="https://barker.solutions.hscc.bdpa.org">Live demo</a> (temporarily offline)
+<br />
+📚 <a href="https://hscckhug3eb6.docs.apiary.io/">Interactive API docs</a>
+</p>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<img width="500" height="1" />
+<p>
+📦 <a href="https://github.com/nhscc/barker.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/barker.api.hscc.bdpa.org">API source code</a>
+</p>
+</td>
+<td>
 </td>
 </tr>
 </table>
