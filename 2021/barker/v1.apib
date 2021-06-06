@@ -735,7 +735,7 @@ See an example
 
 ### /users (POST) [POST /users]
 
-Creates a new user.
+Creates a new user. Phone number is optional.
 
 > Notice: due to financial constraints, the oldest users in the system will be dropped from the API to make room for the new.
 
@@ -751,7 +751,7 @@ Creates a new user.
     + Attributes
         + name: `"Hillary Clinton"` (string) - The full name of the user.
         + email: `"h@hillaryclinton.com"` (string) - The user's email address.
-        + phone: `"312-555-5555"` (string) - The user's well-formatted phone number.
+        + phone: `"312-555-5555"` (string, nullable) - The user's well-formatted phone number.
         + username: `"thehill"` (string) - The user's unique username within the system.
 
     + Body
@@ -1334,7 +1334,7 @@ See an example
 
 + name: `"Barack Obama"` (string) - The full name of the user.
 + email: `"o@barackobama.com"` (string) - The user's email address.
-+ phone: `"773-555-5555"` (string) - The user's well-formatted phone number.
++ phone: `"773-555-5555"` (string, nullable) - The user's well-formatted phone number.
 + username: `"Oforce1"` (string) - The user's unique username within the system.
 + packmates (number) - The current number of users added to this user's Pack.
 + following (number) - The current number of Barks this user is following.
