@@ -586,7 +586,7 @@ This means _return all the Barks that were created after 6/1/2021 3:00:00 PM PST
 
 Note that any `match` filters are applied **in a case sensitive manner**, meaning `"hello world"` won't match `"Hello World"`, so watch out! If you want case-insensitive searching or you're an otherwise advanced programmer, you can use [regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions) via `regexMatch`. Unlike `match`, `regexMatch` does not allow for less than/greater than queries.
 
-You can also search by `bark_id` using `regexMatch` and the `|` operator; i.e. `{ "bark_id": "5f04f0607a927fab9cfbddfd|5f04f0607a927fab9cfbddfe" }`. _Note that no regex operators other than `|` will work when searching by `bark_id`!_
+You can also search by ID using `regexMatch` and the `|` operator like so: `{ "bark_id": "5f04f0607a927fab9cfbddfd|5f04f0607a927fab9cfbddfe" }`. Note that no regex operators other than `|` can be used when searching ID-related fields. Searchable ID-related fields are: `owner`, `barkbackTo`, `rebarkOf`.
 
 For example, if you wanted to find _all Barks from the past week_ (`match`) that are _owned by the users "anissa" or "jennifer"_ (`—m̶a̶t̶c̶h̶` **nope**, the "or" makes it a `regexMatch`), are _bark-backs to a specific Bark owned by the user "khalil"_ (`match` again), and _contain a word that ends in an exclamation point_ (`regexMatch` again):
 
