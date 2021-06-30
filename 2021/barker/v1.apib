@@ -121,10 +121,10 @@ For example, given the following dataset and an API with a default result size
 
 Suppose we issued the following requests to an API:
 
-`/api?after=0xabc123`: responds with an array of 3 items: *0xabc124* through *0xabc126*
-`/api?after=0xabcXYZ`: responds with an array of 0 items since `item_id` *0xabcXYZ* doesn't exist
-`/api?after=0xabc124`: responds with an array of 3 items: *0xabc125* through *0xabc127*
-`/api?after=0xabc127`: responds with an array of 0 items since there is nothing after *0xabc127*
+`/api?after=0xabc123`: responds with an array of 3 items: *0xabc124* through *0xabc126*<br />
+`/api?after=0xabcXYZ`: responds with an array of 0 items since `item_id` *0xabcXYZ* doesn't exist<br />
+`/api?after=0xabc124`: responds with an array of 3 items: *0xabc125* through *0xabc127*<br />
+`/api?after=0xabc127`: responds with an array of 0 items since there is nothing after *0xabc127*<br />
 `/api?after=0xabc125`: responds with an array of 2 items: *0xabc126* and *0xabc127*
 
 ## Status Codes
