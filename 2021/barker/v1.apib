@@ -562,7 +562,7 @@ Note that the values of `match` and `regexMatch` **must be [URI encoded](https:/
 
 Examples:
 
-Suppose you want to *match* all the Barks belonging to a specific user. There are several ways this might be accomplished, _some more performant than others_. One such way is by using this endpoint to perform a [brute-force search](https://en.wikipedia.org/wiki/Brute-force_search):
+Suppose you want to find all the Barks belonging to a specific user. There are several ways this might be accomplished, _some more performant than others_. One way is by using this endpoint to perform a [brute-force search](https://en.wikipedia.org/wiki/Brute-force_search):
 
 1. Come up with the JSON object to describe your query:
 
@@ -598,9 +598,15 @@ This means _return all the Barks that were created after 6/1/2021 3:00:00 PM PST
 
 Note that any `match` filters are applied **in a case sensitive manner**, meaning `"hello world"` won't match `"Hello World"`, so watch out! If you want case-insensitive searching or you're an otherwise advanced programmer, you can use [regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions) via `regexMatch`. Unlike `match`, `regexMatch` does not allow for less than/greater than queries.
 
-You can also search by ID using `regexMatch` and the `|` operator like so: `{ "bark_id": "5f04f0607a927fab9cfbddfd|5f04f0607a927fab9cfbddfe" }`. Note that no regex operators other than `|` can be used when searching ID-related fields. Searchable ID-related fields are: `owner`, `barkbackTo`, `rebarkOf`.
+You can also search by ID using `match` or `regexMatch`, using the `|` operator
+to search for multiple IDs at once; e.g.: `{ "rebarkOf":
+"5f04f0607a927fab9cfbddfd|5f04f0607a927fab9cfbddfe" }`. Note that no regex
+operators other than `|` can be used when searching ID-related fields.
+Searchable ID-related fields are: `owner`, `barkbackTo`, `rebarkOf`. If instead
+you want to get an item by its `bark_id` or `user_id`, use the appropriate
+endpoint.
 
-For example, if you wanted to find _all Barks from the past week_ (`match`) that are _owned by the users "anissa" or "jennifer"_ (`—m̶a̶t̶c̶h̶` **nope**, the "or" makes it a `regexMatch`), are _bark-backs to a specific Bark owned by the user "khalil"_ (`match` again), and _contain an alphabetic word that ends in an exclamation point_ (`regexMatch` again):
+As an example: if you wanted to find _all Barks from the past week_ (`match`) that are _owned by the users "anissa" or "jennifer"_ (either `match` or `regexMatch`), are _bark-backs to a specific Bark owned by the user "khalil"_ (`match` again), and _contain an alphabetic word that ends in an exclamation point_ (`regexMatch`):
 
 ```JavaScript
 const anissaUserId        = "5ec8adf06e38137ff2e58869"
