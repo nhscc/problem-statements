@@ -202,7 +202,7 @@ instance. Use this fact to your advantage.
 
 These endpoints deal with summary metadata about the system.
 
-- [/info (GET)](#info-get-get-info)
+- [/info (GET)](#/reference/0/metadata-endpoints/info-get)
 
 ### /info (GET) [GET /info]
 
@@ -235,15 +235,15 @@ See an example
 
 These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-whats-the-difference) on one or more Barks.
 
-- [/barks (GET)](#barks-get-get-barksafter)
-- [/barks (POST)](#barks-post-post-barks)
-- [/barks/:bark_id1/:bark_id2/.../:bark_idN (GET)](#barksbark_id1bark_id2bark_idn-get-get-barksbark_id)
-- [/barks/:bark_id1/:bark_id2/.../:bark_idN (DELETE)](#barksbark_id1bark_id2bark_idn-delete-delete-barksbark_id)
-- [/barks/:bark_id/likes (GET)](#barksbark_idlikes-get-get-barksbark_idlikesafter)
-- [/barks/:bark_id/likes/:user_id (GET)](#barksbark_idlikesuser_id-get-get-barksbark_idlikesuser_id)
-- [/barks/:bark_id/likes/:user_id (DELETE)](#barksbark_idlikesuser_id-delete-delete-barksbark_idlikesuser_id)
-- [/barks/:bark_id/likes/:user_id (PUT)](#barksbark_idlikesuser_id-put-put-barksbark_idlikesuser_id)
-- [/barks/search (GET)](#barkssearch-get-get-barkssearchaftermatchregexmatch)
+- [/barks (GET)](#/reference/0/bark-endpoints/barks-get)
+- [/barks (POST)](#/reference/0/bark-endpoints/barks-post)
+- [/barks/:bark_id1/:bark_id2/.../:bark_idN (GET)](#/reference/0/bark-endpoints/barks-bark-id-1-bark-id-2-bark-id-n-get)
+- [/barks/:bark_id1/:bark_id2/.../:bark_idN (DELETE)](#/reference/0/bark-endpoints/barks-bark-id-1-bark-id-2-bark-id-n-delete)
+- [/barks/:bark_id/likes (GET)](#/reference/0/bark-endpoints/barks-bark-id-likes-get)
+- [/barks/:bark_id/likes/:user_id (GET)](#/reference/0/bark-endpoints/barks-bark-id-likes-user-id-get)
+- [/barks/:bark_id/likes/:user_id (DELETE)](#/reference/0/bark-endpoints/barks-bark-id-likes-user-id-delete)
+- [/barks/:bark_id/likes/:user_id (PUT)](#/reference/0/bark-endpoints/barks-bark-id-likes-user-id-put)
+- [/barks/search (GET)](#/reference/0/bark-endpoints/barks-search-get)
 
 ### /barks (GET) [GET /barks{?after}]
 
@@ -692,25 +692,25 @@ See an example
 
 These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-whats-the-difference) on a user.
 
-- [/users (GET)](#users-get-get-usersafter)
-- [/users (POST)](#users-post-post-users)
-- [/users/:user_id (GET)](#usersuser_id-get-get-usersuser_id)
-- [/users/:user_id (DELETE)](#usersuser_id-delete-delete-usersuser_id)
-- [/users/:user_id (PUT)](#usersuser_id-put-put-usersuser_id)
-- [/users/:user_id/liked (GET)](#usersuser_idliked-get-get-usersuser_idlikedafter)
-- [/users/:user_id/liked/:bark_id (GET)](#usersuser_idlikedbark_id-get-get-usersuser_idlikedbark_id)
-- [/users/:user_id/following (GET)](#usersuser_idfollowing-get-get-usersuser_idfollowingincludeindirectafter)
-- [/users/:user_id/following/:followed_id (GET)](#usersuser_idfollowingfollowed_id-get-get-usersuser_idfollowingfollowed_id)
-- [/users/:user_id/following/:followed_id (DELETE)](#usersuser_idfollowingfollowed_id-delete-delete-usersuser_idfollowingfollowed_id)
-- [/users/:user_id/following/:followed_id (PUT)](#usersuser_idfollowingfollowed_id-put-put-usersuser_idfollowingfollowed_id)
-- [/users/:user_id/pack (GET)](#usersuser_idpack-get-get-usersuser_idpackafter)
-- [/users/:user_id/pack/:packmate_id (GET)](#usersuser_idpackpackmate_id-get-get-usersuser_idpackpackmate_id)
-- [/users/:user_id/pack/:packmate_id (DELETE)](#usersuser_idpackpackmate_id-delete-delete-usersuser_idpackpackmate_id)
-- [/users/:user_id/pack/:packmate_id (PUT)](#usersuser_idpackpackmate_id-put-put-usersuser_idpackpackmate_id)
-- [/users/:user_id/bookmarks (GET)](#usersuser_idbookmarks-get-get-usersuser_idbookmarksafter)
-- [/users/:user_id/bookmarks/:bark_id (GET)](#usersuser_idbookmarksbark_id-get-get-usersuser_idbookmarksbark_id)
-- [/users/:user_id/bookmarks/:bark_id (DELETE)](#usersuser_idbookmarksbark_id-delete-delete-usersuser_idbookmarksbark_id)
-- [/users/:user_id/bookmarks/:bark_id (PUT)](#usersuser_idbookmarksbark_id-put-put-usersuser_idbookmarksbark_id)
+- [/users (GET)](#/reference/0/user-endpoints/users-get)
+- [/users (POST)](#/reference/0/user-endpoints/users-post)
+- [/users/:user_id (GET)](#/reference/0/user-endpoints/users-user-id-get)
+- [/users/:user_id (DELETE)](#/reference/0/user-endpoints/users-user-id-delete)
+- [/users/:user_id (PUT)](#/reference/0/user-endpoints/users-user-id-put)
+- [/users/:user_id/liked (GET)](#/reference/0/user-endpoints/users-user-id-liked-get)
+- [/users/:user_id/liked/:bark_id (GET)](#/reference/0/user-endpoints/users-user-id-liked-bark-id-get)
+- [/users/:user_id/following (GET)](#/reference/0/user-endpoints/users-user-id-following-get)
+- [/users/:user_id/following/:followed_id (GET)](#/reference/0/user-endpoints/users-user-id-following-followed-id-get)
+- [/users/:user_id/following/:followed_id (DELETE)](#/reference/0/user-endpoints/users-user-id-following-followed-id-delete)
+- [/users/:user_id/following/:followed_id (PUT)](#/reference/0/user-endpoints/users-user-id-following-followed-id-put)
+- [/users/:user_id/pack (GET)](#/reference/0/user-endpoints/users-user-id-pack-get)
+- [/users/:user_id/pack/:packmate_id (GET)](#/reference/0/user-endpoints/users-user-id-pack-packmate-id-get)
+- [/users/:user_id/pack/:packmate_id (DELETE)](#/reference/0/user-endpoints/users-user-id-pack-packmate-id-delete)
+- [/users/:user_id/pack/:packmate_id (PUT)](#/reference/0/user-endpoints/users-user-id-pack-packmate-id-put)
+- [/users/:user_id/bookmarks (GET)](#/reference/0/user-endpoints/users-user-id-bookmarks-get)
+- [/users/:user_id/bookmarks/:bark_id (GET)](#/reference/0/user-endpoints/users-user-id-bookmarks-bark-id-get)
+- [/users/:user_id/bookmarks/:bark_id (DELETE)](#/reference/0/user-endpoints/users-user-id-bookmarks-bark-id-delete)
+- [/users/:user_id/bookmarks/:bark_id (PUT)](#/reference/0/user-endpoints/users-user-id-bookmarks-bark-id-put)
 
 ### /users (GET) [GET /users{?after}]
 
