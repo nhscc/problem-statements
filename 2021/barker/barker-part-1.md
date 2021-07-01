@@ -270,10 +270,10 @@ Additional constraints:
 **`authed` users can _mention_ other users in their Barks.**
 
 `authed` users can "mention" other users by authoring a Bark containing an `@`
-followed by the target user's name, e.g. `This is the bark @username mentioned`.
-If the user doesn't exist, it's just text. If the user does exist, the text
-becomes a _mention_, which becomes a link allowing other users to follow the
-mentioned user.
+followed by the target user's username, e.g.
+`This is the bark @username mentioned`. If the user doesn't exist, it's just
+text. If the user does exist, the text becomes a _mention_, which becomes a link
+allowing other users to follow the mentioned user.
 
 Barks that mention the user will appear in some form at the top of whatever view
 they appear in where they remain until dismissed by the user. It will be clearly

@@ -233,10 +233,10 @@ time.**
 > of titles and descriptions and sort based on the results of users' searches.
 
 To satisfy this requirement, you'll have to make many multiple calls to the
-[API /elections endpoint](https://hscc4cfe8be7.docs.apiary.io/#reference/0/metadata-endpoint/list-all-elections-in-the-system)
-at some point to search through and sort all elections in the system. Consider
-using a short-lived (30 second to 10 minute) caching strategy to reduce load on
-your app and the API. Take care to mind the API's
+[`GET /elections`](https://hscc4cfe8be7.docs.apiary.io/#reference/0/metadata-endpoint/list-all-elections-in-the-system)
+endpoint at some point to search through and sort all elections in the system.
+Consider using a short-lived (30 second to 10 minute) caching strategy to reduce
+load on your app and the API. Take care to mind the API's
 [rate limits](https://hscc4cfe8be7.docs.apiary.io/#introduction/rate-limits).
 
 ## Requirement 6
