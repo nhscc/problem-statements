@@ -6,7 +6,7 @@ A multimedia messaging app that "deletes" secret messages after a while isn't a
 new idea, but Ghost, Inc. has partnered with BDPA to create _Ghostmeme_ anyway!
 Your team won the contract to build the Ghostmeme messaging app where users can
 send and receive picture messages known as "memes," keep them private, or add
-them to public "stories".
+them to semi-public "stories".
 
 <details><summary>Summary of requirements (15 total)</summary>
 
@@ -355,7 +355,7 @@ received.
 > occurs outside the usual
 > [_synchronous_ event flow](https://dev.to/lydiahallie/javascript-visualized-event-loop-3dif).
 > There are
-> [many](https://www.encodedna.com/javascript/practice-ground/default.htm?pg=auto-refresh-div-using-javascript-and-ajax)
+> [many](https://www.encodedna.com/javascript/practice-ground/default.htm?pg=auto-refresh-div-using-javascript-and-ajax) >
 > [examples](https://www.internetlivestats.com/one-second/#tweets-band). One way
 > to implement asynchronous features (and some forms of caching) is by using
 > [frontend timers](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Timeouts_and_intervals)
