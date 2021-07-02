@@ -1,6 +1,7 @@
 # BDPA NHSCC 2021 Problem Statements
 
-[**Barker**](/2021/barker) (sample) was released during the 2021 competition.
+[**Barker**](/2021/barker) (sample) and [**Ghostmeme**](/2021/ghostmeme)
+(actual) were released during the 2021 competition.
 
 ## Key Challenges
 
@@ -27,7 +28,7 @@ mind:
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong>(actual to be released in July)</strong></p>
+<p align="center"><strong><a href="/2021">Ghostmeme</a> (actual)</strong></p>
 </th>
 </tr>
 <tr>
@@ -42,6 +43,14 @@ mind:
 </p>
 </td>
 <td>
+<img width="500" height="1" />
+<p>
+📑 <a href="/2021/ghostmeme">Problem statement</a>
+<br />
+🌍 <a href="https://ghostmeme.solutions.hscc.bdpa.org">Live demo</a> (temporarily offline)
+<br />
+📚 <a href="https://hscc6xt8cqqf.docs.apiary.io/">Interactive API docs</a>
+</p>
 </td>
 </tr>
 <tr>
@@ -54,6 +63,12 @@ mind:
 </p>
 </td>
 <td>
+<img width="500" height="1" />
+<p>
+📦 <a href="https://github.com/nhscc/ghostmeme.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/ghostmeme.api.hscc.bdpa.org">API source code</a>
+</p>
 </td>
 </tr>
 </table>
