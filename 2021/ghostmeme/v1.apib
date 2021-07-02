@@ -1174,7 +1174,7 @@ See an example
 
 ### /users/:user_id/requests/:request_type (GET) [GET /users/{user_id}/requests/{request_type}{?after}]
 
-Returns the IDs involved in unresolved friend requests of type `request_type` sent/received by a specific user (`user_id`).
+Returns the IDs involved in unresolved friend requests of type `request_type` sent/received by a specific user (`user_id`). Possible values for `request_types` are: `incoming` and `outgoing`.
 
 + Parameters
     + after (optional, user_id) - <span style="color: gray">[optional]</span> Return only those users that occur *after* `user_id` in the result list.
@@ -1208,7 +1208,7 @@ See an example
 
 ### /users/:user_id/requests/:request_type/:target_id (GET) [GET /users/{user_id}/requests/{request_type}/{target_id}]
 
-Responds with a `200` status code if there exists an unresolved friend request of type `request_type` between users `user_id` and `target_id` or `404` otherwise.
+Responds with a `200` status code if there exists an unresolved friend request of type `request_type` between users `user_id` and `target_id` or `404` otherwise. Possible values for `request_types` are: `incoming` and `outgoing`.
 
 + Parameters
     + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the first user.
@@ -1236,7 +1236,7 @@ See an example
 
 ### /users/:user_id/requests/:request_type/:target_id (DELETE) [DELETE /users/{user_id}/requests/{request_type}/{target_id}]
 
-Resolves (removes) a friend request between a specific user (`user_id`) and another (`target_id`).
+Resolves (removes) a friend request between a specific user (`user_id`) and another (`target_id`). Possible values for `request_types` are: `incoming` and `outgoing`.
 
 + Parameters
     + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the first user.
@@ -1264,7 +1264,7 @@ See an example
 
 ### /users/:user_id/requests/:request_type/:target_id (PUT) [PUT /users/{user_id}/requests/{request_type}/{target_id}]
 
-Adds a new unresolved friend request between a specific user (`user_id`) and another (`target_id`).
+Adds a new unresolved friend request between a specific user (`user_id`) and another (`target_id`). Possible values for `request_types` are: `incoming` and `outgoing`.
 
 + Parameters
     + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the first user.

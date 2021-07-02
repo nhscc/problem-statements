@@ -260,9 +260,11 @@ To fully satisfy this requirement, users must be able to:
 
 - View a list of their friends and friend requests
 - Remove friends
-- Send new friend requests by username, phone, or email
-- Send new friend requests by interacting with [mentions](#requirement-8)
+- Send new friend requests by username, phone, email or by interacting with
+  [mentions](#requirement-8)
+  - This is the _outgoing_ friend request type
 - Accept and reject friend requests sent to them
+  - This is the _incoming_ friend request type
 
 Additionally, users will be [notified](#requirement-4) when they have
 outstanding incoming friend requests.
