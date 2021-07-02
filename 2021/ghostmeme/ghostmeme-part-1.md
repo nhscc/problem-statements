@@ -191,7 +191,8 @@ them. Additionally, users can dismiss notifications they no longer wish to see.
 To fully satisfy this requirement, users of _your_ app always receive a
 notification about being mentioned unless they already dismissed it through
 _your_ app. That is: teams may find it necessary to _rebuild_ the local data of
-users created through other frontends.
+existing users (perhaps created through _other_ frontends) when they first
+login.
 
 > The API does not store user notification data. That is the responsibility of
 > each individual team's solution. However, the API contains all of the data
