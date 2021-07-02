@@ -138,11 +138,12 @@ From this view, users can:
 
 - View all the memes they've shared to their personal "story"
   - Each user has a single "story" they can add memes to
-  - The contents of a user's story are not publicly available
+  - The contents of a user's story are only available to that user and their
+    [friends](#requirement-6)
 - View 🔎, like ❤️, and comment 🗣️ on memes added to their own story and to
   their [friends'](#requirement-6) stories
-  - Comments are meme objects created in direct response to a _meme shared to a
-    story_
+  - Comments are meme objects created in direct response to a meme _shared to a
+    user's story_
     - This means comments cannot be created in response to other comments
     - This also means the _text_ of a comment is stored in the
       [`description`](https://hscc6xt8cqqf.docs.apiary.io/#/data-structures/0/meme)
@@ -308,11 +309,12 @@ mentioned user's name and profile picture
 
 Users can also include _hashtags_, e.g. `#MyHashTag`, in meme descriptions and
 comments by inputting a `#` followed by a string of alphanumeric characters.
-Each hashtags will be rendered as a link pointing to its own
-[search results](#requirement-9).
+Each hashtag will be rendered as a link pointing to its own
+[search result](#requirement-9).
 
 Additionally, users will be [notified](#requirement-4) when they are mentioned
-in a new comment or newly uploaded meme's description.
+in a new comment or newly uploaded meme's description they have permission to
+view.
 
 ## Requirement 9
 
@@ -348,16 +350,16 @@ the user doing anything extra, like pressing a refresh button. In the
 [Chats view](#requirement-2), new meme objects should appear as they are
 received.
 
-This type of automatic updating is called _asynchronous_ or
-"[ajaxian](<https://en.wikipedia.org/wiki/Ajax_(programming)>)" since it occurs
-outside the usual
-[_synchronous_ event flow](https://stackoverflow.com/a/32456239/1367414). There
-are
-[many](https://www.encodedna.com/javascript/practice-ground/default.htm?pg=auto-refresh-div-using-javascript-and-ajax)
-[examples](https://www.internetlivestats.com/one-second/#tweets-band). One way
-to implement asynchronous features (and some forms of caching) is by using
-[frontend timers](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Timeouts_and_intervals)
-to regularly check the API for new data every now and then.
+> This type of automatic updating is called _asynchronous_ or
+> "[ajaxian](<https://en.wikipedia.org/wiki/Ajax_(programming)>)" since it
+> occurs outside the usual
+> [_synchronous_ event flow](https://dev.to/lydiahallie/javascript-visualized-event-loop-3dif).
+> There are
+> [many](https://www.encodedna.com/javascript/practice-ground/default.htm?pg=auto-refresh-div-using-javascript-and-ajax)
+> [examples](https://www.internetlivestats.com/one-second/#tweets-band). One way
+> to implement asynchronous features (and some forms of caching) is by using
+> [frontend timers](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Timeouts_and_intervals)
+> to regularly check the API for new data every now and then.
 
 ## Requirement 11
 
