@@ -351,16 +351,20 @@ the user doing anything extra, like pressing a refresh button. In the
 [Chats view](#requirement-2), new meme objects should appear as they are
 received.
 
-> This type of automatic updating is called _asynchronous_ or
-> "[ajaxian](<https://en.wikipedia.org/wiki/Ajax_(programming)>)" since it
-> occurs outside the usual
-> [_synchronous_ event flow](https://dev.to/lydiahallie/javascript-visualized-event-loop-3dif).
-> There are
-> [many](https://www.encodedna.com/javascript/practice-ground/default.htm?pg=auto-refresh-div-using-javascript-and-ajax) >
-> [examples](https://www.internetlivestats.com/one-second/#tweets-band). One way
-> to implement asynchronous features (and some forms of caching) is by using
-> [frontend timers](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Timeouts_and_intervals)
-> to regularly check the API for new data every now and then.
+<blockquote>
+
+This type of automatic updating is called _asynchronous_ or
+"[ajaxian](<https://en.wikipedia.org/wiki/Ajax_(programming)>)" since it occurs
+outside the usual
+[_synchronous_ event flow](https://dev.to/lydiahallie/javascript-visualized-event-loop-3dif).
+There are
+[many](https://www.encodedna.com/javascript/practice-ground/default.htm?pg=auto-refresh-div-using-javascript-and-ajax)
+[examples](https://www.internetlivestats.com/one-second/#tweets-band). One way
+to implement asynchronous features (and some forms of caching) is by using
+[frontend timers](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Timeouts_and_intervals)
+to regularly check the API for new data every now and then.
+
+</blockquote>
 
 ## Requirement 11
 
@@ -422,7 +426,7 @@ Specifically: **form inputs** and the like **will not be vulnerable to SQL
 injection attacks. User-generated outputs will not be vulnerable to XSS or
 similar attacks.**
 
-Additionally, any passwords or other secrets stored in local or remote databases
+Additionally, any passwords stored in local or remote databases
 [must](https://auth0.com/blog/hashing-passwords-one-way-road-to-security)
 [be](https://codahale.com/how-to-safely-store-a-password)
 [protected](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html).
@@ -435,7 +439,7 @@ to handle all this for you, and
 [are](https://www.php.net/manual/en/faq.passwords.php#faq.passwords.bestpractice)
 [many](https://stackoverflow.com/a/61405208/1367414)
 [tutorials](https://8gwifi.org/docs/window-crypto-pbkdf.jsp) for how to safely
-store passwords and other secrets in a database.
+store passwords in a database.
 [Your users are counting on you to protect them!](https://www.statista.com/statistics/273550/data-breaches-recorded-in-the-united-states-by-number-of-breaches-and-records-exposed/)
 
 > When storing secrets, we recommend using SHA256+bcrypt, scrypt, or PBKDF2
