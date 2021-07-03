@@ -88,7 +88,9 @@ Memes in the system:
 - Show some sort of timestamp describing when they were created
 - Can be assigned an [_expiration time_](#vanishing-memes) upon creation
 
-Memes should be displayed in descending creation order (i.e. newest first).
+Memes should be displayed in descending creation order (i.e. newest first). **It
+is _not_ required that two users be [friends](#requirement-6) before they can
+chat with one another.**
 
 <blockquote>
 
