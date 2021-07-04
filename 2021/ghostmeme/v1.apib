@@ -426,7 +426,7 @@ See an example
 
 ### /memes/:meme_id1/:meme_id2/.../:meme_idN (PUT) [PUT /memes/{meme_id}]
 
-Sets the specified meme's `expiredAt` property. This property is required.
+Sets the specified meme's `expiredAt` property. All the attributes listed below must be present in the request body.
 
 You can also pass multiple `meme_id`s to this endpoint, each separated by a `/`.
 
@@ -956,7 +956,7 @@ See an example
 
 ### /users/:user_id (PUT) [PUT /users/{user_id}]
 
-Sets the specified user's `name`, `email`, `phone`, and other properties. All properties listed below are required.
+Sets the specified user's `name`, `email`, `phone`, and other properties. All the attributes listed below must be present in the request body.
 
 + Parameters
     + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the specified user.
