@@ -88,7 +88,7 @@ Across all views, memes in the API:
 - Show some sort of timestamp describing when they were created
 - Are usually displayed in descending creation order (i.e. newest first)
 
-Users can "create" or "upload" memes in this view and others by providing a string URL pointing to an
+Users can "create" memes in this view by providing a string URL pointing to an
 existing image on the internet. For example:
 
 > https://assets.entrepreneur.com/content/3x2/2000/20180703190744-rollsafe-meme.jpeg?width=700&crop=2:1
@@ -174,7 +174,7 @@ From this view, users can:
 
 Memes should be displayed in descending creation order (i.e. newest first).
 
-Users can "create" or "upload" memes in this view and others by providing a string URL pointing to an
+Users can "create" memes in this view by providing a string URL pointing to an
 existing image on the internet. For example:
 
 > https://assets.entrepreneur.com/content/3x2/2000/20180703190744-rollsafe-meme.jpeg?width=700&crop=2:1
@@ -237,8 +237,7 @@ required:
 
 When registering, the user must choose a picture from their computer and
 [upload](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file)
-it to your app as their profile picture. Even though your team is storing and
-indexing the images locally, profile picture uploads should be limited to a
+it to your app as their profile picture. _This is unlike the others views_, which only allow a user to provide an image URL (when creating a meme). Additionally, profile picture uploads should be limited to a
 reasonable file size and dimensions.
 
 > Unlike past problem statements, user creation/deletion is managed for you
