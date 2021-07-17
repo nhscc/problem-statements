@@ -355,7 +355,7 @@ is an egregious privacy violation and security vulnerability.</sub>
 
 ## Requirement 10
 
-**Like counts will update in the UI in real time; new comments on memes will
+**Like counts will update in the UI in real time; new chat messages/memes will
 appear without a page refresh.**
 
 In the [Stories view](#requirement-3), updates to a meme's like count and new
