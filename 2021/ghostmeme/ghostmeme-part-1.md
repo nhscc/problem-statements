@@ -81,7 +81,8 @@ Across all views, memes in the API:
     [`description`](https://hscc6xt8cqqf.docs.apiary.io/#/data-structures/0/meme)
     property should render as a simple chat message in this view
 - Cannot be edited after creation
-  - The only exception is when [manually vanishing a meme](#vanishing-memes) in the Chats view
+  - The only exception is when [manually vanishing a meme](#vanishing-memes) in
+    the Chats view
 - Usually appear in a scrollable list, colloquially referred to as a "wall,"
   "feed," or "chat"
 - Show the username of the user that owns/created them
@@ -93,11 +94,14 @@ existing image on the internet. For example:
 
 > https://assets.entrepreneur.com/content/3x2/2000/20180703190744-rollsafe-meme.jpeg?width=700&crop=2:1
 
-In the Chat view specifically, memes can be assigned an [_expiration time_](#vanishing-memes). Use the
-[`receiver`](https://hscc6xt8cqqf.docs.apiary.io/#/data-structures/0/meme) property when
-creating a meme to specify which user to "send" the meme to / "receive" the meme. The
-[`owner`](https://hscc6xt8cqqf.docs.apiary.io/#/data-structures/0/meme) of the meme, then, is its sender. **It
-is _not_ required that two users be [friends](#requirement-6) before they can chat with one another.**
+In the Chat view specifically, memes can be assigned an
+[_expiration time_](#vanishing-memes). Use the
+[`receiver`](https://hscc6xt8cqqf.docs.apiary.io/#/data-structures/0/meme)
+property when creating a meme to specify which user to "send" the meme to /
+"receive" the meme. The
+[`owner`](https://hscc6xt8cqqf.docs.apiary.io/#/data-structures/0/meme) of the
+meme, then, is its sender. **It is _not_ required that two users be
+[friends](#requirement-6) before they can chat with one another.**
 
 <blockquote>
 
@@ -164,13 +168,15 @@ From this view, users can:
 - "Manually vanish" (delete) memes they've shared to their story and comments
   they've made
   - Unlike in the [Chats view](#requirement-2), meme objects in the Stories view
-    don't expire on a timer and don't have to disappear asynchronously; however, they can be
-    _[manually vanished](#vanishing-memes)_ (deleted) by the user
+    don't expire on a timer and don't have to disappear asynchronously; however,
+    they can be _[manually vanished](#vanishing-memes)_ (deleted) by the user
   - To indicate that a meme or comment has been manually vanished, set its
     [`expiredAt`](https://hscc6xt8cqqf.docs.apiary.io/#/data-structures/0/meme)
     property to `0`
-  - **Vanished comments and memes must not be visible in the in the Stories view**
-- Share a meme they saw on a friend's story directly to their own story (as their own newly created meme)
+  - **Vanished comments and memes must not be visible in the in the Stories
+    view**
+- Share a meme they saw on a friend's story directly to their own story (as
+  their own newly created meme)
 
 Memes should be displayed in descending creation order (i.e. newest first).
 
@@ -237,8 +243,10 @@ required:
 
 When registering, the user must choose a picture from their computer and
 [upload](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file)
-it to your app as their profile picture. _This is unlike the others views_, which only allow a user to provide an image URL (when creating a meme). Additionally, profile picture uploads should be limited to a
-reasonable file size and dimensions.
+it to your app as their profile picture. _This is unlike the others views_,
+which only allow a user to provide an image URL (when creating a meme).
+Additionally, profile picture uploads should be limited to a reasonable file
+size and dimensions.
 
 > Unlike past problem statements, user creation/deletion is managed for you
 > through
