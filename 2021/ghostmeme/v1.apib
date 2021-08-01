@@ -657,7 +657,8 @@ const myNormalQueryObject = {
 const myRegexQueryObject = {
     "owner": `${lukeUserId}|${maryUserId}`,
     // Regex explained interactively: https://regex101.com/r/BJJTR8/1
-    "description": "(?<=^| )\$(bat[a-z0-9]*)(?=\b|$)"
+    // Also: all the normal JS string escaping rules apply (i.e. \ becomes \\)
+    "description": "(?<=^| )\\$(bat[a-z0-9]*)(?=\\b|$)"
 }
 
 const myNormalQuery = encodeURIComponent(JSON.stringify(myNormalQueryObject))
