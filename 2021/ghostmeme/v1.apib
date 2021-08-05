@@ -957,7 +957,7 @@ See an example
 
 ### /users/:user_id (PUT) [PUT /users/{user_id}]
 
-Sets the specified user's `name`, `email`, `phone`, and other properties. All the attributes listed below must be present in the request body.
+Sets the specified user's `name`, `email`, `phone`, and other properties. All the attributes listed below must be present in the request body except `imageBase64`, which can be omitted if it's not being updated.
 
 + Parameters
     + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the specified user.
@@ -973,7 +973,7 @@ Sets the specified user's `name`, `email`, `phone`, and other properties. All th
         + name: `"Elizabeth Warren"` (string) - The full name of the user.
         + email: `"liz@ewarren.com"` (string) - The user's email address.
         + phone: `"978-555-5555"` (string, nullable) - The user's well-formatted phone number.
-        + imageBase64 (string, nullable) - A valid [base64](https://en.wikipedia.org/wiki/Base64) string or [data uri](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs).
+        + imageBase64 (string, nullable, optional) - A valid [base64](https://en.wikipedia.org/wiki/Base64) string, [data uri](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs), or `null`.
 
     + Body
 
