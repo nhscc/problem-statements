@@ -957,7 +957,7 @@ See an example
 
 ### /users/:user_id (PUT) [PUT /users/{user_id}]
 
-Sets the specified user's `name`, `email`, `phone`, and other properties. All the attributes listed below must be present in the request body except `imageBase64`, which can be omitted if it's not being updated.
+Sets the specified user's `name`, `email`, `phone`, and other properties. Besides `imageBase64`, all the attributes listed below must be present in the request body _even if they're not changed_. `imageBase64` is optional and can be omitted if it's not being updated.
 
 + Parameters
     + `user_id`: `5eee34b3ca37750008547372` (user_id) - <span style="color: darkred">[required]</span> ID of the specified user.
