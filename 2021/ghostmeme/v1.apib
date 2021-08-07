@@ -331,7 +331,7 @@ Creates a new meme object.
         + private (boolean) - `true` if this meme is private or `false` otherwise.
         + replyTo: `5ec8adf06e38137ff2e58769` (string, nullable) - The `meme_id` of the meme to which this meme is responding or `null` if it is not a reply.
         + imageUrl (string, nullable) - The HTTP url of a PNG, JPEG, or GIF image file or `null` if there is no image.
-        + imageBase64 (string, nullable) - A valid [base64](https://en.wikipedia.org/wiki/Base64) [data uri](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) or `null`.
+        + imageBase64: `"data:image/jpeg;base64,/9j/4AAQ"` (string, nullable) - A valid [base64](https://en.wikipedia.org/wiki/Base64) [data uri](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) or `null`.
 
     + Body
 
@@ -816,7 +816,7 @@ Creates a new user. Phone number is optional.
         + email: `"h@hillaryclinton.com"` (string) - The user's email address.
         + phone: `"312-555-5555"` (string, nullable) - The user's well-formatted phone number.
         + username: `"thehill"` (string) - The user's unique username within the system.
-        + imageBase64 (string, nullable) - A valid [base64](https://en.wikipedia.org/wiki/Base64) [data uri](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) or `null`.
+        + imageBase64: `"data:image/jpeg;base64,/9j/4AAQ"` (string, nullable) - A valid [base64](https://en.wikipedia.org/wiki/Base64) [data uri](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) or `null`.
 
     + Body
 
@@ -973,7 +973,7 @@ Sets the specified user's `name`, `email`, `phone`, and other properties. Beside
         + name: `"Elizabeth Warren"` (string) - The full name of the user.
         + email: `"liz@ewarren.com"` (string) - The user's email address.
         + phone: `"978-555-5555"` (string, nullable) - The user's well-formatted phone number.
-        + imageBase64 (string, nullable, optional) - A valid [base64](https://en.wikipedia.org/wiki/Base64) [data uri](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) or `null`.
+        + imageBase64: `"data:image/jpeg;base64,/9j/4AAQ"` (string, nullable, optional) - A valid [base64](https://en.wikipedia.org/wiki/Base64) [data uri](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) or `null`.
 
     + Body
 
