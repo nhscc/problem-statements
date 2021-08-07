@@ -3,6 +3,8 @@
 [**Barker**](/2021/barker) (sample) and [**Ghostmeme**](/2021/ghostmeme)
 (actual) were released during the 2021 competition.
 
+All uploaded memes/images are stored on [imgur](https://imgur.com/a/TytqlvJ).
+
 ## Key Challenges
 
 This year's problem statements were designed with the following challenges in
@@ -33,7 +35,6 @@ mind:
 </tr>
 <tr>
 <td>
-<img width="500" height="1" />
 <p>
 📑 <a href="/2021/barker">Problem statement</a>
 <br />
@@ -46,6 +47,8 @@ mind:
 <img width="500" height="1" />
 <p>
 📑 <a href="/2021/ghostmeme">Problem statement</a>
+<br />
+🌍 <a href="https://imgur.com/a/TytqlvJ">Meme storage</a>
 <br />
 🌍 <a href="https://ghostmeme.solutions.hscc.bdpa.org">Live demo</a> (temporarily offline)
 <br />

@@ -108,7 +108,6 @@ competitions.
 </tr>
 <tr>
 <td>
-<img width="500" height="1" />
 <p>
 📑 <a href="/2021/barker">Problem statement</a>
 <br />
@@ -121,6 +120,8 @@ competitions.
 <img width="500" height="1" />
 <p>
 📑 <a href="/2021/ghostmeme">Problem statement</a>
+<br />
+🌍 <a href="https://imgur.com/a/TytqlvJ">Meme storage</a>
 <br />
 🌍 <a href="https://ghostmeme.solutions.hscc.bdpa.org">Live demo</a> (temporarily offline)
 <br />
