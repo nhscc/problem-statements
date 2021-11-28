@@ -57,7 +57,7 @@ competitions.
 <tr>
 <td>
 <p>
-📑 <a href="/2019/elections">Problem statement</a> (api temporarily down for repairs)
+📑 <a href="/2019/elections">Problem statement</a> (api down for repairs)
 <br />
 🌍 <a href="https://elections.solutions.hscc.bdpa.org">Live demo</a> (temporarily offline)
 <br />
