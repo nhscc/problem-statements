@@ -20,11 +20,11 @@ excellent position to do well on the actual competition problem statement.
 <tr>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2021">Barker</a> (sample)</strong></p>
+<p align="center"><strong>TBA</p>
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2021">Ghostmeme</a> (actual)</strong></p>
+<p align="center"><strong>TBA</p>
 </th>
 </tr>
 
