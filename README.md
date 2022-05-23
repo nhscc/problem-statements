@@ -39,7 +39,8 @@ competitions.
 <small><sup>1</sup> Unless
 [GitHub Actions](https://github.com/features/actions),
 [MongoDB Atlas](https://www.mongodb.com/cloud/atlas), or
-[Vercel](https://vercel.com) go down</small>
+[Vercel](https://vercel.com) go down, or they're taken down for repairs
+(DFR)</small>
 
 ---
 
@@ -57,9 +58,9 @@ competitions.
 <tr>
 <td>
 <p>
-📑 <a href="/2019/elections">Problem statement</a> (temporarily offline)
+📑 <a href="/2019/elections">Problem statement</a> (DFR)
 <br />
-🌍 <a href="https://elections.solutions.hscc.bdpa.org">Live demo</a> (temporarily offline)
+🌍 <a href="https://elections.solutions.hscc.bdpa.org">Live demo</a> (DFR)
 <br />
 📚 <a href="https://hscc4cfe8be7.docs.apiary.io/">Interactive API docs</a>
 </p>
@@ -69,7 +70,7 @@ competitions.
 <p>
 📑 <a href="/2020/airports">Problem statement</a>
 <br />
-🌍 <a href="https://airports.solutions.hscc.bdpa.org">Live demo</a> (temporarily offline)
+🌍 <a href="https://airports.solutions.hscc.bdpa.org">Live demo</a> (DFR)
 <br />
 📚 <a href="https://hsccdfbb7244.docs.apiary.io/">Interactive API docs</a> (version 1)
 <br />
@@ -111,7 +112,7 @@ competitions.
 <p>
 📑 <a href="/2021/barker">Problem statement</a>
 <br />
-🌍 <a href="https://barker.solutions.hscc.bdpa.org">Live demo</a> (temporarily offline)
+🌍 <a href="https://barker.solutions.hscc.bdpa.org">Live demo</a> (DFR)
 <br />
 📚 <a href="https://hscckhug3eb6.docs.apiary.io/">Interactive API docs</a>
 </p>
@@ -123,7 +124,7 @@ competitions.
 <br />
 🌍 <a href="https://imgur.com/a/TytqlvJ">Meme storage</a>
 <br />
-🌍 <a href="https://ghostmeme.solutions.hscc.bdpa.org">Live demo</a> (temporarily offline)
+🌍 <a href="https://ghostmeme.solutions.hscc.bdpa.org">Live demo</a> (DFR)
 <br />
 📚 <a href="https://hscc6xt8cqqf.docs.apiary.io/">Interactive API docs</a>
 </p>
