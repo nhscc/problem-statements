@@ -1,0 +1,797 @@
+FORMAT: 1A
+HOST: https://drive.api.hscc.bdpa.org/v2
+
+# BDPADrive API (VERSION 2)
+
+> Version 1 documentation can be found [here](https://hsccebun98j2.docs.apiary.io).
+
+> We're looking for feedback! If you have any opinions or ideas, contact us on Slack.
+
+Based on [simple REST principles](https://restfulapi.net), the BDPADrive API returns JSON data responses to requests. This is the API used by teams and their apps for the BDPA National High School Computer Competition. It contains all of the data teams' apps must interact with. The API is live and will ideally remain online indefinitely.
+
+The base address of the BDPADrive API is https://drive.api.hscc.bdpa.org/V where `V` is the version of the API you want to use (either `v1` or `v2`). Each version of the API provides a set of endpoints with their own unique path and requirements.
+
+[The source code behind the API is available on GitHub](https://github.com/nhscc/drive.api.hscc.bdpa.org). If you have any trouble, [open an issue there](https://github.com/nhscc/drive.api.hscc.bdpa.org/issues/new) or contact us on Slack.
+
+> Notice: due to financial constraints, the oldest documents in the system will be dropped from the API to make room for the new. That is: `username`s and `<item>_id`s are not guaranteed to exist forever!
+
+## Migration Guide
+
+Changes between version 1 and version 2:
+
+- The `/filesystem` endpoint and all sub-endpoints have been deprecated and are no longer functional. All of the functionality contained within `/filesystem` has been merged into the new unified `/users` endpoint.
+- 3 new endpoints: `/users/:username/filesystem`, `/users/:username/filesystem/search`, `/users/:username/filesystem/:node_id1/:node_id2/.../:node_idN`.
+- All [FileNode](#/data-structures/0/file-node) and [MetaNode](#/data-structures/0/meta-node) items have an additional `permissions` property. This can be used to implement the newly required sharing functionality.
+
+## Requesting a Key
+
+To access the majority of this API's endpoints requires a key. If your team needs a key, or to replace a lost or stolen key, use our Slack bot (BDPABot) to manage your team's keys.
+
+When you get your key, include it as your request's [Authorization header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) and you will be immediately authenticated into the system. For example: `Authorization: bearer your-special-api-key-here`.
+
+## Rules of API Access
+
+1. Do not bombard the API with requests or you risk permanent IP/subnet ban. **Limit your apps to no more than 10 requests per second per API key**. If your app ends up sending too many requests over some time period, you'll get a `HTTP 429` response along with a monotonically increasing soft ban (starting at 15 minutes). Similarly, the size of requests is strictly limited, so you must limit the amount of data you're sending. When you send a request that is too large (>100KB), it will fail with a `HTTP 413` response.
+
+2. **Do not reveal your API key to anyone** not on your own team. It is how the API identifies your team. Do not upload it to GitHub or leave it lying around in your source code. Save it to a file and `.gitignore` it or save it to an environment variable.
+
+3. Since the API is live, you might be able to see or interact with content posted by other teams. If this is the case, please do not post anything inappropriate.
+
+4. If you have a relevant feature request or you encounter any vulnerabilities, errors, or other issues, don't hesitate to contact NHSCC staff via Slack or [open an issue on GitHub](https://github.com/nhscc/drive.api.hscc.bdpa.org). For significant enough finds, bonus points may be awarded. On the other hand, abusing any vulnerability or bug may result in disqualification.
+
+5. **The API was built to randomly return errors every so often**. That means your app must be prepared to deal with `HTTP 555` and other bad responses. However, if you're consistently getting `HTTP 5xx` errors back to back, then something is wrong. Please report this if it happens.
+
+6. All responses are raw JSON. All request payloads must be sent as raw JSON. `JSON.stringify()` and `JSON.parse()` or whatever language equivalent is available to you is your friend!
+
+## Request Methods
+
+This API is based on [simple REST principles](https://restfulapi.net). Resources are accessed via standard HTTPS requests in UTF-8 format to an API endpoint. This API understands the following HTTP request methods:
+
+| METHOD | MEANING |
+|-----   |-----    |
+| GET    | Return data about something |
+| POST   | Create something new        |
+| PUT    | Modify something            |
+| DELETE | Delete something            |
+
+## Rate Limits
+
+As said earlier, do not bombard the API with requests. If you do, the API will soft ban you for fifteen minutes the first time before accepting requests from your API key or IP address again. Each following time this happens within a certain period, your ban time will quadruple.
+
+So **limit your apps to no more than 10 requests per second per API key**. You know you've been soft banned if you receive an `HTTP 429` response. Check the JSON response for the `retryAfter` key, which represents for how long your API key and/or IP are banned from making further requests (in milliseconds).
+
+If you have access to our Slack bot and this is the first time you've been banned, you can use the Slack bot to unban yourself immediately.
+
+## Pagination
+
+Endpoints that might return a lot of items (users, documents, etc) are paginated via [range queries](https://en.wikipedia.org/wiki/Range_query_(database)). Such endpoints optionally accept an `after` parameter, which is an `<item>_id` or other identifier that determines which API item is returned first. That is: the first item will be the first `<item>_id` that comes *after* the `after` `<item>_id`. Omitting the `after` parameter returns the first 100 items in the system.
+
+For example, given the following dataset and an API with a default result size (or "page" size) of 3:
+
+```JavaScript
+[
+    { item_id: 0xabc123, name: 'Item 1 name' },
+    { item_id: 0xabc124, name: 'Item 2 name' },
+    { item_id: 0xabc125, name: 'Item 3 name' },
+    { item_id: 0xabc126, name: 'Item 4 name' },
+    { item_id: 0xabc127, name: 'Item 5 name' },
+]
+```
+
+Suppose we issued the following requests to an API:
+
+`/api?after=0xabc123`: responds with an array of 3 items: *0xabc124* through *0xabc126*  
+`/api?after=0xabcXYZ`: responds with an array of 0 items since `item_id` *0xabcXYZ* doesn't exist  
+`/api?after=0xabc124`: responds with an array of 3 items: *0xabc125* through *0xabc127*  
+`/api?after=0xabc127`: responds with an array of 0 items since there is nothing after *0xabc127*  
+`/api?after=0xabc125`: responds with an array of 2 items: *0xabc126* and *0xabc127*  
+
+## Status Codes
+
+This API will issue responses with one of the following status codes:
+
+| STATUS | MEANING |
+|-----   |-----    |
+| 200    | Your request completed successfully. |
+| 400    | Your request was malformed or otherwise bad. Check the requirements. |
+| 401    | Session is not authenticated. Put your API key in the header! |
+| 403    | Session is not authorized. You tried to do something you can't do. |
+| 404    | The resource (or endpoint) was not found. Check your syntax. |
+| 405    | Bad method. The endpoint does not support your request's method. |
+| 413    | Your request was too large and was dropped. Max body size is 100KB. |
+| 429    | You've been rate limited. Try your request again after a few minutes. |
+| 4xx    | Your request was malformed in some way. |
+| 5xx    | Something happened on the server that is outside your control. |
+
+## Response Schema
+
+All responses issued by the API will follow one of the two following schemas.
+
+### Success Schema
+
+When a request you've issued succeeds, the response will look like the following:
+
+```json
+{
+    "success": "true",
+    // any other data you requested
+}
+```
+
+Note that all time data is represented as the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC, or the same thing that is returned by JavaScript's `Date.now()` method.
+
+### Error Schema
+
+When a request you've issued fails, along with the non-200 status code, the response will look like the following:
+
+```json
+{
+    "error": "an error message describing what went wrong",
+    // any other relevant data (like retryAfter)
+}
+```
+
+## CORS Support
+
+The API has full support for Cross Origin Resource Sharing (CORS) for AJAX requests.
+
+## Tips for Debugging
+
+- Are you using the right method?
+- Use this documentation (click "see example," then click "Try console") or use [Postman](https://www.postman.com/downloads) to play with the API.
+- Expect a raw JSON response body that you must parse manually, not raw text or something else.
+- Are you sending properly formatted JSON payloads in your request body when necessary?
+- Try outputting to stdout, use `console.log`, or output to some log file when API requests are made and responses received.
+- All time data is represented as [the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now).
+- Are you sending the correct headers? You need to specify the `Authorization: bearer your-special-api-key-here` header for all requests and the `'content-type': 'application/json'` header when making POST and PUT requests.
+- Are you [encoding your URI components](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) properly, especially when you're trying to send the API [JSON objects](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON) via [GET request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods)?
+
+## Globally Unique IDs
+
+To retrieve data about one or more API items, you must know that item's `<item>_id`. These and other IDs are globally unique within the API. That is: no two items will ever have the same ID in any instance. Use this fact to your advantage.
+
+## User Endpoints [/users]
+
+These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-whats-the-difference) on a user and their filesystem nodes.
+
+- [/users (GET)](#/reference/0/user-endpoints/users-get)
+- [/users (POST)](#/reference/0/user-endpoints/users-post)
+- [/users/:username (GET)](#/reference/0/user-endpoints/users-username-get)
+- [/users/:username (PUT)](#/reference/0/user-endpoints/users-username-put)
+- [/users/:username (DELETE)](#/reference/0/user-endpoints/users-username-delete)
+- [/users/:username/auth (POST)](#/reference/0/user-endpoints/users-username-auth-post)
+- [/users/:username/filesystem/search (GET)](#/reference/0/user-endpoints/users-username-filesystem-search-get)
+- [/users/:username/filesystem (POST)](#/reference/0/user-endpoints/users-username-filesystem-post)
+- [/users/:username/filesystem/:node_id1/:node_id2/.../:node_idN (GET)](#/reference/0/user-endpoints/users-username-filesystem-node-id-1-node-id-2-node-id-n-get)
+- [/users/:username/filesystem/:node_id (PUT)](#/reference/0/user-endpoints/users-username-filesystem-node-id-put)
+- [/users/:username/filesystem/:node_id1/:node_id2/.../:node_idN (DELETE)](#/reference/0/user-endpoints/users-username-filesystem-node-id-1-node-id-2-node-id-n-delete)
+
+### /users (GET) [GET /users{?after}]
+
+Retrieves all users in the system in chronological order beginning with the most recently created user.
+
+Retrievals are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + `after` (optional, user_id) - <span style="color: gray">[optional]</span> Return only those users that occur *after* `user_id` in the result list.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + users (array[User]) - An array of user objects. Empty if there are no users left to show.
+
+    + Body
+
+            {
+                "success": true,
+                "users": [
+                    {
+                        "user_id": "5eee34b3ca37750008547372",
+                        "salt": "01048140c7eca69abc74c16dfd418bda",
+                        "username": "dummyuser1",
+                        "email": "dummy@email.com"
+                    },
+                    {
+                        "user_id": "5eee34b3ca37750008547373",
+                        "salt": "c16dfd418bda01048140c7eca69abc74",
+                        "username": "dummy-user-2",
+                        "email": "dummy2@email.com"
+                    }
+                ]
+            }
+
+### /users (POST) [POST /users]
+
+Creates a new user.
+
+Note that the API manages all user credentials. Passwords must **NEVER** be stored in any form ever (locally in your app or database or anywhere else), but are instead communicated as a special one-way "login key".
+
+The [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) and [Password-Based Key Derivation Function #2 (PBKDF2)](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey#pbkdf2) must be used to derive this key. Here is [an example](https://codepen.io/xunnamius/pen/XWZzLmz) using the Web Crypto API to derive a login key and salt from a password. Once this login key is derived, it and the salt must be sent to the API for storage.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes
+        + username: `"thehill"` (string) - The user's unique username within the system.
+        + email: `"h@hillaryclinton.com"` (string) - The user's email address.
+        + salt (string) - A 16-byte (32 characters) hex string representing a salt corresponding to the login key.
+        + key (string) - A 64-byte (128 characters) hex string representing a login key.
+
+    + Body
+
+            {
+                "username": "thehill",
+                "email": "h@hillaryclinton.com",
+                "salt": "01048140c7eca69abc74c16dfd418bda",
+                "key": "3ab51f05b268492084d737b62a20e6f2cc6696a21edff5dc249a55aa4236ee933a9599b14860caa21017677156f16d0508f4deda1cbe0bea5ffcad8fa331b77e"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + user (User) - The newly created user object.
+
+    + Body
+
+            {
+                "success": true,
+                "user": {
+                    "user_id": "5eee34b3ca37750008547374",
+                    "salt": "01048140c7eca69abc74c16dfd418bda",
+                    "username": "thehill",
+                    "email": "h@hillaryclinton.com"
+                }
+            }
+
+### /users/:username (GET) [GET /users/{username}]
+
+Retrieve a user by their `username`.
+
++ Parameters
+    + `username`: `"bernie4All"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + user (User) - The requested user object.
+
+    + Body
+
+            {
+                "success": true,
+                "user": {
+                    "user_id": "5eee34b3ca37750008547375",
+                    "salt": "01048140c7eca69abc74c16dfd418bda",
+                    "username": "bernie4All",
+                    "email": "b@berniesanders.com"
+                }
+            }
+
+### /users/:username (PUT) [PUT /users/{username}]
+
+This endpoint can be used to change a user's password (i.e. their `key` and `salt`) or their email. See [/users (POST)](#/reference/0/user-endpoints/users-post) for more information on the derivation of a login key and salt.
+
++ Parameters
+    + `username`: `"lizWarren"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + salt (optional, string) - A 16-byte (32 characters) hex string representing an update salt corresponding to the updated login key. Must be present if `key` is present.
+        + key (optional, string) - A 64-byte (128 characters) hex string representing an updated login key. Must be present if `salt` is present.
+        + email (optional, string) - The user's updated email address.
+
+    + Body
+
+            {
+                "salt": "01048140c7eca69abc74c16dfd418bda",
+                "key": "3ab51f05b268492084d737b62a20e6f2cc6696a21edff5dc249a55aa4236ee933a9599b14860caa21017677156f16d0508f4deda1cbe0bea5ffcad8fa331b77e"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:username (DELETE) [DELETE /users/{username}]
+
+Completely and permanently remove a user from the system. Note that deleting a user does not delete their filesystem nodes. You will have to delete those manually.
+
++ Parameters
+    + `username`: `"joeBiden"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:username/auth (POST) [POST /users/{username}/auth]
+
+Attempt to authenticate the credentials of a specific user.
+
+To check if a given username and password combination is valid, follow the same process as in [the example](https://codepen.io/xunnamius/pen/XWZzLmz) to derive a login key _using the salt accessible via the user endpoint_. Send the newly derived login key to the API via this endpoint and, if it matches the key stored in the API, you will receive an `HTTP 200` status code response. If the user credentials could not be authenticated, you will receive a `HTTP 403` status code instead.
+
+See [/users (POST)](#/reference/0/user-endpoints/users-post) for more information on the derivation of a login key and salt.
+
++ Parameters
+    + `username`: `"kamalaHarris"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + key (string) - A 64-byte (128 characters) hex string representing a login key derived using PBKDF#2.
+
+    + Body
+
+            {
+                "key": "3ab51f05b268492084d737b62a20e6f2cc6696a21edff5dc249a55aa4236ee933a9599b14860caa21017677156f16d0508f4deda1cbe0bea5ffcad8fa331b77e"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
++ Response 403 (application/json)
+See an example (HTTP 403)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+### /users/:username/filesystem/search (GET) [GET /users/{username}/filesystem/search{?after,match,regexMatch}]
+
+This endpoint allows you to search through all nodes in the system that are owned by or shared with `username`. Returns at most 100 nodes per query. Without any search parameters, the latest owned/shared nodes are returned; file nodes are returned first, then meta nodes. Nodes are sorted by their `node_id`; newest nodes are shown first. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`. Other available parameters are: `match` and `regexMatch`. `match` and `regexMatch` let you filter out which nodes you want returned in the response.
+
+Note that the values of `match` and `regexMatch` **must be [URI encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) [JSON objects](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON)**! If they aren't, you'll receive an error.
+
+Examples:
+
+Suppose you want to find all the `lizWarren` user's files and folders (directories) named "bdpa":
+
+1. Come up with the JSON object to describe your query:
+
+```JavaScript
+let myQueryObject = { "name": "bdpa" }
+```
+
+2. Stringify the JSON object and then URI encode it in whatever language you're using.
+
+```JavaScript
+let myQuery = encodeURIComponent(JSON.stringify(myQueryObject))
+```
+
+3. Add the stringified JSON to your request URL and send it
+
+```JavaScript
+let myURL = "https://drive.api.hscc.bdpa.org/v2/users/lizWarren/filesystem/search?match=" + myQuery
+
+sendRequestToAPI(myURL)
+```
+
+You can also use `match` queries to search for nodes where some numerical property is greater than or less than some threshold. For example:
+
+```JavaScript
+let myQueryObject = {
+    "createdAt": {
+        "$gt": (new Date('6/1/2021 3:00:00 PM PST')).getTime()
+    }
+}
+```
+
+This means _retrieve all the nodes (files, directories, and symlinks) that were created by the "lizWarren" user after 6/1/2021 3:00:00 PM PST_.
+
+Along with `"$gt"` for "greater than," there's also `"$gte"` for "greater than or equal to," `"$lt"` for "less than," and `"$lte"` for "less than or equal to". These operations can also be combined using `"$or"`. For example:
+
+```JavaScript
+let myQueryObject = {
+    "createdAt": {
+        // "$or" can only be used with the four numerical comparison
+        // operators like so:
+        "$or": [
+            { "$gte": Date.now() - 1000 },
+            { "$lt": (new Date('6/1/2021 3:00:00 PM PST')).getTime() }
+        ]
+    }
+}
+```
+
+This means _retrieve all the nodes (files, directories, and symlinks) that were created by the "lizWarren" user _before_ 6/1/2021 3:00:00 PM PST_ or _at or after 1 second ago_. If you've used MongoDB before, note that `"$or"` here works differently.
+
+Note that any `match` filters are applied **in a case-sensitive and holistic manner**, meaning `"hello world"` won't match `"Hello World"` and `"hello"` won't match `"hello to the wide world!"`, so watch out! The only exceptions are searches for `name` and `tags` fields, which are treated as case-insensitive searches.
+
+Here's an example of a `match` query to search for text files that the user has made public:
+
+```JavaScript
+// Using match
+let myQueryObject = {
+    "permissions.public": "view"
+}
+```
+
+Here's an example of a `match` query to search for text files that have been shared with "user-1":
+
+```JavaScript
+// Using regexMatch
+let myRegexQueryObject = {
+    "permissions.user-1": "view|edit"
+}
+```
+
+`match` queries containing the `tags` property are treated specially. When a `match` query contains the `tags` property, an array of one or more tags must be passed in. In this case, case-insensitive array comparison will be performed on the `tags` array. For example:
+
+```JavaScript
+let myQueryObject = {
+    "tags": ["node", "JavaScript", "nextjs"]
+}
+```
+
+This means _retrieve all files that have any of the tags "node", "javascript"_ (note the case insensitivity—tags are always lowercased!)_, or "nextjs"_.
+
+If you want case-insensitive searching for properties other than `name` or `tags`, or you want to search for specific words or phrases in `text`, or you're an otherwise advanced programmer, you can use [regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions) via `regexMatch`. Unlike `match`, `regexMatch` does not allow for less than/greater than queries.
+
+> All regular expressions are processed using the [Multiline (m) and Insensitive (i)](https://www.mongodb.com/docs/manual/reference/operator/query/regex/#mongodb-query-op.-options) options.
+
+For example, to find all files that were created by the "lizWarren" user after 6/1/2021 3:00:00 PM PST _that contain the words "batman", "superman", or "wonder woman"_:
+
+```JavaScript
+let myQueryObject = {
+    "createdAt": {
+        "$gt": (new Date('6/1/2021 3:00:00 PM PST')).getTime()
+    }
+}
+
+let myRegexQueryObject = {
+    // Regex explained interactively: https://regex101.com/r/wPkD0z/1
+    // Also: all the normal JS string escaping rules apply (i.e. \ becomes \\)
+    "text": "(batman)|(superman)|(wonder woman)"
+}
+
+let myQuery = encodeURIComponent(JSON.stringify(myQueryObject))
+let myRegexQuery = encodeURIComponent(JSON.stringify(myRegexQueryObject))
+
+let myURL = "https://drive.api.hscc.bdpa.org/v2/users/lizWarren/filesystem/search?match=" + myQuery + "&regexMatch=" + myRegexQuery
+
+sendRequestToAPI(myURL)
+```
+
+> Notice: when testing using this Apiary documentation, they are nice enough to handle the URI encode and JSON stringify steps for you! All you have to do is type in a proper JSON object for the request to succeed. You can even copy and paste the `myQueryObject`s from the examples above directly into the Try Console! Try it out by clicking "See an example" and then "Try console".
+
++ Parameters
+    + `after` (optional, node_id) - <span style="color: gray">[optional]</span> Return only those nodes that occur *after* `node_id` in the result list.
+    + `match` (optional, string) - <span style="color: gray">[optional]</span> A URI encoded JSON object describing the node properties you're looking for. Case sensitive. Can also do greater than/less than queries as well. **If you're using the Apiary Try Console, you do not have to URI encode or stringify the JSON object, just type it in directly!**
+    + `regexMatch` (optional, string) - <span style="color: gray">[optional]</span> A URI encoded JSON object describing the node properties that you're looking for. Case-*insensitive* regular expressions can be used here. You **cannot** do greater than/less than queries and **all regexes must be strings** (no numbers). **If you're using the Apiary Try Console, you do not have to URI encode or stringify the JSON object, just type it in directly!**
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + nodes (array[FileNode, MetaNode]) - An array of nodes. Empty if there are no nodes left to show or your search query returned no results.
+
+    + Body
+
+            {
+                "success": true,
+                "nodes": [
+                    {
+                        "node_id": "5ec8adf06e38137ff2e58770",
+                        "owner": "TheWatcher",
+                        "createdAt": 1579489874164,
+                        "modifiedAt": "1579164489874",
+                        "type": "file",
+                        "name": "yellow-flicker-beat",
+                        "size": 44,
+                        "text": "My necklace is a rope I tie it and untie it.",
+                        "tags": ["lorde", "music"],
+                        "lock": null,
+                        "permissions": {}
+                    },
+                    {
+                        "node_id": "5ec8af2e58770df06e38137f",
+                        "owner": "TheWatcher",
+                        "createdAt": 1579489416874,
+                        "type": "directory",
+                        "name": "My Musical Lyrics",
+                        "contents": ["5ec8adf06e38137ff2e58770"],
+                        "permissions": {}
+                    }
+                ]
+            }
+
+### /users/:username/filesystem (POST) [POST /users/{username}/filesystem]
+
+Create a new filesystem node owned by `username`.
+
+When creating a `directory` node, the `contents` property should be an array (set) of 0 or more `node_id`s belonging to `"file"`-type nodes. These represent the "contents" of the directory.
+
+When creating a `symlink` node, the `contents` property should be an array (set) of 0 or 1 `node_id`s belong to a non-`"symlink"`-type node. This `node_id` represents the node that the new symlink is "pointing" to.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + type: `"symlink"` (string) - The type of this node. Valid values are: `"file"`, `"directory"` and `"symlink"`.
+        + name (string) - The name of the node.
+        + contents (array[string], optional) - A set of `node_id`s representing the contents of the node. This attribute is present if and only if `type` is not `"file"`.
+        + text (string, optional) - The full body text of this file. This attribute is present if and only if `type` is `"file"`.
+        + tags (array[string], optional) - A lowercase alphanumeric set of strings queryable when searching for files. This attribute is present if and only if `type` is `"file"`.
+        + lock (Lock, nullable, optional) - An object representing a user-client pair that is currently making edits to the file. This attribute is present if and only if `type` is `"file"`.
+        + permissions (Permission) - A key-value mapping between usernames and permissions.
+
+    + Body
+
+            {
+                "type": "directory",
+                "name": "My Musical Lyrics",
+                "contents": ["5ec8adf06e38137ff2e58770"],
+                "permissions": {
+                    "public": "view"
+                }
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + node (enum[MetaNode, FileNode]) - The newly created node object.
+
+    + Body
+
+            {
+                "success": true,
+                "node": {
+                    "node_id": "5ec8af2e58770df06e38137f",
+                    "owner": "TheWatcher",
+                    "createdAt": 1579489416874,
+                    "type": "directory",
+                    "name": "My Musical Lyrics",
+                    "contents": ["5ec8adf06e38137ff2e58770"],
+                    "permissions": {
+                        "public": "view"
+                    }
+                }
+            }
+
+### /users/:username/filesystem/:node_id1/:node_id2/.../:node_idN (GET) [GET /users/{username}/filesystem/{node_id}]
+
+Returns one or more filesystem nodes identified by the `node_id` parameter(s) that are owned by or have been shared with `username`. You can pass multiple `node_id`s to this endpoint, each separated by a `/`.
+
++ Parameters
+    + `node_id`: `5ec8adf06e38137ff2e58770/5ec8af2e58770df06e38137f` (node_id) - <span style="color: darkred">[required]</span> one or more IDs of the node(s) to return, each separated by a `/`.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + nodes (array[MetaNode, FileNode]) - An array of node objects.
+
+    + Body
+
+            {
+                "success": true,
+                "nodes": [
+                    {
+                        "node_id": "5ec8adf06e38137ff2e58770",
+                        "owner": "TheWatcher",
+                        "createdAt": 1579489874164,
+                        "modifiedAt": "1579164489874",
+                        "type": "file",
+                        "name": "yellow-flicker-beat",
+                        "size": 44,
+                        "text": "My necklace is a rope I tie it and untie it.",
+                        "tags": ["lorde", "music"],
+                        "lock": null,
+                        "permissions": {
+                            "User1": "view",
+                            "User2": "edit",
+                            "User3": "view"
+                        }
+                    },
+                    {
+                        "node_id": "5ec8af2e58770df06e38137f",
+                        "owner": "TheWatcher",
+                        "createdAt": 1579489416874,
+                        "type": "directory",
+                        "name": "My Musical Lyrics",
+                        "contents": ["5ec8adf06e38137ff2e58770"],
+                        "permissions": {
+                            "public": "view"
+                        }
+                    }
+                ]
+            }
+
+### /users/:username/filesystem/:node_id (PUT) [PUT /users/{username}/filesystem/{node_id}]
+
+Update the properties of a node identified by the `node_id` parameter and owned by or shared with `username`. Valid attributes depend on the `type` of the node being updated.
+
+When updating a `directory` node, the `contents` property should be an array (set) of 0 or more `node_id`s belonging to `"file"`-type nodes. These represent the "contents" of the directory.
+
+When updating a `symlink` node, the `contents` property should be an array (set) of 0 or 1 `node_id`s belong to a non-`"symlink"`-type node. This `node_id` represents the node that the new symlink is "pointing" to.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + name (string, optional) - The updated name of the node.
+        + owner (string, optional) - The updated username of the user that owns this node.
+        + contents (array[string], optional) - An updated set of `node_id`s representing the contents of the node. This attribute can be present if and only if `type` is not `"file"`.
+        + text (string, optional) - The updated text of this file. This attribute can be present if and only if `type` is `"file"`.
+        + tags (array[string], optional) - A lowercase alphanumeric updated set of strings queryable when searching for files. This attribute can be present if and only if `type` is `"file"`.
+        + lock (Lock, nullable, optional) - An object representing a user-client pair that is currently making edits to the file. This attribute can be present if and only if `type` is `"file"`.
+        + permissions (Permission, optional) - A key-value mapping between usernames and permissions.
+
+    + Body
+
+            {
+                "permissions": {
+                    "User1": "view",
+                    "User2": "edit",
+                    "User3": "view"
+                }
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:username/filesystem/:node_id1/:node_id2/.../:node_idN (DELETE) [DELETE /users/{username}/filesystem/{node_id}]
+
+Permanently and irreversibly deletes one or more filesystem nodes identified by the `node_id` parameter(s) that are owned by `username`. You can pass multiple `node_id`s to this endpoint, each separated by a `/`. Users cannot delete filesystem nodes that they do not own.
+
++ Parameters
+    + `node_id`: `5ec8adf06e38137ff2e58770/5ec8af2e58770df06e38137f` (node_id) - <span style="color: darkred">[required]</span> one or more IDs of the node(s) to return, each separated by a `/`.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+## Data Structures
+
+### FileNode (object)
+
++ node_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing this file node in the filesystem API. Generated automatically by the server.
++ owner: `"someuser"` (string) - The username of the user that owns this file.
++ createdAt: `1579345900650` (number) - When this file was created [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server.
++ modifiedAt: `1579345900650` (number) - When this file was last modified [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Updated automatically by the server after every successful PUT request.
++ type (string) - The type of this node. This value will always be `"file"`.
++ name: `"my_cool_file"` (string) - The name of the file.
++ size (number) - The size of this file in bytes.
++ text (string) - The full body text of this file.
++ tags (array[string]) - A lowercase alphanumeric set of strings queryable when searching for files.
++ lock (Lock, nullable) - An object representing a user-client pair that is currently making edits to the file.
++ permissions (Permission) - A key-value mapping between usernames and permissions.
+
+### Lock (object)
++ user: `"someuser"` (string) - The username of the user that owns the lock.
++ client (string) - A random string used to differentiate one client from another.
++ createdAt: `1579345900650` (number) - When this lock was created [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server.
+
+### MetaNode (object)
+
++ node_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing this node in the filesystem API. Generated automatically by the server.
++ owner: `"someuser"` (string) - The username of the user that owns this node.
++ createdAt: `1579345900650` (number) - When this node was created [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server.
++ type (string) - The type of this node. Valid values are: `"directory"` and `"symlink"`.
++ name: `"my_best_files"` (string) - The name of the node.
++ contents (array[string]) - A set of `node_id`s representing the contents of the node.
++ permissions (Permission) - A key-value mapping between usernames and permissions.
+
+### Permission (object)
++ *<username>* (string) - A mapping between a username and a permission. Valid permissions are: `"view"` and `"edit"`. If the reserved word `"public"` is used as a key, the only valid permission is `"view"`.
+
+### User (object)
+
++ user_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing this user. Generated automatically by the server.
++ salt: `"2d6843cfd2ad23906fe33a236ba842a5"` (string) - A 16-byte (32 characters) hex string representing a salt corresponding to the login key.
++ username: `"Oforce1"` (string) - The user's unique username within the system. Can be alphanumeric with dashes and underscores.
++ email: `"o@barackobama.com"` (string) - The user's email address.

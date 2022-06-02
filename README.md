@@ -20,7 +20,7 @@ excellent position to do well on the actual competition problem statement.
 <tr>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong>TBA</p>
+<p align="center"><strong><a href="/2022">BDPADrive</a> (sample)</p>
 </th>
 <th>
 <img width="500" height="1" />
@@ -146,6 +146,46 @@ competitions.
 <br />
 🎒 <a href="https://github.com/nhscc/ghostmeme.api.hscc.bdpa.org">API source code</a>
 </p>
+</td>
+</tr>
+</table>
+<table>
+<tr>
+<th>
+<img width="500" height="1" />
+<p align="center"><strong><a href="/2022/bdpadrive">BDPADrive</a> (sample)</strong></p>
+</th>
+<th>
+<img width="500" height="1" />
+<p align="center"><strong>TBA (actual)</strong></p>
+</th>
+</tr>
+<tr>
+<td>
+<img width="500" height="1" />
+<p>
+📑 <a href="/2022/bdpadrive">Problem statement</a>
+<br />
+🌍 <a href="https://bdpadrive.solutions.hscc.bdpa.org">Live demo</a>
+<br />
+📚 <a href="https://hsccebun98j2.docs.apiary.io/">Interactive API docs</a> (version 1)
+<br />
+📚 <a href="https://hscchkie87hj.docs.apiary.io/">Interactive API docs</a> (version 2)
+</p>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<img width="500" height="1" />
+<p>
+📦 <a href="https://github.com/nhscc/bdpadrive.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/bdpadrive.api.hscc.bdpa.org">API source code</a>
+</p>
+</td>
+<td>
 </td>
 </tr>
 </table>
