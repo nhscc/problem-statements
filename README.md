@@ -166,7 +166,7 @@ competitions.
 <p>
 📑 <a href="/2022/bdpadrive">Problem statement</a>
 <br />
-🌍 <a href="https://bdpadrive.solutions.hscc.bdpa.org">Live demo</a>
+🌍 <a href="https://drive.solutions.hscc.bdpa.org">Live demo</a>
 <br />
 📚 <a href="https://hsccebun98j2.docs.apiary.io/">Interactive API docs</a> (version 1)
 <br />
@@ -180,9 +180,9 @@ competitions.
 <td>
 <img width="500" height="1" />
 <p>
-📦 <a href="https://github.com/nhscc/bdpadrive.solutions.hscc.bdpa.org">Demo source code</a>
+📦 <a href="https://github.com/nhscc/drive.solutions.hscc.bdpa.org">Demo source code</a>
 <br />
-🎒 <a href="https://github.com/nhscc/bdpadrive.api.hscc.bdpa.org">API source code</a>
+🎒 <a href="https://github.com/nhscc/drive.api.hscc.bdpa.org">API source code</a>
 </p>
 </td>
 <td>
