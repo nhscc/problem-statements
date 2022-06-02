@@ -152,7 +152,7 @@ These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-
 
 ### /filesystem/:username/search (GET) [GET /filesystem/{username}/search{?after,match,regexMatch}]
 
-This endpoint allows you to search through all nodes in the system that are owned by `username`. Returns at most 100 nodes per query. Without any search parameters, the latest owned nodes are returned; file nodes are returned first, then meta nodes. Nodes are sorted by their `node_id`; newest nodes are shown first. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`. Other available parameters are: `match` and `regexMatch`. `match` and `regexMatch` let you filter out which nodes you want returned in the response.
+This endpoint allows you to search through all nodes in the system that are owned by `username`. Returns at most 100 nodes per query. Without any search parameters, all owned nodes are returned in creation order (latest first). Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`. Other available parameters are: `match` and `regexMatch`. `match` and `regexMatch` let you filter out which nodes you want returned in the response.
 
 Note that the values of `match` and `regexMatch` **must be [URI encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) [JSON objects](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON)**! If they aren't, you'll receive an error.
 
