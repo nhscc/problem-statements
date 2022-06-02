@@ -166,7 +166,7 @@ competitions.
 <p>
 📑 <a href="/2022/bdpadrive">Problem statement</a>
 <br />
-🌍 <a href="https://drive.solutions.hscc.bdpa.org">Live demo</a>
+🌍 <a href="https://drive.solutions.hscc.bdpa.org">Live demo</a> (DFR)
 <br />
 📚 <a href="https://hsccebun98j2.docs.apiary.io/">Interactive API docs</a> (version 1)
 <br />
