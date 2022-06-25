@@ -42,6 +42,7 @@ This API is based on [simple REST principles](https://restfulapi.net). Resources
 | GET    | Return data about something |
 | POST   | Create something new        |
 | PUT    | Modify something            |
+| PATCH  | Partially modify something  |
 | DELETE | Delete something            |
 
 ## Rate Limits
@@ -70,11 +71,11 @@ For example, given the following dataset and an API with a default result size (
 
 Suppose we issued the following requests to an API:
 
-`/api?after=0xabc123`: responds with an array of 3 items: *0xabc124* through *0xabc126*  
-`/api?after=0xabcXYZ`: responds with an array of 0 items since `item_id` *0xabcXYZ* doesn't exist  
-`/api?after=0xabc124`: responds with an array of 3 items: *0xabc125* through *0xabc127*  
-`/api?after=0xabc127`: responds with an array of 0 items since there is nothing after *0xabc127*  
-`/api?after=0xabc125`: responds with an array of 2 items: *0xabc126* and *0xabc127*  
+`/api?after=0xabc123`: responds with an array of 3 items: *0xabc124* through *0xabc126*
+`/api?after=0xabcXYZ`: responds with an array of 0 items since `item_id` *0xabcXYZ* doesn't exist
+`/api?after=0xabc124`: responds with an array of 3 items: *0xabc125* through *0xabc127*
+`/api?after=0xabc127`: responds with an array of 0 items since there is nothing after *0xabc127*
+`/api?after=0xabc125`: responds with an array of 2 items: *0xabc126* and *0xabc127*
 
 ## Status Codes
 
@@ -89,6 +90,7 @@ This API will issue responses with one of the following status codes:
 | 404    | The resource (or endpoint) was not found. Check your syntax. |
 | 405    | Bad method. The endpoint does not support your request's method. |
 | 413    | Your request was too large and was dropped. Max body size is 100KB. |
+| 415    | Your request was made using the wrong Content-Type header value. |
 | 429    | You've been rate limited. Try your request again after a few minutes. |
 | 4xx    | Your request was malformed in some way. |
 | 5xx    | Something happened on the server that is outside your control. |
