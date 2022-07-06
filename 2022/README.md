@@ -1,7 +1,7 @@
 # BDPA NHSCC 2022 Problem Statements
 
-[**BDPADrive**](/2022/bdpadrive) (sample) was released during the 2022
-competition.
+[**BDPADrive**](/2022/bdpadrive) (sample) and [**qOverflow**](/2022/qoverflow)
+(actual) were released during the 2022 competition.
 
 ## Key Challenges
 
@@ -29,7 +29,7 @@ mind:
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2022">TBA</a> (actual)</strong></p>
+<p align="center"><strong><a href="/2022">qOverflow</a> (actual)</strong></p>
 </th>
 </tr>
 <tr>
@@ -46,6 +46,14 @@ mind:
 </p>
 </td>
 <td>
+<p>
+📑 <a href="/2022/qoverflow">Problem statement</a>
+<br />
+🌍 <a href="https://qoverflow.solutions.hscc.bdpa.org">Live demo</a>
+<br />
+📚 <a href="https://hscc8udvc7gs.docs.apiary.io/">Interactive API docs</a>
+<br />
+</p>
 </td>
 </tr>
 <tr>
@@ -58,6 +66,12 @@ mind:
 </p>
 </td>
 <td>
+<img width="500" height="1" />
+<p>
+📦 <a href="https://github.com/nhscc/qoverflow.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/qoverflow.api.hscc.bdpa.org">API source code</a>
+</p>
 </td>
 </tr>
 </table>

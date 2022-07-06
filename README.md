@@ -24,7 +24,7 @@ excellent position to do well on the actual competition problem statement.
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong>TBA</p>
+<p align="center"><strong><a href="/2022">qOverflow</a> (actual)</p>
 </th>
 </tr>
 
@@ -153,11 +153,11 @@ competitions.
 <tr>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2022/bdpadrive">BDPADrive</a> (sample)</strong></p>
+<p align="center"><strong><a href="/2022">BDPADrive</a> (sample)</strong></p>
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong>TBA (actual)</strong></p>
+<p align="center"><strong><a href="/2022">qOverflow</a> (actual)</strong></p>
 </th>
 </tr>
 <tr>
@@ -174,6 +174,14 @@ competitions.
 </p>
 </td>
 <td>
+<p>
+📑 <a href="/2022/qoverflow">Problem statement</a>
+<br />
+🌍 <a href="https://qoverflow.solutions.hscc.bdpa.org">Live demo</a> (DFR)
+<br />
+📚 <a href="https://hscc8udvc7gs.docs.apiary.io/">Interactive API docs</a>
+<br />
+</p>
 </td>
 </tr>
 <tr>
@@ -186,6 +194,12 @@ competitions.
 </p>
 </td>
 <td>
+<img width="500" height="1" />
+<p>
+📦 <a href="https://github.com/nhscc/qoverflow.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/qoverflow.api.hscc.bdpa.org">API source code</a>
+</p>
 </td>
 </tr>
 </table>
