@@ -80,7 +80,9 @@ of the levels before it.
 
 - **Level 1** _(1 point)_ Create new answers.
 - **Level 2** _(15 points)_ Upvote questions and answers.
-- **Level 3** _(50 points)_ Create new comments under questions and answers.
+- **Level 3** _(50 points)_ Create new comments under any question or answer.
+  - Normally, users can only comment on their _own_ questions and answers.
+    However, at level 3, they can comment on _any_ question or answer.
 - **Level 4** _(125 points)_ Downvote questions and answers.
 - **Level 5** _(1,000 points)_ View the upvotes and downvotes on a question or
   answer.
@@ -118,12 +120,14 @@ Users lose points by getting downvotes. Specifically:
 - If a user's answer is chosen as the accepted answer, that user gets 15 points.
 
 Users cannot upvote or downvote their own questions/answers. Users cannot upvote
-a question they've already downvoted and vice-versa. Users cannot vote on a
-question they've already voted on (e.g. upvoting multiple times is not allowed).
-This is all enforced at the API level.
+a question they've already downvoted (and vice-versa) unless they undo their
+previous vote first. Users can only issue one vote per entity (e.g. a user
+cannot upvote the same question five times). These rules are all enforced at the
+API level, so your team does not have to spend much time implementing them.
 
-Users can undo or "decrement" their upvotes/downvotes. **When a vote is undone,
-any points awarded to or taken away from any users will also be undone.**
+Additionally, users can undo or "decrement" their upvotes/downvotes. **When a
+vote is undone, any points awarded to or taken away from any users will also be
+reversed.**
 
 ## Requirement 2
 
@@ -222,12 +226,14 @@ answers with the most points at the top.
 Every time a user views a question through this view, the question's "number of
 views" will be incremented by one (1).
 
-Users can answer their own questions, and can comment on their own questions and
-answers, but cannot vote on (upvote/downvote) their own questions or answers.
-Users cannot upvote a question they've already downvoted and vice-versa. Users
-cannot vote on a question they've already voted on (e.g. upvoting multiple times
-is not allowed); however, users can "undo" their own votes. This is all enforced
-at the API level.
+Users can answer their own questions, and can **always** comment on their own
+questions and answers, but cannot vote on (upvote/downvote) their own questions
+or answers. Users cannot upvote a question they've already downvoted and
+vice-versa. Users cannot vote on a question they've already voted on (e.g.
+upvoting multiple times is not allowed); however, users can "undo" their own
+votes, after which they are allowed to cast a different vote if they wish. These
+rules are all enforced at the API level, so your team does not have to spend
+much time implementing them.
 
 Comments will appear in the order that they were created, with the oldest
 comments appearing first. Comments will show the comment text followed by the
