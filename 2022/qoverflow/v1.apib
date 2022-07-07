@@ -180,11 +180,20 @@ See an example (HTTP 200)
 
     + Attributes (object)
         + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + message (Mail) - The newly created mail message.
 
     + Body
 
             {
-                "success": true
+                "success": true,
+                "message": {
+                    "mail_id": "5ec8adf06e38137ff2e58998",
+                    "sender": "someUser",
+                    "receiver": "anotherUser",
+                    "subject": "Got your message",
+                    "text": "**Supports markdown**!",
+                    "createdAt": 1621894097785
+                }
             }
 
 ### /mail/:username (GET) [GET /mail/{username}{?after}]
@@ -212,6 +221,7 @@ See an example (HTTP 200)
     + Body
 
             {
+                "success": true,
                 "messages": [
                     {
                         "mail_id": "5ec8adf06e38137ff2e58998",
@@ -229,8 +239,7 @@ See an example (HTTP 200)
                         "receiver": "someUser",
                         "createdAt": 1621894785097
                     }
-                ],
-                "success": true
+                ]
             }
 
 ## Question Endpoints [/questions]
@@ -600,7 +609,7 @@ See an example (HTTP 404)
 
 Increment/decrement the `upvote` or `downvote` properties of the specified question by 1. The difference between using this endpoint and using the [/questions/:question_id (PATCH)](#/reference/0/question-endpoints/questions-question-id-patch) endpoint for updating vote counts is that this endpoint is safer, easier to use, and avoids race conditions.
 
-If the specified user has already upvoted or downvoted this question via a previous `"increment"` update operation, any other `"increment"` update operations will be rejected with a `HTTP 400` status code. If an upvote or downvote was first undone (a `"decrement"`), then a subsequent `"increment"` update operation will succeed. Multiple `"decrement"` update operations will similarly be rejected with a `HTTP 400` status code.
+If the specified user has already upvoted or downvoted this question via a previous `"increment"` update operation, any other `"increment"` update operations will be rejected with a `HTTP 403` status code. If an upvote or downvote was first undone (a `"decrement"`), then a subsequent `"increment"` update operation will succeed. Multiple `"decrement"` update operations will similarly be rejected with a `HTTP 403` status code.
 
 + Parameters
     + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
@@ -634,8 +643,8 @@ See an example (HTTP 200)
                 "success": true
             }
 
-+ Response 400 (application/json)
-See an example (HTTP 400)
++ Response 403 (application/json)
+See an example (HTTP 403)
 
     + Attributes (object)
         + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
@@ -816,7 +825,7 @@ See an example (HTTP 404)
 
 Increment/decrement the `upvote` or `downvote` properties of a comment by 1.
 
-If the specified user has already upvoted or downvoted this comment via a previous `"increment"` update operation, any other `"increment"` update operations will be rejected with a `HTTP 400` status code. If an upvote or downvote was first undone (a `"decrement"`), then a subsequent `"increment"` update operation will succeed. Multiple `"decrement"` update operations will similarly be rejected with a `HTTP 400` status code.
+If the specified user has already upvoted or downvoted this comment via a previous `"increment"` update operation, any other `"increment"` update operations will be rejected with a `HTTP 403` status code. If an upvote or downvote was first undone (a `"decrement"`), then a subsequent `"increment"` update operation will succeed. Multiple `"decrement"` update operations will similarly be rejected with a `HTTP 403` status code.
 
 + Parameters
     + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
@@ -851,8 +860,8 @@ See an example (HTTP 200)
                 "success": true
             }
 
-+ Response 400 (application/json)
-See an example (HTTP 400)
++ Response 403 (application/json)
+See an example (HTTP 403)
 
     + Attributes (object)
         + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
@@ -1048,7 +1057,7 @@ See an example (HTTP 404)
 
 Increment/decrement the `upvote` or `downvote` properties of the specified answer. The difference between using this endpoint and using the [/questions/:question_id/answers/:answer_id (PATCH)](#/reference/0/question-endpoints/questions-question-id-answers-answer-id-patch) endpoint for updating vote counts is that this endpoint is safer, easier to use, and avoids race conditions.
 
-If the specified user has already upvoted or downvoted this answer via a previous `"increment"` update operation, any other `"increment"` update operations will be rejected with a `HTTP 400` status code. If an upvote or downvote was first undone (a `"decrement"`), then a subsequent `"increment"` update operation will succeed. Multiple `"decrement"` update operations will similarly be rejected with a `HTTP 400` status code.
+If the specified user has already upvoted or downvoted this answer via a previous `"increment"` update operation, any other `"increment"` update operations will be rejected with a `HTTP 403` status code. If an upvote or downvote was first undone (a `"decrement"`), then a subsequent `"increment"` update operation will succeed. Multiple `"decrement"` update operations will similarly be rejected with a `HTTP 403` status code.
 
 + Parameters
     + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
@@ -1083,8 +1092,8 @@ See an example (HTTP 200)
                 "success": true
             }
 
-+ Response 400 (application/json)
-See an example (HTTP 400)
++ Response 403 (application/json)
+See an example (HTTP 403)
 
     + Attributes (object)
         + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
@@ -1269,7 +1278,7 @@ See an example (HTTP 404)
 
 Increment/decrement the `upvote` or `downvote` properties of a comment by 1.
 
-If the specified user has already upvoted or downvoted this comment via a previous `"increment"` update operation, any other `"increment"` update operations will be rejected with a `HTTP 400` status code. If an upvote or downvote was first undone (a `"decrement"`), then a subsequent `"increment"` update operation will succeed. Multiple `"decrement"` update operations will similarly be rejected with a `HTTP 400` status code.
+If the specified user has already upvoted or downvoted this comment via a previous `"increment"` update operation, any other `"increment"` update operations will be rejected with a `HTTP 403` status code. If an upvote or downvote was first undone (a `"decrement"`), then a subsequent `"increment"` update operation will succeed. Multiple `"decrement"` update operations will similarly be rejected with a `HTTP 403` status code.
 
 + Parameters
     + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
@@ -1305,8 +1314,8 @@ See an example (HTTP 200)
                 "success": true
             }
 
-+ Response 400 (application/json)
-See an example (HTTP 400)
++ Response 403 (application/json)
+See an example (HTTP 403)
 
     + Attributes (object)
         + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
