@@ -443,9 +443,8 @@ and the title of your app. For `guest` users, they also have the option to login
 or sign up. For `authed` users, they will see their
 [profile picture](#user-profile-pictures) (which links to the
 [Dashboard view](#requirement-5)), their current
-[level](#levels-for-authenticated-users), the total number of
-[points](#authed-authenticated) they have, and the total number of unread
-[mail](#requirement-4).
+[level](#levels-for-authenticated-users), and the total number of
+[points](#authed-authenticated) they have.
 
 ## Requirement 9
 
