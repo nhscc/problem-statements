@@ -478,15 +478,20 @@ A refreshing the page or pressing a button_.
 
 <blockquote>
 
-This type of automatic updating is called _asynchronous_ or
+This type of automatic updating/revalidating of data is called _asynchronous_ or
 "[ajaxian](<https://en.wikipedia.org/wiki/Ajax_(programming)>)" since it occurs
 outside the usual
 [_synchronous_ event flow](https://dev.to/lydiahallie/javascript-visualized-event-loop-3dif).
 There are
 [many](https://www.encodedna.com/javascript/practice-ground/default.htm?pg=auto-refresh-div-using-javascript-and-ajax)
-[examples](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#uploading_json_data).
-One way to implement asynchronous features (and some forms of caching) is by
-using
+[solutions](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#uploading_json_data),
+including
+[interval revalidation](https://swr.vercel.app/docs/revalidation#revalidate-on-interval),
+[focus revalidation](https://swr.vercel.app/docs/revalidation#revalidate-on-focus),
+and
+[visibility-based revalidation](https://stackoverflow.com/questions/8661051/update-only-visible-dom-elements)
+(i.e. updating data only for elements that are currently visible). Another
+solution is to use
 [frontend timers](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Timeouts_and_intervals)
 to regularly check the API for new data every now and then.
 
