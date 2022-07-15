@@ -167,8 +167,8 @@ From this view, users of the appropriate level and authorization can:
 
 When creating a new question, an `authed` user must provide the following:
 
-- A question title (maximum length 150 characters)
-- A question body (maximum length 3,000 characters) written in
+- A question title (API-enforced maximum length 150 characters)
+- A question body (API-enforced maximum length 3,000 characters) written in
   [Markdown](https://www.markdownguide.org/getting-started)
 
 When writing the body of a question, the user must be able to see a preview
@@ -207,11 +207,13 @@ From this view, users of the appropriate level and authorization can:
     answer has.
 - View any comments under the question. Comments do not support Markdown.
 - Add a new answer to the question.
-  - **Answers are limited to a maximum length of 3,000 characters.**
+  - **Answers are limited to an API-enforced maximum length of 3,000
+    characters.**
   - Users will be able to view preview renders of their Markdown similar to
     [the requirements when creating a new question](#creating-a-new-question).
 - Add a new comment under the question, or under any of the answers.
-  - **Comments are limited to a maximum length of 150 characters.**
+  - **Comments are limited to an API-enforced maximum length of 150
+    characters.**
 - Upvote or downvote the question.
 - Upvote or downvote an answer.
 
@@ -295,7 +297,8 @@ From this view, `authed` users can:
 - Send a mail message to another user.
   - Users must specify a message subject, a destination user, and a message body
     [previewable as rendered Markdown](#creating-a-new-question).
-  - The message body must be limited to 150 characters.
+  - The message subject must be limited to 75 characters (enforced by API).
+  - The message body must be limited to 150 characters (enforced by API).
 
 ## Requirement 5
 
