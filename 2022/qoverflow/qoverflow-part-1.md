@@ -455,8 +455,8 @@ or sign up. For `authed` users, they will see their
 
 Users can search for questions by their title, body text, creator, creation
 time, or some combination thereof. Results will appear in descending order of
-creation time (latest questions appear first). Users can start a search from any
-view in the app.
+creation time (latest questions appear first) by default. Users can start a
+search from any view in the app.
 
 ## Requirement 10
 
