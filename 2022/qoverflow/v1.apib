@@ -1550,6 +1550,15 @@ See [/users (POST)](#/reference/0/user-endpoints/users-post) for more informatio
             Authorization: bearer your-special-api-key-here
             content-type: application/json
 
+    + Attributes (object)
+        + key (string) - A 64-byte (128 characters) hex string representing a login key derived using PBKDF#2.
+
+    + Body
+
+            {
+                "key": "3ab51f05b268492084d737b62a20e6f2cc6696a21edff5dc249a55aa4236ee933a9599b14860caa21017677156f16d0508f4deda1cbe0bea5ffcad8fa331b77e"
+            }
+
 + Response 200 (application/json)
 See an example (HTTP 200)
 
@@ -1563,16 +1572,11 @@ See an example (HTTP 200)
             }
 
 + Response 403 (application/json)
-See an example (HTTP 200)
+See an example (HTTP 403)
 
     + Attributes (object)
         + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
 
-    + Body
-
-            {
-                "success": false
-            }
 
 ### /users/:username/questions (GET) [GET /users/{username}/questions{?after}]
 
