@@ -205,12 +205,12 @@ Users must be authenticated before they can access any other views.
 ### Authenticating Credentials (Login)
 
 Your app must use
-[the API](https://hsccebun98j2.docs.apiary.io/#/reference/0/user-endpoints/users-username-auth-get)
+[the API](https://hsccebun98j2.docs.apiary.io/#/reference/0/user-endpoints/users-username-auth-post)
 to authenticate the `guest` user _instead of_ retrieving the user's credentials
 from a local database. Your app will do this by sending the API a
 [digest value](https://developer.mozilla.org/en-US/docs/Glossary/Digest) derived
 from the username and password provided. See
-[the API documentation](https://hsccebun98j2.docs.apiary.io/#/reference/0/user-endpoints/users-username-auth-get)
+[the API documentation](https://hsccebun98j2.docs.apiary.io/#/reference/0/user-endpoints/users-username-auth-post)
 for more details.
 
 ### Revoking Authentication (Logout)
