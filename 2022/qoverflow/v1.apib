@@ -901,6 +901,7 @@ See an example (HTTP 200)
                 "answers": [
                     {
                         "answer_id": "5ec8adf06e38137ff2e58773",
+                        "question_id": "5ec8adf06e58773f2e38137e",
                         "creator": "helloworld123",
                         "createdAt": 1579345900650,
                         "text": "2+2 is equal to 4.",
@@ -910,6 +911,7 @@ See an example (HTTP 200)
                     },
                     {
                         "answer_id": "5ec8adf06e38137ff2e58774",
+                        "question_id": "5ec8adf06e58773f2e38137e",
                         "creator": "ThatGuy555",
                         "createdAt": 1579345900999,
                         "text": "2+2 is actually equal to 22, don't cha know.",
@@ -958,6 +960,7 @@ See an example (HTTP 200)
                 "success": true,
                 "answer": {
                     "answer_id": "5ec8adf06e38137ff2e58773",
+                    "question_id": "5ec8af2e58770df06e38137f",
                     "creator": "helloworld123",
                     "createdAt": 1579345900650,
                     "text": "2+2 is equal to 4.",
@@ -1669,6 +1672,7 @@ See an example (HTTP 200)
                 "answers": [
                     {
                         "answer_id": "5ec8adf06e38137ff2e58783",
+                        "question_id": "5ec8adf06e58773f2e38137e",
                         "creator": "lizWarren",
                         "createdAt": 1579345900650,
                         "text": "I've got a plan for that. (lengthy elaboration here)",
@@ -1678,6 +1682,7 @@ See an example (HTTP 200)
                     },
                     {
                         "answer_id": "5ec8adf06e38137ff2e58784",
+                        "question_id": "5ec8ad137e8773e382f06ef5",
                         "creator": "lizWarren",
                         "createdAt": 1579345900999,
                         "text": "Tax the rich! LFG!",
@@ -1730,6 +1735,7 @@ See an example (HTTP 200)
 ### Answer (object)
 
 + answer_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing this answer. Generated automatically by the server.
++ question_id: `"5ec8adf06e38e587702137ff"` (string) - A unique immutable MongoDB ID representing the question to which this answer belongs. Generated automatically by the server.
 + creator: `"someuser"` (string) - The username of the user that created this answer.
 + createdAt: `1579345900650` (number) - When this answer was created [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server.
 + text (string) - The full body text of this answer.
