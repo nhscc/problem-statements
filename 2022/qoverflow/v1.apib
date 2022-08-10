@@ -1394,6 +1394,8 @@ Note that the API manages all user credentials. Passwords must **NEVER** be stor
 
 The [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) and [Password-Based Key Derivation Function #2 (PBKDF2)](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey#pbkdf2) must be used to derive this key. Here is [an example](https://codepen.io/xunnamius/pen/XWZzLmz) using the Web Crypto API to derive a login key and salt from a password. Once this login key is derived, it and the salt must be sent to the API for storage.
 
+**NOTICE: all teams should use 100,000 iterations for PBKDF2 to make cross-app logins easier for the judges!**
+
 + Request
 
     + Headers
