@@ -38,12 +38,19 @@ data.
 
 🚧 🚧 To avoid disqualification, please take note of the following:
 
+- Unlike PS2, PS1 is a "chapter-wide problem statement". That is: all students,
+  coaches, and coordinators in the chapter can teach to, talk about, and
+  collaborate on a solution. And then, when the conference comes around, your
+  chapter sends your best five students to finish the job.
 - Your solution’s landing page must be available at `http://127.0.0.1:3000`
-  (localhost)
+  (localhost) on your team's AWS WorkSpace. **Judges must not have to type in
+  anything other than `http://127.0.0.1:3000` to reach your app.**
 - Your solution’s source code must be located at `%USERPROFILE%\Desktop\source`
+  on your team's AWS WorkSpace. You can have other files located elsewhere, so
+  long as they are also visible from the aforesaid directory.
 - HTTP requests to the API must be sent with an `Authorization` header (`Key`
-  header is deprecated). See
-  [the API documentation](https://hscc8udvc7gs.docs.apiary.io) for details.
+  header is deprecated). See the
+  [API documentation](https://hscc8udvc7gs.docs.apiary.io) for details.
 
 ## Requirement 1
 
