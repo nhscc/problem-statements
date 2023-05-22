@@ -133,7 +133,7 @@ Within each interval group, Barks should be sorted by number of likes first then
 creation time second, both in descending order. For example, given the following
 (unsorted) Barks from followed users A, B, and C:
 
-```JSON
+```json
 { "owner": "C", "content": "Bark Bark Bark", "createdAt": 3619, "likes": 0 },
 { "owner": "C", "content": "Bark Bark", "createdAt": 3615, "likes": 1 },
 { "owner": "B", "content": "Hello world", "createdAt": 3610, "likes": 3 },
@@ -148,13 +148,13 @@ After grouping them by one hour intervals:
 > In this example, 0-3599 seconds is one group and 3600-7199 seconds is another
 > group.
 
-```JSON
+```json
 { "owner": "C", "content": "Bark Bark Bark", "createdAt": 3619, "likes": 0 },
 { "owner": "C", "content": "Bark Bark", "createdAt": 3615, "likes": 1 },
 { "owner": "B", "content": "Hello world", "createdAt": 3610, "likes": 3 }
 ```
 
-```JSON
+```json
 { "owner": "A", "content": "Third bark!", "createdAt": 6, "likes": 2 },
 { "owner": "A", "content": "First bark!", "createdAt": 1, "likes": 1 },
 { "owner": "A", "content": "Second bark", "createdAt": 3, "likes": 20 },
@@ -164,7 +164,7 @@ After grouping them by one hour intervals:
 Finally, after sorting within those groups and recombining them, the Home view
 displays the Barks to the user in descending order of "most likeable":
 
-```JSON
+```json
 { "owner": "B", "content": "Hello world", "createdAt": 3610, "likes": 3 },
 { "owner": "C", "content": "Bark Bark", "createdAt": 3615, "likes": 1 },
 { "owner": "C", "content": "Bark Bark Bark", "createdAt": 3619, "likes": 0 },

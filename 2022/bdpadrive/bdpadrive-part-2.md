@@ -51,7 +51,7 @@ usernames and user permissions. For example, to show that a file named
 (which implies the ability to view also) by User4, the object's `permissions`
 property would look like the following:
 
-```JSON
+```json
 {
     "node_id": "5ec8adf06e38137ff2e58770",
     "owner": "User1",
@@ -125,7 +125,7 @@ When viewing files with the "public" permission set, the
 [Editor view](./bdpadrive-part-1.md#requirement-3) can be used without
 authenticating first. For example:
 
-```JSON
+```json
 {
     ...
     "permissions": {

@@ -86,7 +86,7 @@ presented with at least the following information if they are not already:
 For example, suppose `Election #1` with options `["red", "green", "blue"]` has
 the following voter data:
 
-```JSON
+```json
 [
     { "voter_id": "voter1_<timestamp>", "ranking": ["green", "blue"] },
     { "voter_id": "voter2_<timestamp>", "ranking": ["blue"] },
