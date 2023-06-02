@@ -1,0 +1,891 @@
+FORMAT: 1A
+HOST: https://blogpress.api.hscc.bdpa.org/v1
+
+# BlogPress API
+
+> We're looking for feedback! If you have any opinions or ideas, contact us on Slack.
+
+Based on [simple REST principles](https://restfulapi.net), the BlogPress API returns JSON data responses to requests. This is the API used by teams and their apps for the BDPA National High School Computer Competition. It contains all of the data teams' apps must interact with. The API is live and will ideally remain online indefinitely.
+
+The base address of the BlogPress API is https://blogpress.api.hscc.bdpa.org/V where `V` is the version of the API you want to use. There is currently only one version, so `V = v1`. Each version of the API provides a set of endpoints with their own unique path and requirements.
+
+[The source code behind the API is available on GitHub](https://github.com/nhscc/blogpress.api.hscc.bdpa.org). If you have any trouble, [open an issue there](https://github.com/nhscc/blogpress.api.hscc.bdpa.org/issues/new) or contact us on Slack.
+
+> Notice: due to financial constraints, the oldest documents in the system will be dropped from the API to make room for the new. That is: `<item>_id`s are not guaranteed to exist forever!
+
+## Requesting a Key
+
+To access the majority of this API's endpoints requires a key. If your team needs a key, or to replace a lost or stolen key, either use our Slack bot (BDPABot) to manage your team's keys or contact us on Slack.
+
+When you get your key, include it as your request's [Authorization header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) and you will be immediately authenticated into the system. For example: `Authorization: bearer your-special-api-key-here`.
+
+## Rules of API Access
+
+1. Do not bombard the API with requests or you risk permanent IP/subnet ban. **Limit your apps to no more than 10 requests per second per API key**. If your app ends up sending too many requests over some time period, you'll get a `HTTP 429` response along with a monotonically increasing soft ban (starting at 15 minutes). Similarly, the size of requests is strictly limited, so you must limit the amount of data you're sending. When you send a request that is too large (>100KB), it will fail with a `HTTP 413` response.
+
+2. **Do not reveal your API key to anyone** not on your own team. It is how the API identifies your team. Do not upload it to GitHub or leave it lying around in your source code. Save it to a file and `.gitignore` it or save it to an environment variable.
+
+3. Since the API is live, you might be able to see or interact with content posted by other teams. If this is the case, please do not post anything inappropriate.
+
+4. If you have a relevant feature request or you encounter any vulnerabilities, errors, or other issues, don't hesitate to contact NHSCC staff via Slack or [open an issue on GitHub](https://github.com/nhscc/blogpress.api.hscc.bdpa.org). For significant enough finds, bonus points may be awarded. On the other hand, abusing any vulnerability or bug may result in disqualification.
+
+5. **The API was built to randomly return errors every so often**. That means your app must be prepared to deal with `HTTP 555` and other bad responses. However, if you're consistently getting `HTTP 5xx` errors back to back, then something is wrong. Please report this if it happens.
+
+6. All responses are raw JSON. All request payloads must be sent as raw JSON. `JSON.stringify()` and `JSON.parse()` or whatever language equivalent is available to you is your friend!
+
+## Request Methods
+
+This API is based on [simple REST principles](https://restfulapi.net). Resources are accessed via standard HTTPS requests in UTF-8 format to an API endpoint. This API understands the following HTTP request methods:
+
+| METHOD | MEANING |
+|-----   |-----    |
+| GET    | Return data about something |
+| POST   | Create something new        |
+| PATCH    | Modify something            |
+| PATCH  | Partially modify something  |
+| DELETE | Delete something            |
+
+## Rate Limits
+
+As said earlier, do not bombard the API with requests. If you do, the API will soft ban you for fifteen minutes the first time before accepting requests from your API key or IP address again. Each following time this happens within a certain period, your ban time will quadruple.
+
+So **limit your apps to no more than 10 requests per second per API key**. You know you've been soft banned if you receive an `HTTP 429` response. Check the JSON response for the `retryAfter` key, which represents for how long your API key and/or IP are banned from making further requests (in milliseconds).
+
+If this is the first time you've been banned, you can use the Slack bot to unban yourself immediately. If the Slack bot is not available or this is not the first time you've been banned, contact us on Slack.
+
+## Pagination
+
+Endpoints that might return a lot of items (users, documents, etc) are paginated via [range queries](https://en.wikipedia.org/wiki/Range_query_(database)). Such endpoints optionally accept an `after` parameter, which is an `<item>_id` or other identifier that determines which API item is returned first. That is: the first item will be the first `<item>_id` that comes *after* the `after` `<item>_id`. Omitting the `after` parameter returns the first 100 items in the system.
+
+For example, given the following dataset and an API with a default result size (or "page" size) of 3:
+
+```JavaScript
+[
+    { item_id: 0xabc123, name: 'Item 1 name' },
+    { item_id: 0xabc124, name: 'Item 2 name' },
+    { item_id: 0xabc125, name: 'Item 3 name' },
+    { item_id: 0xabc126, name: 'Item 4 name' },
+    { item_id: 0xabc127, name: 'Item 5 name' },
+]
+```
+
+Suppose we issued the following requests to an API:
+
+`/api?after=0xabc123`: responds with an array of 3 items: *0xabc124* through *0xabc126*
+`/api?after=0xabcXYZ`: responds with an array of 0 items since `item_id` *0xabcXYZ* doesn't exist
+`/api?after=0xabc124`: responds with an array of 3 items: *0xabc125* through *0xabc127*
+`/api?after=0xabc127`: responds with an array of 0 items since there is nothing after *0xabc127*
+`/api?after=0xabc125`: responds with an array of 2 items: *0xabc126* and *0xabc127*
+
+## Status Codes
+
+This API will issue responses with one of the following status codes:
+
+| STATUS | MEANING |
+|-----   |-----    |
+| 200    | Your request completed successfully. |
+| 400    | Your request was malformed or otherwise bad. Check the requirements. |
+| 401    | Session is not authenticated. Put your API key in the header! |
+| 403    | Session is not authorized. You tried to do something you can't do. |
+| 404    | The resource (or endpoint) was not found. Check your syntax. |
+| 405    | Bad method. The endpoint does not support your request's method. |
+| 413    | Your request was too large and was dropped. Max body size is 100KB. |
+| 415    | Your request was made using the wrong Content-Type header value. |
+| 429    | You've been rate limited. Try your request again after a few minutes. |
+| 4xx    | Your request was malformed in some way. |
+| 5xx    | Something happened on the server that is outside your control. |
+
+## Response Schema
+
+All responses issued by the API will follow one of the two following schemas.
+
+### Success Schema
+
+When a request you've issued succeeds, the response will look like the following:
+
+```json
+{
+    "success": "true",
+    // any other data you requested
+}
+```
+
+Note that all time data is represented as the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC, or the same thing that is returned by JavaScript's `Date.now()` method.
+
+### Error Schema
+
+When a request you've issued fails, along with the non-200 status code, the response will look like the following:
+
+```json
+{
+    "error": "an error message describing what went wrong",
+    // any other relevant data (like retryAfter)
+}
+```
+
+## CORS Support
+
+The API has full support for Cross Origin Resource Sharing (CORS) for AJAX requests.
+
+## Tips for Debugging
+
+- Are you using the right method?
+- Use this documentation (click "see example," then click "Try console") or use [Postman](https://www.postman.com/downloads) to play with the API.
+- Expect a raw JSON response body that you must parse manually, not raw text or something else.
+- Are you sending properly formatted JSON payloads in your request body when necessary?
+- Try outputting to stdout, use `console.log`, or output to some log file when API requests are made and responses received.
+- All time data is represented as [the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now).
+- Are you sending the correct headers? You need to specify the `Authorization: bearer your-special-api-key-here` header for all requests and the `'content-type': 'application/json'` header when making POST and PATCH requests.
+- Are you [encoding your URI components](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) properly, especially when you're trying to send the API [JSON objects](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON) via [GET request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods)?
+
+## Globally Unique IDs
+
+To retrieve data about one or more API items, you must know that item's `<item>_id`. These and other IDs are globally unique within the API. That is: no two items will ever have the same ID in any instance. Use this fact to your advantage.
+
+## Info Endpoints [/info]
+
+These endpoints allow retrieval of statistics describing the entire system.
+
+- [/info (GET)](#/reference/0/info-endpoints/info-get)
+
+### /info (GET) [GET /info]
+
+Get metadata about the entire system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + info (Info) - Metadata about the entire system.
+
+    + Body
+
+            {
+                "success": true,
+                "info": {
+                    "blogs": 5,
+                    "pages": 17,
+                    "users": 3,
+                }
+            }
+
+## Blogs Endpoints [/blogs]
+
+These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-whats-the-difference) on blogs and their pages.
+
+- [/blogs/:blogName (GET)](#/reference/0/blogs-endpoints/blogs-blog-name-get)
+- [/blogs/:blogName (PATCH)](#/reference/0/blogs-endpoints/blogs-blog-name-patch)
+- [/blogs/:blogName/pages (GET)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-get)
+- [/blogs/:blogName/pages (POST)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-post)
+- [/blogs/:blogName/pages/:pageName (GET)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-get)
+- [/blogs/:blogName/pages/:pageName (PATCH)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-patch)
+- [/blogs/:blogName/pages/:pageName (DELETE)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-delete)
+- [/blogs/:blogName/pages/:pageName/sessions (GET)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-get)
+- [/blogs/:blogName/pages/:pageName/sessions (POST)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-post)
+- [/blogs/:blogName/pages/:pageName/sessions/:session_id (PUT)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-session-id-put)
+- [/blogs/:blogName/pages/:pageName/sessions/:session_id (DELETE)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-session-id-delete)
+
+### /blogs/:blogName (GET) [GET /blogs/{blogName}]
+
+Retrieve a blog, including its navigation links.
+
+Navigation links are represented as an array of `{text, href}` pairs with `text`, representing the text for the link element, and `href`, representing the target of the link.
+
+`href` will be one of two things:
+
+1. A [protocol-relative URI](https://stackoverflow.com/a/27712501/1367414)
+starting with `//`. For example: `//google.com` would yield `http://google.com` regardless of app url, blog name, or your app's url scheme.
+
+OR
+
+2. The name of one of the blog's pages. For example: `some-page#third-heading-title` would yield `http://127.0.0.1:3000/cool-blogio/some-page#third-heading-title` (assuming an app url of `http://127.0.0.1:3000`, blog name of `cool-blogio`, and url scheme of `{app-url}/{blog-name}/{page-name}`)
+
+In either case, `href` may also have a query (starting with `?`) and/or fragment (starting with `#`) suffix.
+
+> Hint: keep interoperability with other teams' solutions in mind when deciding on your app's URL scheme and how you'll handle navigation link `href`s.
+
++ Parameters
+    + `blogName`: `some-blog` (blogName) - <span style="color: darkred">[required]</span> Name of the blog.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + blog (Blog) - The requested blog object.
+
+    + Body
+
+            {
+                "success": true,
+                "blog": {
+                    "name": "cool-blogio",
+                    "navLinks": [],
+                    "rootPage": "home",
+                    "createdAt": 1579345900650
+                }
+            }
+
+### /blogs/:blogName (PATCH) [PATCH /blogs/{blogName}]
+
+Update the properties of a blog.
+
++ Parameters
+    + `blogName`: `some-blog` (blogName) - <span style="color: darkred">[required]</span> Name of the blog.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + name: `"some-blog"` (optional, string) - The new name of this user's blog.
+        + rootPage: `"some-page"` (optional, string) - The new root page for this blog.
+        + navLinks (optional, array[NavLink]) - An array of links that should appear in this blog's navigation bar (replaces previous value).
+
+    + Body
+
+            {
+                "name": "new-name"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /blogs/:blogName/pages (GET) [GET /blogs/{blogName}/pages]
+
+Retrieve metadata on all pages associated with a blog.
+
++ Parameters
+    + `blogName`: `some-blog` (string) - <span style="color: darkred">[required]</span> Name of the blog.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + pages (array[PageMetadata]) - An array of page metadata objects.
+
+    + Body
+
+            {
+                "success": true,
+                "pages": [
+                    {
+                        "name": "home",
+                        "createdAt": 1579006593455,
+                        "totalViews": 0
+                    },
+                    {
+                        "name": "contact-us",
+                        "createdAt": 1579004655935,
+                        "totalViews": 0
+                    },
+                    {
+                        "name": "about",
+                        "createdAt": 1579005565934,
+                        "totalViews": 0
+                    }
+                ]
+            }
+
+### /blogs/:blogName/pages (POST) [POST /blogs/{blogName}/pages]
+
+Create a blog page.
+
++ Parameters
+    + `blogName`: `some-blog` (string) - <span style="color: darkred">[required]</span> Name of the blog.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + name: `"some-page"` (string) - The name of the new page.
+        + contents (optional, string) - The contents of the page.
+
+    + Body
+
+            {
+                "name": "cool-blogio",
+                "contents": "..."
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + page (Page) - The requested page object.
+
+    + Body
+
+            {
+                "success": true,
+                "page": {
+                    "name": "cool-blogio",
+                    "createdAt": 1579345900650,
+                    "totalViews": 100,
+                    "contents": "...",
+                }
+            }
+
+### /blogs/:blogName/pages/:pageName (GET) [GET /blogs/{blogName}/pages/{pageName}]
+
+Retrieve a blog page.
+
++ Parameters
+    + `blogName`: `some-blog` (string) - <span style="color: darkred">[required]</span> Name of the blog.
+    + `pageName`: `some-page` (string) - <span style="color: darkred">[required]</span> Name of the page.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + page (Page) - The requested page object.
+
+    + Body
+
+            {
+                "success": true,
+                "page": {
+                    "name": "cool-blogio",
+                    "createdAt": 1579345900650,
+                    "totalViews": 100,
+                    "contents": "...",
+                }
+            }
+
+### /blogs/:blogName/pages/:pageName (PATCH) [PATCH /blogs/{blogName}/pages/{pageName}]
+
+Update a blog page.
+
++ Parameters
+    + `blogName`: `some-blog` (string) - <span style="color: darkred">[required]</span> Name of the blog.
+    + `pageName`: `some-page` (string) - <span style="color: darkred">[required]</span> Name of the page.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + contents (optional, string) - The contents of the page.
+        + totalViews: `"increment"` (optional, string) - If the totalViews should be incremented. If this property is present, it must have the value `"increment"`.
+
+    + Body
+
+            {
+                "contents": "..."
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /blogs/:blogName/pages/:pageName (DELETE) [DELETE /blogs/{blogName}/pages/{pageName}]
+
+Delete a blog page.
+
++ Parameters
+    + `blogName`: `some-blog` (string) - <span style="color: darkred">[required]</span> Name of the blog.
+    + `pageName`: `some-page` (string) - <span style="color: darkred">[required]</span> Name of the page.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /blogs/:blogName/pages/:pageName/sessions (GET) [GET /blogs/{blogName}/pages/{pageName}/sessions]
+
+Returns the number of currently active sessions for this blog page.
+
+Each active session represents one viewer that loaded this blog's page within the last 30 seconds. If an active session is not [renewed](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-session-id-put) within 30 seconds, it is automatically deleted.
+
++ Parameters
+    + `blogName`: `some-blog` (string) - <span style="color: darkred">[required]</span> Name of the blog.
+    + `pageName`: `some-page` (string) - <span style="color: darkred">[required]</span> Name of the page.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + active (number) - The number of active sessions for this blog page.
+
+    + Body
+
+            {
+                "success": true,
+                "active": 54
+            }
+
+### /blogs/:blogName/pages/:pageName/sessions (POST) [POST /blogs/{blogName}/pages/{pageName}/sessions]
+
+Make the API aware of an active session, which represents one user viewing one page. Active sessions expire 30 seconds after their creation unless they are [renewed](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-session-id-put), which will reset the 30-second timer.
+
++ Parameters
+    + `blogName`: `some-blog` (string) - <span style="color: darkred">[required]</span> Name of the blog.
+    + `pageName`: `some-page` (string) - <span style="color: darkred">[required]</span> Name of the page.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + `session_id` (string) - A unique immutable MongoDB ID representing the newly created active session.
+
+    + Body
+
+            {
+                "success": true,
+                "session_id": "5ec8adf06e38137ff2e58648"
+            }
+
+### /blogs/:blogName/pages/:pageName/sessions/:session_id (PUT) [PUT /blogs/{blogName}/pages/{pageName}/sessions/{session_id}]
+
+Renew an active session to indicate that a user is still viewing the page. Renewing an active session resets the 30-second expiry period.
+
+> Hint: your app should keep renewing the same session every so often until the user navigates away from the current blog page, closes the browser, etc. If the user navigates from one blog page to another, your app should create a new session instead of renewing the existing one.
+
++ Parameters
+    + `blogName`: `some-blog` (string) - <span style="color: darkred">[required]</span> Name of the blog.
+    + `pageName`: `some-page` (string) - <span style="color: darkred">[required]</span> Name of the page.
+    + `session_id`: `5ec8adf06e38137ff2e58648` (session_id) - <span style="color: darkred">[required]</span> A unique immutable MongoDB ID representing the active session.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /blogs/:blogName/pages/:pageName/sessions/:session_id (DELETE) [DELETE /blogs/{blogName}/pages/{pageName}/sessions/{session_id}]
+
+Delete (manually expire) an active session.
+
++ Parameters
+    + `blogName`: `some-blog` (string) - <span style="color: darkred">[required]</span> Name of the blog.
+    + `pageName`: `some-page` (string) - <span style="color: darkred">[required]</span> Name of the page.
+    + `session_id`: `5ec8adf06e38137ff2e58648` (session_id) - <span style="color: darkred">[required]</span> A unique immutable MongoDB ID representing the active session.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+## User Endpoints [/users]
+
+These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-whats-the-difference) on a user.
+
+- [/users (GET)](#/reference/0/user-endpoints/users-get)
+- [/users (POST)](#/reference/0/user-endpoints/users-post)
+- [/users/:usernameOrEmail (GET)](#/reference/0/user-endpoints/users-username-or-email-get)
+- [/users/:usernameOrEmail (PATCH)](#/reference/0/user-endpoints/users-username-or-email-patch)
+- [/users/:usernameOrEmail (DELETE)](#/reference/0/user-endpoints/users-username-or-email-delete)
+- [/users/:usernameOrEmail/auth (POST)](#/reference/0/user-endpoints/users-username-or-email-auth-post)
+
+### /users (GET) [GET /users{?after}]
+
+Retrieves all users in the system in chronological order beginning with the most recently created user.
+
+Retrievals are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + `after` (optional, user_id) - <span style="color: gray">[optional]</span> Return only those users that occur *after* `user_id` in the result list.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + users (array[User, Administrator]) - An array of user objects. Empty if there are no users left to show.
+
+    + Body
+
+            {
+                "success": true,
+                "users": [
+                    {
+                        "user_id": "5eee34b3ca37750008547372",
+                        "salt": "01048140c7eca69abc74c16dfd418bda",
+                        "username": "dummyuser1",
+                        "email": "dummy@email.com",
+                        "type": "administrator",
+                    },
+                    {
+                        "user_id": "5eee34b3ca37750008547373",
+                        "salt": "c16dfd418bda01048140c7eca69abc74",
+                        "username": "dummy-user-2",
+                        "email": "dummy2@email.com",
+                        "blogName": "cool-blogio",
+                        "type": "blogger",
+                        "banned": false
+                    }
+                ]
+            }
+
+### /users (POST) [POST /users]
+
+Creates a new user and blog. The new blog will be initialized with a new default "home" page, and will have its `navLinks` and `rootPage` configured accordingly.
+
+Note that the API manages all user credentials. Passwords must **NEVER** be stored in any form ever (locally in your app or database or anywhere else), but are instead communicated as a special one-way "login key".
+
+The [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) and [Password-Based Key Derivation Function #2 (PBKDF2)](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey#pbkdf2) must be used to derive this key. Here is [an example](https://codepen.io/xunnamius/pen/XWZzLmz) using the Web Crypto API to derive a login key and salt from a password. Once this login key is derived, it and the salt must be sent to the API for storage.
+
+**NOTICE: all teams should use 100,000 iterations for PBKDF2 to make cross-app logins easier for the judges!**
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes
+        + username: `"thehill"` (optional, string) - The user's unique username within the system. Must be lowercase alphanumeric (`-` and `\_` are allowed).
+        + email: `"h@hillaryclinton.com"` (string) - The user's email address.
+        + salt (string) - A 16-byte (32 characters) hex string representing a salt corresponding to the login key.
+        + key (string) - A 64-byte (128 characters) hex string representing a login key.
+        + blogName (optional, string) - The name of the blog owned by this user. Must be provided only if `type === 'blogger'`.
+        + type: `"blogger"` (string) - The type of this user. Possible values are: `"blogger"` or `"administrator"`.
+
+    + Body
+
+            {
+                "username": "thehill",
+                "email": "h@hillaryclinton.com",
+                "salt": "01048140c7eca69abc74c16dfd418bda",
+                "key": "3ab51f05b268492084d737b62a20e6f2cc6696a21edff5dc249a55aa4236ee933a9599b14860caa21017677156f16d0508f4deda1cbe0bea5ffcad8fa331b77e",
+                "blogName": "cool-blogio",
+                "type": "blogger"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + user (enum[User, Administrator]) - The newly created user object.
+
+    + Body
+
+            {
+                "success": true,
+                "user": {
+                    "user_id": "5eee34b3ca37750008547374",
+                    "salt": "01048140c7eca69abc74c16dfd418bda",
+                    "username": "thehill",
+                    "email": "h@hillaryclinton.com",
+                    "blogName": "cool-blogio",
+                    "type": "blogger",
+                    "banned": false
+                }
+            }
+
+### /users/:usernameOrEmail (GET) [GET /users/{usernameOrEmail}]
+
+Retrieve a user by their `username` or `email`.
+
++ Parameters
+    + `usernameOrEmail`: `bernie4All` (enum[username, email]) - <span style="color: darkred">[required]</span> The target user's unique username or email within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + user (enum[User, Administrator]) - The requested user object.
+
+    + Body
+
+            {
+                "success": true,
+                "user": {
+                    "user_id": "5eee34b3ca37750008547375",
+                    "salt": "01048140c7eca69abc74c16dfd418bda",
+                    "username": "bernie4All",
+                    "email": "b@berniesanders.com",
+                    "type": "administrator",
+                }
+            }
+
+### /users/:usernameOrEmail (PATCH) [PATCH /users/{usernameOrEmail}]
+
+This endpoint can be used to change a user's password (i.e. their `key` and `salt`), their email, and other properties. See [/users (POST)](#/reference/0/user-endpoints/users-post) for more information on the derivation of a login key and salt.
+
++ Parameters
+    + `usernameOrEmail`: `lizWarren` (enum[username, email]) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + salt (optional, string) - A 16-byte (32 characters) hex string representing an updated salt corresponding to the updated login key. Must be present if `key` is present.
+        + key (optional, string) - A 64-byte (128 characters) hex string representing an updated login key. Must be present if `salt` is present.
+        + email (optional, string) - The user's updated email address.
+        + banned (optional, boolean) - The banned status of the user. Can be provided only if `type === 'blogger'`.
+
+    + Body
+
+            {
+                "salt": "01048140c7eca69abc74c16dfd418bda",
+                "key": "3ab51f05b268492084d737b62a20e6f2cc6696a21edff5dc249a55aa4236ee933a9599b14860caa21017677156f16d0508f4deda1cbe0bea5ffcad8fa331b77e"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:usernameOrEmail (DELETE) [DELETE /users/{usernameOrEmail}]
+
+Completely and permanently remove a user from the system. Note that deleting a user will delete their blog and its pages.
+
++ Parameters
+    + `usernameOrEmail`: `joeBiden` (enum[username, email]) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:usernameOrEmail/auth (POST) [POST /users/{usernameOrEmail}/auth]
+
+Attempt to authenticate the credentials of a specific user.
+
+To check if a given username/email and password combination is valid, follow the same process as in [the example](https://codepen.io/xunnamius/pen/XWZzLmz) to derive a login key _using the salt accessible via the user endpoint_. Send the newly derived login key to the API via this endpoint and, if it matches the key stored in the API, you will receive an `HTTP 200` status code response. If the user credentials could not be authenticated, you will receive a `HTTP 403` status code instead.
+
+See [/users (POST)](#/reference/0/user-endpoints/users-post) for more information on the derivation of a login key and salt.
+
++ Parameters
+    + `usernameOrEmail`: `potus@whitehouse.gov` (enum[username, email]) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + key (string) - A 64-byte (128 characters) hex string representing a login key derived using PBKDF#2.
+
+    + Body
+
+            {
+                "key": "3ab51f05b268492084d737b62a20e6f2cc6696a21edff5dc249a55aa4236ee933a9599b14860caa21017677156f16d0508f4deda1cbe0bea5ffcad8fa331b77e"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
++ Response 403 (application/json)
+See an example (HTTP 403)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+## Data Structures
+
+### Blog (object)
+
++ name: `"some-blog"` (string) - The alphanumeric (`-` and `\_` are allowed) name of this user's blog.
++ rootPage: `"home"` (string) - The name of this blog's root page.
++ navLinks (array[NavLink]) - An array of links that should appear in this blog's navigation bar.
++ createdAt: `1579345900650` (number) - When this blog was created [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server.
+
+### Info (object)
+
++ blogs (number) - The current number of blogs in the system.
++ pages (number) - The current number of pages in the system.
++ users (number) - The current number of users in the system.
+
+### NavLink (object)
+
++ href: `"//google.com"` (string) - The href of the link.
++ text: `"Google Search"` (string) - The textual representation of the link.
+
+### Page (PageMetadata)
+
++ contents (string) - The Markdown contents of this page.
+
+### PageMetadata (object)
+
++ name: `"some-page"` (string) - The alphanumeric (`-` and `\_` are allowed) name of this page.
++ createdAt: `1579345900650` (number) - When this page was created [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server.
++ totalViews (number) - The current number of views this page has.
+
+### User (object)
+
++ user_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing this user. Generated automatically by the server.
++ salt: `"2d6843cfd2ad23906fe33a236ba842a5"` (string) - A 16-byte (32 characters) hex string representing a salt corresponding to the login key.
++ username: `"Oforce1"` (string) - This user's unique username within the system. Must be lowercase alphanumeric (`-` and `\_` are allowed).
++ email: `"o@barackobama.com"` (string) - This user's unique email address within the system.
++ blogName: `"some-blog"` (string) - The alphanumeric (`-` and `\_` are allowed) name of the blog associated with this user.
++ type (string) - The type of this user. Will always be `"blogger"`.
++ banned (boolean) - The banned status of the user. Defaults to `false`.
+
+### Administrator (object)
+
++ user_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing this user. Generated automatically by the server.
++ salt: `"2d6843cfd2ad23906fe33a236ba842a5"` (string) - A 16-byte (32 characters) hex string representing a salt corresponding to the login key.
++ username: `"Oforce1"` (string) - This user's unique username within the system. Must be lowercase alphanumeric (`-` and `\_` are allowed).
++ email: `"o@barackobama.com"` (string) - This user's unique email address within the system.
++ type (string) - The type of this user. Will always be `"administrator"`.
