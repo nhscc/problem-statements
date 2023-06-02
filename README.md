@@ -219,7 +219,7 @@ competitions.
 <p>
 📑 <a href="/2023/blogpress">Problem statement</a>
 <br />
-🌍 <a href="https://blogpress.solutions.hscc.bdpa.org">Live demo (DFR)</a>
+🌍 <a href="https://blogpress.solutions.hscc.bdpa.org">Live demo</a> (DFR)
 <br />
 📚 <a href="https://hsccjcat4d54.docs.apiary.io/">Interactive API docs</a>
 </p>
