@@ -26,6 +26,10 @@ mind:
 <img width="500" height="1" />
 <p align="center"><strong><a href="/2023">BlogPress</a> (sample)</strong></p>
 </th>
+<th>
+<img width="500" height="1" />
+<p align="center"><strong><a href="/2023">TBD</a> (actual)</strong></p>
+</th>
 </tr>
 <tr>
 <td>
@@ -37,14 +41,21 @@ mind:
 📚 <a href="https://hsccjcat4d54.docs.apiary.io/">Interactive API docs</a>
 </p>
 </td>
+<td>
+<img width="500" height="1" />
+<p>
+</p>
+</td>
 </tr>
 <tr>
 <td>
 <img width="500" height="1" />
 <p>
-📦 <a href="https://github.com/nhscc/blogpress.solutions.hscc.bdpa.org">Demo source code</a>
-<br />
-🎒 <a href="https://github.com/nhscc/blogpress.api.hscc.bdpa.org">API source code</a>
+</p>
+</td>
+<td>
+<img width="500" height="1" />
+<p>
 </p>
 </td>
 </tr>

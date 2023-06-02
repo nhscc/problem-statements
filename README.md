@@ -203,3 +203,43 @@ competitions.
 </td>
 </tr>
 </table>
+<table>
+<tr>
+<th>
+<img width="500" height="1" />
+<p align="center"><strong><a href="/2023">BlogPress</a> (sample)</strong></p>
+</th>
+<th>
+<img width="500" height="1" />
+<p align="center"><strong><a href="/2023">TBD</a> (actual)</strong></p>
+</th>
+</tr>
+<tr>
+<td>
+<p>
+📑 <a href="/2023/blogpress">Problem statement</a>
+<br />
+🌍 <a href="https://blogpress.solutions.hscc.bdpa.org">Live demo</a>
+<br />
+📚 <a href="https://hsccjcat4d54.docs.apiary.io/">Interactive API docs</a>
+</p>
+</td>
+<td>
+<img width="500" height="1" />
+<p>
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<img width="500" height="1" />
+<p>
+</p>
+</td>
+<td>
+<img width="500" height="1" />
+<p>
+</p>
+</td>
+</tr>
+</table>
