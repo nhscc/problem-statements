@@ -77,7 +77,8 @@ Usernames must be removed from your app's frontend entirely. For example: when
 logging in, users must use their email address and password. When registering,
 users must no longer be asked to provide a username. When deriving a
 [digest value](https://developer.mozilla.org/en-US/docs/Glossary/Digest) to be
-sent to the API, only the email address and password should be used; see
+sent to the API, only the email address and password (email + password) should
+be used; see
 [the API documentation](https://hsccjcat4d54.docs.apiary.io/#/reference/0/user-endpoints/users-username-or-email-auth-post)
 for further details.
 
@@ -123,10 +124,11 @@ rename pages without losing their contents.
 **`administrator`s can now delete users. Any user can also delete their own
 accounts.**
 
-Deleting a user should also delete that user's blog and its pages.
-`administrator`s cannot delete other `administrator`s.
+Deleting a user will automatically (at the API level) delete that user's blog
+and its pages. Your solution must not allow `administrator`s to delete other
+`administrator`s.
 
-Deleted users who are logged in are forced to log out "immediately" (i.e. as
+Deleted users who are logged in must be forced to log out "immediately" (i.e. as
 soon as the next HTTP response from the server).
 
 Additionally, any user (_including `administrator`s_) can now delete their own

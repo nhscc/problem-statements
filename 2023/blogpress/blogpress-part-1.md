@@ -130,10 +130,10 @@ From this view, authenticated users can:
   [navigation element](#navigation-element)
 
 Every blog, when it is first created along with the user account, will have a
-default "home" page created for them. This page will be considered their blog's
-[root page](#the-root-page). This default home page will also be added to the
-new blog's [navigation element](#navigation-element) by default, which the
-`blogger` can change later.
+default "home" page created for them by the API. This page will be considered
+their blog's [root page](#the-root-page). This default home page will also be
+added to the new blog's [navigation element](#navigation-element) by default,
+which the `blogger` can change later.
 
 ### Creating And Editing A Page
 
@@ -149,12 +149,10 @@ purposes.
 
 Each blog must have a "root" (aka _home_ or _landing_) page. It is a page just
 like any other page, except its name does not need to be entered as part of the
-blog's URL to visit it and it cannot be deleted. For example, if your solution
-is located at http://localhost:3000, the root page of a blog named "cool-blogio"
-would be rendered at http://localhost:3000/blogs/cool-blogio, assuming a URL
-scheme of `{app-url}/blogs/{blog-name}`.
-
-Unlike other pages, the root page cannot be deleted.
+blog's URL to visit it and it cannot be deleted by the user. For example, if
+your solution is located at http://localhost:3000, the root page of a blog named
+"cool-blogio" would be rendered at http://localhost:3000/blogs/cool-blogio,
+assuming a URL scheme of `{app-url}/blogs/{blog-name}`.
 
 Given these constraints, blog names must be unique and page names must be unique
 per `blogger` account. This is enforced at the API level.
@@ -218,7 +216,8 @@ Your app must use
 to authenticate the `guest` user _instead of_ retrieving the user's credentials
 from a local database. Your app will do this by sending the API a
 [digest value](https://developer.mozilla.org/en-US/docs/Glossary/Digest) derived
-from the username, email address, and password provided. See
+from the username, email address, and password (username + email + password)
+provided. See
 [the API documentation](https://hsccjcat4d54.docs.apiary.io/#/reference/0/user-endpoints/users-username-or-email-auth-post)
 for more details.
 
@@ -337,7 +336,9 @@ With this potential URL scheme, no user can create a blog named "auth" or
 "builder".
 
 > You can come up with any RESTful URL scheme you want. You do not have to use
-> the example scheme described above.
+> the example scheme described above. Though remember that the input limits you
+> place on your solution's frontend (like not allowing certain blog names) might
+> not exist in other teams' solutions.
 
 ## Requirement 10
 
