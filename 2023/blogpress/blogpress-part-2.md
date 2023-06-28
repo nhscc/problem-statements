@@ -97,7 +97,7 @@ should link back to the [Home view](./blogpress-part-1.md#requirement-2).
 
 When a user closes their browser, or otherwise navigates away from a blog page,
 the active session associated with that user, blog, and page should be
-[_manually expired_](https://hsccjcat4d54.docs.apiary.io/#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-session-id-delete).
+[_manually expired_](https://hsccjcat4d54.docs.apiary.io/#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-sessions-session-id-delete).
 
 If your solution was not doing this already, then the number of active sessions
 associated with a page only decreased when active sessions would automatically
@@ -105,7 +105,7 @@ expires in 30 seconds after not being renewed. With this change, the number of
 active sessions should update much more quickly all across your app. That is:
 shortly after the user leaves a page and, hence, stops being an "active" viewer
 of that page, your solution must attempt to
-[manually expire](https://hsccjcat4d54.docs.apiary.io/#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-activity-delete)
+[manually expire](https://hsccjcat4d54.docs.apiary.io/#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-activity-delete)
 the active session associated with said page.
 
 > [Hint.](https://dev.to/amersikira/top-3-ways-to-easily-detect-when-a-user-leaves-a-page-using-javascript-2ce4)
@@ -122,7 +122,7 @@ rename pages without losing their contents.
 ## Change 8
 
 **`administrator`s can now delete users. Any user can also delete their own
-accounts.**
+account.**
 
 Deleting a user will automatically (at the API level) delete that user's blog
 and its pages. Your solution must not allow `administrator`s to delete other

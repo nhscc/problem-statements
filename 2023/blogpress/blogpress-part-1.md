@@ -351,17 +351,17 @@ do two things:
 
 1. Increment the (monotonic) total number of views associated with that blog's
    page
-2. [Add or renew an "active session" entry](https://hsccjcat4d54.docs.apiary.io/#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-post)
-   associated with that user and ip address
+2. [Add or renew an "active session" entry](https://hsccjcat4d54.docs.apiary.io/#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-sessions-post)
+   associated with that user
 
 Active sessions represent users (`guest` or otherwise) that are currently
 interacting with a blog's page. When registering a new active session, you'll
 receive a
-[`session_id`](https://hsccjcat4d54.docs.apiary.io/#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-post)
+[`session_id`](https://hsccjcat4d54.docs.apiary.io/#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-sessions-post)
 that you can use to
-[renew](https://hsccjcat4d54.docs.apiary.io/#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-post)
+[renew](https://hsccjcat4d54.docs.apiary.io/#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-sessions-post)
 that session every so often or
-[manually expire (delete)](https://hsccjcat4d54.docs.apiary.io/#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-post)
+[manually expire (delete)](https://hsccjcat4d54.docs.apiary.io/#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-sessions-post)
 it.
 
 Clients should regularly renew active sessions for as long as the user is

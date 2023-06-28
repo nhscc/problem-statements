@@ -177,21 +177,21 @@ See an example (HTTP 200)
                 }
             }
 
-## Blogs Endpoints [/blogs]
+## Blog Endpoints [/blogs]
 
 These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-whats-the-difference) on blogs and their pages.
 
-- [/blogs/:blogName (GET)](#/reference/0/blogs-endpoints/blogs-blog-name-get)
-- [/blogs/:blogName (PATCH)](#/reference/0/blogs-endpoints/blogs-blog-name-patch)
-- [/blogs/:blogName/pages (GET)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-get)
-- [/blogs/:blogName/pages (POST)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-post)
-- [/blogs/:blogName/pages/:pageName (GET)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-get)
-- [/blogs/:blogName/pages/:pageName (PATCH)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-patch)
-- [/blogs/:blogName/pages/:pageName (DELETE)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-delete)
-- [/blogs/:blogName/pages/:pageName/sessions (GET)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-get)
-- [/blogs/:blogName/pages/:pageName/sessions (POST)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-post)
-- [/blogs/:blogName/pages/:pageName/sessions/:session_id (PUT)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-session-id-put)
-- [/blogs/:blogName/pages/:pageName/sessions/:session_id (DELETE)](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-session-id-delete)
+- [/blogs/:blogName (GET)](#/reference/0/blog-endpoints/blogs-blog-name-get)
+- [/blogs/:blogName (PATCH)](#/reference/0/blog-endpoints/blogs-blog-name-patch)
+- [/blogs/:blogName/pages (GET)](#/reference/0/blog-endpoints/blogs-blog-name-pages-get)
+- [/blogs/:blogName/pages (POST)](#/reference/0/blog-endpoints/blogs-blog-name-pages-post)
+- [/blogs/:blogName/pages/:pageName (GET)](#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-get)
+- [/blogs/:blogName/pages/:pageName (PATCH)](#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-patch)
+- [/blogs/:blogName/pages/:pageName (DELETE)](#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-delete)
+- [/blogs/:blogName/pages/:pageName/sessions (GET)](#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-sessions-get)
+- [/blogs/:blogName/pages/:pageName/sessions (POST)](#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-sessions-post)
+- [/blogs/:blogName/pages/:pageName/sessions/:session_id (PUT)](#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-sessions-session-id-put)
+- [/blogs/:blogName/pages/:pageName/sessions/:session_id (DELETE)](#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-sessions-session-id-delete)
 
 ### /blogs/:blogName (GET) [GET /blogs/{blogName}]
 
@@ -338,7 +338,7 @@ Create a blog page.
 
     + Attributes (object)
         + name: `"some-page"` (string) - The name of the new page.
-        + contents (optional, string) - The contents of the page.
+        + contents (string) - The contents of the page.
 
     + Body
 
@@ -468,7 +468,7 @@ See an example (HTTP 200)
 
 Returns the number of currently active sessions for this blog page.
 
-Each active session represents one viewer that loaded this blog's page within the last 30 seconds. If an active session is not [renewed](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-session-id-put) within 30 seconds, it is automatically deleted.
+Each active session represents one viewer that loaded this blog's page within the last 30 seconds. If an active session is not [renewed](#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-sessions-session-id-put) within 30 seconds, it is automatically deleted.
 
 + Parameters
     + `blogName`: `some-blog` (string) - <span style="color: darkred">[required]</span> Name of the blog.
@@ -497,7 +497,7 @@ See an example (HTTP 200)
 
 ### /blogs/:blogName/pages/:pageName/sessions (POST) [POST /blogs/{blogName}/pages/{pageName}/sessions]
 
-Make the API aware of an active session, which represents one user viewing one page. Active sessions expire 30 seconds after their creation unless they are [renewed](#/reference/0/blogs-endpoints/blogs-blog-name-pages-page-name-sessions-session-id-put), which will reset the 30-second timer.
+Make the API aware of an active session, which represents one user viewing one page. Active sessions expire 30 seconds after their creation unless they are [renewed](#/reference/0/blog-endpoints/blogs-blog-name-pages-page-name-sessions-session-id-put), which will reset the 30-second timer.
 
 + Parameters
     + `blogName`: `some-blog` (string) - <span style="color: darkred">[required]</span> Name of the blog.
