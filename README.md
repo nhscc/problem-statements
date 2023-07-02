@@ -24,7 +24,7 @@ excellent position to do well on the actual competition problem statement.
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="#">TBA</a> (actual)</p>
+<p align="center"><strong><a href="/2023/inbdpa">InBDPA</a> (actual)</p>
 </th>
 </tr>
 
@@ -35,6 +35,10 @@ excellent position to do well on the actual competition problem statement.
 Past problem statements and their APIs will remain functional
 _forever_<sup>1</sup>, and can be used as training material for future
 competitions.
+
+Most API endpoints require authentication. Use our Slack bot to manage your API
+keys, or clone the API repository of your choice and run the API locally (it's
+pretty easy).
 
 <small><sup>1</sup> Unless
 [GitHub Actions](https://github.com/features/actions),
@@ -211,7 +215,7 @@ competitions.
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2023">TBD</a> (actual)</strong></p>
+<p align="center"><strong><a href="/2023">InBDPA</a> (actual)</strong></p>
 </th>
 </tr>
 <tr>
@@ -227,6 +231,11 @@ competitions.
 <td>
 <img width="500" height="1" />
 <p>
+📑 <a href="/2023/inbdpa">Problem statement</a>
+<br />
+🌍 <a href="https://inbdpa.solutions.hscc.bdpa.org">Live demo</a> (DFR)
+<br />
+📚 <a href="https://hsccrkby0uo4.docs.apiary.io/">Interactive API docs</a>
 </p>
 </td>
 </tr>
@@ -234,11 +243,17 @@ competitions.
 <td>
 <img width="500" height="1" />
 <p>
+📦 <a href="https://github.com/nhscc/blogpress.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/blogpress.api.hscc.bdpa.org">API source code</a>
 </p>
 </td>
 <td>
 <img width="500" height="1" />
 <p>
+📦 <a href="https://github.com/nhscc/inbdpa.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/inbdpa.api.hscc.bdpa.org">API source code</a>
 </p>
 </td>
 </tr>

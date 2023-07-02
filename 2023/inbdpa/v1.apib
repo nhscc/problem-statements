@@ -1,0 +1,1031 @@
+FORMAT: 1A
+HOST: https://inbdpa.api.hscc.bdpa.org/v1
+
+# InBDPA API
+
+> We're looking for feedback! If you have any opinions or ideas, contact us on Slack.
+
+Based on [simple REST principles](https://restfulapi.net), the InBDPA API returns JSON data responses to requests. This is the API used by teams and their apps for the BDPA National High School Computer Competition. It contains all of the data teams' apps must interact with. The API is live and will ideally remain online indefinitely.
+
+The base address of the InBDPA API is https://inbdpa.api.hscc.bdpa.org/V where `V` is the version of the API you want to use. There is currently only one version, so `V = v1`. Each version of the API provides a set of endpoints with their own unique path and requirements.
+
+[The source code behind the API is available on GitHub](https://github.com/nhscc/inbdpa.api.hscc.bdpa.org). If you have any trouble, [open an issue there](https://github.com/nhscc/inbdpa.api.hscc.bdpa.org/issues/new) or contact us on Slack.
+
+> Notice: due to financial constraints, the oldest documents in the system will be dropped from the API to make room for the new. That is: `<item>_id`s are not guaranteed to exist forever!
+
+## Requesting a Key
+
+To access the majority of this API's endpoints requires a key. If your team needs a key, or to replace a lost or stolen key, either use our Slack bot (BDPABot) to manage your team's keys or contact us on Slack.
+
+When you get your key, include it as your request's [Authorization header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) and you will be immediately authenticated into the system. For example: `Authorization: bearer your-special-api-key-here`.
+
+## Rules of API Access
+
+1. Do not bombard the API with requests or you risk permanent IP/subnet ban. **Limit your apps to no more than 10 requests per second per API key**. If your app ends up sending too many requests over some time period, you'll get a `HTTP 429` response along with a monotonically increasing soft ban (starting at 15 minutes). Similarly, the size of requests is strictly limited, so you must limit the amount of data you're sending. When you send a request that is too large (>100KB), it will fail with a `HTTP 413` response.
+
+2. **Do not reveal your API key to anyone** not on your own team. It is how the API identifies your team. Do not upload it to GitHub or leave it lying around in your source code. Save it to a file and `.gitignore` it or save it to an environment variable.
+
+3. Since the API is live, you might be able to see or interact with content posted by other teams. If this is the case, please do not post anything inappropriate.
+
+4. If you have a relevant feature request or you encounter any vulnerabilities, errors, or other issues, don't hesitate to contact NHSCC staff via Slack or [open an issue on GitHub](https://github.com/nhscc/inbdpa.api.hscc.bdpa.org). For significant enough finds, bonus points may be awarded. On the other hand, abusing any vulnerability or bug may result in disqualification.
+
+5. **The API was built to randomly return errors every so often**. That means your app must be prepared to deal with `HTTP 555` and other bad responses. However, if you're consistently getting `HTTP 5xx` errors back to back, then something is wrong. Please report this if it happens.
+
+6. All responses are raw JSON. All request payloads must be sent as raw JSON. `JSON.stringify()` and `JSON.parse()` or whatever language equivalent is available to you is your friend!
+
+## Request Methods
+
+This API is based on [simple REST principles](https://restfulapi.net). Resources are accessed via standard HTTPS requests in UTF-8 format to an API endpoint. This API understands the following HTTP request methods:
+
+| METHOD | MEANING |
+|-----   |-----    |
+| GET    | Return data about something |
+| POST   | Create something new        |
+| PATCH    | Modify something            |
+| PATCH  | Partially modify something  |
+| DELETE | Delete something            |
+
+## Rate Limits
+
+As said earlier, do not bombard the API with requests. If you do, the API will soft ban you for fifteen minutes the first time before accepting requests from your API key or IP address again. Each following time this happens within a certain period, your ban time will quadruple.
+
+So **limit your apps to no more than 10 requests per second per API key**. You know you've been soft banned if you receive an `HTTP 429` response. Check the JSON response for the `retryAfter` key, which represents for how long your API key and/or IP are banned from making further requests (in milliseconds).
+
+If this is the first time you've been banned, you can use the Slack bot to unban yourself immediately. If the Slack bot is not available or this is not the first time you've been banned, contact us on Slack.
+
+## Pagination
+
+Endpoints that might return a lot of items (users, documents, etc) are paginated via [range queries](https://en.wikipedia.org/wiki/Range_query_(database)). Such endpoints optionally accept an `after` parameter, which is an `<item>_id` or other identifier that determines which API item is returned first. That is: the first item will be the first `<item>_id` that comes *after* the `after` `<item>_id`. Omitting the `after` parameter returns the first 100 items in the system.
+
+For example, given the following dataset and an API with a default result size (or "page" size) of 3:
+
+```JavaScript
+[
+    { item_id: 0xabc123, name: 'Item 1 name' },
+    { item_id: 0xabc124, name: 'Item 2 name' },
+    { item_id: 0xabc125, name: 'Item 3 name' },
+    { item_id: 0xabc126, name: 'Item 4 name' },
+    { item_id: 0xabc127, name: 'Item 5 name' },
+]
+```
+
+Suppose we issued the following requests to an API:
+
+`/api?after=0xabc123`: responds with an array of 3 items: *0xabc124* through *0xabc126*
+`/api?after=0xabcXYZ`: responds with an array of 0 items since `item_id` *0xabcXYZ* doesn't exist
+`/api?after=0xabc124`: responds with an array of 3 items: *0xabc125* through *0xabc127*
+`/api?after=0xabc127`: responds with an array of 0 items since there is nothing after *0xabc127*
+`/api?after=0xabc125`: responds with an array of 2 items: *0xabc126* and *0xabc127*
+
+## Status Codes
+
+This API will issue responses with one of the following status codes:
+
+| STATUS | MEANING |
+|-----   |-----    |
+| 200    | Your request completed successfully. |
+| 400    | Your request was malformed or otherwise bad. Check the requirements. |
+| 401    | Session is not authenticated. Put your API key in the header! |
+| 403    | Session is not authorized. You tried to do something you can't do. |
+| 404    | The resource (or endpoint) was not found. Check your syntax. |
+| 405    | Bad method. The endpoint does not support your request's method. |
+| 413    | Your request was too large and was dropped. Max body size is 100KB. |
+| 415    | Your request was made using the wrong Content-Type header value. |
+| 429    | You've been rate limited. Try your request again after a few minutes. |
+| 4xx    | Your request was malformed in some way. |
+| 5xx    | Something happened on the server that is outside your control. |
+
+## Response Schema
+
+All responses issued by the API will follow one of the two following schemas.
+
+### Success Schema
+
+When a request you've issued succeeds, the response will look like the following:
+
+```json
+{
+    "success": "true",
+    // any other data you requested
+}
+```
+
+Note that all time data is represented as the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC, or the same thing that is returned by JavaScript's `Date.now()` method.
+
+### Error Schema
+
+When a request you've issued fails, along with the non-200 status code, the response will look like the following:
+
+```json
+{
+    "error": "an error message describing what went wrong",
+    // any other relevant data (like retryAfter)
+}
+```
+
+## CORS Support
+
+The API has full support for Cross Origin Resource Sharing (CORS) for AJAX requests.
+
+## Tips for Debugging
+
+- Are you using the right method?
+- Use this documentation (click "see example," then click "Try console") or use [Postman](https://www.postman.com/downloads) to play with the API.
+- Expect a raw JSON response body that you must parse manually, not raw text or something else.
+- Are you sending properly formatted JSON payloads in your request body when necessary?
+- Try outputting to stdout, use `console.log`, or output to some log file when API requests are made and responses received.
+- All time data is represented as [the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now).
+- Are you sending the correct headers? You need to specify the `Authorization: bearer your-special-api-key-here` header for all requests and the `'content-type': 'application/json'` header when making POST and PATCH requests.
+- Are you [encoding your URI components](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) properly, especially when you're trying to send the API [JSON objects](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON) via [GET request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods)?
+
+## Globally Unique IDs
+
+To retrieve data about one or more API items, you must know that item's `<item>_id`. These and other IDs are globally unique within the API. That is: no two items will ever have the same ID in any instance. Use this fact to your advantage.
+
+## Info Endpoints [/info]
+
+These endpoints allow retrieval of statistics describing the entire system.
+
+- [/info (GET)](#/reference/0/info-endpoints/info-get)
+
+### /info (GET) [GET /info]
+
+Get metadata about the entire system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + info (Info) - Metadata about the entire system.
+
+    + Body
+
+            {
+                "success": true,
+                "info": {
+                    "opportunities": 17,
+                    "sessions": 5,
+                    "users": 3,
+                    "views": 91356
+                }
+            }
+
+## Opportunity Endpoints [/opportunities]
+
+These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-whats-the-difference) on opportunities.
+
+- [/opportunities (GET)](#/reference/0/opportunity-endpoints/opportunities-get)
+- [/opportunities (POST)](#/reference/0/opportunity-endpoints/opportunities-post)
+- [/opportunities/:opportunity_id (GET)](#/reference/0/opportunity-endpoints/opportunities-opportunity-id-get)
+- [/opportunities/:opportunity_id (PATCH)](#/reference/0/opportunity-endpoints/opportunities-opportunity-id-patch)
+- [/opportunities/:opportunity_id (DELETE)](#/reference/0/opportunity-endpoints/opportunities-opportunity-id-delete)
+
+### /opportunities (GET) [GET /opportunities{?after,updatedAfter}]
+
+Retrieves all opportunities in the system in [FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)) order.
+
+Retrievals are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + `after` (optional, opportunity_id) - <span style="color: gray">[optional]</span> Return only those results that occur *after* `after` in the result list.
+    + `updatedAfter` (optional, number) - <span style="color: gray">[optional]</span> Return only those users with [`updatedAt`](#/data-structures/0/opportunity) greater than `updatedAfter`.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + opportunities (array[Opportunity]) - An array of opportunity objects. Empty if there are no opportunities left to show.
+
+    + Body
+
+            {
+                "success": true,
+                "opportunities": [
+                    {
+                        "opportunity_id": "5eee34b3ca37750008547374",
+                        "title": "Unpaid Internship Requiring Masters Degree",
+                        "views": 521,
+                        "contents": "...",
+                        "createdAt": 1579345900650,
+                        "updatedAt": 1579345900650
+                    },
+                    {
+                        "opportunity_id": "5eee34b3ca37750008547375",
+                        "title": "Unpaid Internship Requiring 50 Years Experience",
+                        "views": 44,
+                        "contents": "...",
+                        "createdAt": 1579345900650,
+                        "updatedAt": 1579345900650
+                    }
+                ]
+            }
+
+
+### /opportunities (POST) [POST /opportunities]
+
+Creates a new opportunity.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes
+        + title: `"My Little Opportunity"` (string) - The title of the opportunity.
+        + contents (string) - The Markdown contents describing the opportunity.
+
+    + Body
+
+            {
+                "title": "Unpaid Internship Requiring Masters Degree",
+                "contents": "...",
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + opportunity (Opportunity) - The newly created opportunity object.
+
+    + Body
+
+            {
+                "success": true,
+                "opportunity": {
+                    "opportunity_id": "5eee34b3ca37750008547374",
+                    "title": "Unpaid Internship Requiring Masters Degree",
+                    "views": 0,
+                    "contents": "...",
+                    "createdAt": 1579345900650,
+                    "updatedAt": 1579345900650
+                }
+            }
+
+### /opportunities/:opportunity_id (GET) [GET /opportunities/{opportunity_id}]
+
+Retrieve an opportunity by its `opportunity_id`.
+
++ Parameters
+    + `opportunity_id`: `5eee34b3ca37750008547375` (opportunity_id) - <span style="color: darkred">[required]</span> ID of the opportunity.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + opportunity (Opportunity) - The requested opportunity object.
+
+    + Body
+
+            {
+                "success": true,
+                "opportunity": {
+                    "opportunity_id": "5eee34b3ca37750008547374",
+                    "title": "Unpaid Internship Requiring Masters Degree",
+                    "views": 521,
+                    "contents": "...",
+                    "createdAt": 1579345900650,
+                    "updatedAt": 1579345900650
+                }
+            }
+
+### /opportunities/:opportunity_id (PATCH) [PATCH /opportunities/{opportunity_id}]
+
+Update an opportunity (`opportunity_id`) in the system. The opportunity's `updatedAt` timestamp is also updated.
+
++ Parameters
+    + `opportunity_id`: `5eee34b3ca37750008547375` (opportunity_id) - <span style="color: darkred">[required]</span> ID of the opportunity.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + title: `"My Little Opportunity"` (optional, string) - The title of the opportunity.
+        + contents (optional, string) - The Markdown contents describing the opportunity.
+        + views: `"increment"` (optional, string) - If the views should be incremented. If this property is present, it must have the value `"increment"`.
+
+    + Body
+
+            {
+                "title": `"My BIG Opportunity!"`
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /opportunities/:opportunity_id (DELETE) [DELETE /opportunities/{opportunity_id}]
+
+Completely and permanently remove an opportunity from the system.
+
++ Parameters
+    + `opportunity_id`: `5eee34b3ca37750008547375` (opportunity_id) - <span style="color: darkred">[required]</span> ID of the opportunity.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+## Session Endpoints [/sessions]
+
+These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-whats-the-difference) on active viewer sessions.
+
+- [/sessions (POST)](#/reference/0/session-endpoints/sessions-post)
+- [/sessions/:session_id (PATCH)](#/reference/0/session-endpoints/sessions-session-id-patch)
+- [/sessions/:session_id (DELETE)](#/reference/0/session-endpoints/sessions-session-id-delete)
+- [/sessions/count-for/user/:user_id (GET)](#/reference/0/session-endpoints/sessions-count-for-user-user-id-get)
+- [/sessions/count-for/opportunity/:opportunity_id (GET)](#/reference/0/session-endpoints/sessions-count-for-opportunity-opportunity-id-get)
+
+### /sessions (POST) [POST /sessions]
+
+Make the API aware of an active session, which represents one client interacting with one view (`view` + `viewed_id`). Active sessions expire 30 seconds after their creation unless they are [renewed](#/reference/0/session-endpoints/sessions-session-id-patch), which will reset the 30-second timer.
+
+Example usage: if `user-A` clicks a link to `user-B`'s profile, which loads the Profile view, your solution would create a new session where `view = 'profile'` and `viewed_id = user-B's-user-id`. You would then continually [renew](#/reference/0/session-endpoints/sessions-session-id-patch) that session every so often until `user-A` navigates away from `user-B`'s profile.
+
+Note that possible values for `viewed_id` are: a `user_id` (only if `view === 'profile'`), an `opportunity_id` (only if `view === 'opportunity'`), or `null`.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + view: `"profile"` (string) - The view this session is associated with. Possible values are: `"profile"`, `"opportunity"`, `"admin"`, `"auth"`, or `"home"`.
+        + viewed_id: `"5ec8adf06e38137ff2e58770"` (string, nullable) - A unique immutable MongoDB ID corresponding to the `view` item associated with this session, or `null`.
+
+    + Body
+
+            {
+                "view": "profile",
+                "viewed_id": null,
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + `session_id` (string) - A unique immutable MongoDB ID representing the newly created active session.
+
+    + Body
+
+            {
+                "success": true,
+                "session_id": "5ec8adf06e38137ff2e58648"
+            }
+
+### /sessions/:session_id (PATCH) [PATCH /sessions/{session_id}]
+
+Renew an active session to indicate that a client (user) is still accessing a view. Renewing an active session resets the 30-second expiry period.
+
+> Hint: your solution should keep renewing the same session every so often until the client navigates away from the current view, closes the browser, etc. If the client navigates from one URL to another without changing views, your solution should still create a new session instead of renewing the existing one.
+
++ Parameters
+    + `session_id`: `5eee34b3ca37750008547375` (session_id) - <span style="color: darkred">[required]</span> ID of the session.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /sessions/:session_id (DELETE) [DELETE /sessions/{session_id}]
+
+Delete (manually expire) an active session.
+
++ Parameters
+    + `session_id`: `5eee34b3ca37750008547375` (session_id) - <span style="color: darkred">[required]</span> ID of the session.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /sessions/count-for/user/:user_id (GET) [GET /sessions/count-for/user{user_id}]
+
+Returns the number of currently active sessions associated with the given user profile (`user_id`).
+
+Each active session represents one viewer that loaded this user's profile within the last 30 seconds. If an active session is not [renewed](#/reference/0/session-endpoints/sessions-session-id-patch) within 30 seconds, it is automatically deleted.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547375` (user_id) - <span style="color: darkred">[required]</span> ID of the user.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + active (number) - The number of active sessions associated with this user's profile.
+
+    + Body
+
+            {
+                "success": true,
+                "active": 54
+            }
+
+### /sessions/count-for/opportunity/:opportunity_id (GET) [GET /sessions/count-for/opportunity{opportunity_id}]
+
+Returns the number of currently active sessions associated with the given opportunity (`opportunity_id`).
+
+Each active session represents one viewer that loaded this opportunity's profile within the last 30 seconds. If an active session is not [renewed](#/reference/0/session-endpoints/sessions-session-id-patch) within 30 seconds, it is automatically deleted.
+
++ Parameters
+    + `opportunity_id`: `5eee34b3ca37750008547375` (opportunity_id) - <span style="color: darkred">[required]</span> ID of the opportunity.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + active (number) - The number of active sessions associated with this opportunity.
+
+    + Body
+
+            {
+                "success": true,
+                "active": 44
+            }
+
+## User Endpoints [/users]
+
+These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-whats-the-difference) on users.
+
+- [/users (GET)](#/reference/0/user-endpoints/users-get)
+- [/users (POST)](#/reference/0/user-endpoints/users-post)
+- [/users/:user_id (GET)](#/reference/0/user-endpoints/users-user-id-get)
+- [/users/:username (GET)](#/reference/0/user-endpoints/users-username-get)
+- [/users/:user_id (PATCH)](#/reference/0/user-endpoints/users-user-id-patch)
+- [/users/:user_id (DELETE)](#/reference/0/user-endpoints/users-user-id-delete)
+- [/users/:user_id/auth (POST)](#/reference/0/user-endpoints/users-user-id-auth-post)
+- [/users/:user_id/connections (GET)](#/reference/0/user-endpoints/users-user-id-connections-get)
+- [/users/:user_id/connections/:connection_id (POST)](#/reference/0/user-endpoints/users-user-id-connections-connection-id-post)
+- [/users/:user_id/connections/:connection_id (DELETE)](#/reference/0/user-endpoints/users-user-id-connections-connection-id-delete)
+
+### /users (GET) [GET /users{?after,updatedAfter}]
+
+Retrieves all users in the system in [FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)) order.
+
+Retrievals are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + `after` (optional, user_id) - <span style="color: gray">[optional]</span> Return only those results that occur *after* `after` in the result list.
+    + `updatedAfter` (optional, number) - <span style="color: gray">[optional]</span> Return only those users with [`updatedAt`](#/data-structures/0/user) greater than `updatedAfter`.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + users (User) - An array of user objects. Empty if there are no users left to show.
+
+    + Body
+
+            {
+                "success": true,
+                "users": [
+                    {
+                        "user_id": "5eee34b3ca37750008547372",
+                        "salt": "01048140c7eca69abc74c16dfd418bda",
+                        "username": "dummyuser1",
+                        "email": "dummy@email.com",
+                        "type": "administrator",
+                        "views": 1234,
+                        "sections": {
+                            "about": null,
+                            "experience": [],
+                            "education": [],
+                            "volunteering": [],
+                            "skills": []
+                        },
+                        "createdAt": 1579345900650,
+                        "updatedAt": 1579345900650
+                    },
+                    {
+                        "user_id": "5eee34b3ca37750008547373",
+                        "salt": "c16dfd418bda01048140c7eca69abc74",
+                        "username": "dummy-user-2",
+                        "email": "dummy2@email.com",
+                        "type": "staff",
+                        "views": 5678,
+                        "sections": {
+                            "about": null,
+                            "experience": [],
+                            "education": [],
+                            "volunteering": [],
+                            "skills": []
+                        },
+                        "createdAt": 1579345900650,
+                        "updatedAt": 1579345900650
+                    }
+                ]
+            }
+
+### /users (POST) [POST /users]
+
+Creates a new user.
+
+Note that the API manages all user credentials. Passwords must **NEVER** be stored in any form ever (locally in your app or database or anywhere else), but are instead communicated as a special one-way "login key".
+
+The [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) and [Password-Based Key Derivation Function #2 (PBKDF2)](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey#pbkdf2) must be used to derive this key. Here is [an example](https://codepen.io/xunnamius/pen/XWZzLmz) using the Web Crypto API to derive a login key and salt from a password. Once this login key is derived, it and the salt must be sent to the API for storage.
+
+**NOTICE: all teams should use 100,000 iterations for PBKDF2 to make cross-app logins easier for the judges!**
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes
+        + username: `"thehill"` (string) - The user's unique username within the system. Must be lowercase alphanumeric (`-` and `\_` are allowed).
+        + email: `"h@hillaryclinton.com"` (string) - The user's email address.
+        + salt (string) - A 16-byte (32 characters) hex string representing a salt corresponding to the login key.
+        + key (string) - A 64-byte (128 characters) hex string representing a login key.
+        + type: `"inner"` (string) - The type of this user. Possible values are: `"inner"`, `"staff"`, or `"administrator"`.
+
+    + Body
+
+            {
+                "username": "thehill",
+                "email": "h@hillaryclinton.com",
+                "salt": "01048140c7eca69abc74c16dfd418bda",
+                "key": "3ab51f05b268492084d737b62a20e6f2cc6696a21edff5dc249a55aa4236ee933a9599b14860caa21017677156f16d0508f4deda1cbe0bea5ffcad8fa331b77e",
+                "type": "inner"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + user (User) - The newly created user object.
+
+    + Body
+
+            {
+                "success": true,
+                "user": {
+                    "user_id": "5eee34b3ca37750008547374",
+                    "salt": "01048140c7eca69abc74c16dfd418bda",
+                    "username": "thehill",
+                    "email": "h@hillaryclinton.com",
+                    "type": "inner",
+                    "views": 0,
+                    "sections": {
+                        "about": null,
+                        "experience": [],
+                        "education": [],
+                        "volunteering": [],
+                        "skills": []
+                    },
+                    "createdAt": 1579345900650,
+                    "updatedAt": 1579345900650
+                }
+            }
+
+### /users/:user_id (GET) [GET /users/{user_id}]
+
+Retrieve a user by their `user_id`.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547375` (user_id) - <span style="color: darkred">[required]</span> ID of the user.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + user (User) - The requested user object.
+
+    + Body
+
+            {
+                "success": true,
+                "user": {
+                    "user_id": "5eee34b3ca37750008547375",
+                    "salt": "01048140c7eca69abc74c16dfd418bda",
+                    "username": "bernie4All",
+                    "email": "b@berniesanders.com",
+                    "type": "administrator",
+                    "views": 1234,
+                    "sections": {
+                        "about": null,
+                        "experience": [],
+                        "education": [],
+                        "volunteering": [],
+                        "skills": []
+                    },
+                    "createdAt": 1579345900650,
+                    "updatedAt": 1579345900650
+                }
+            }
+
+### /users/:username (GET) [GET /users/{username}]
+
+Retrieve a user by their `username`.
+
++ Parameters
+    + `username`: `bernie4All` (string) - <span style="color: darkred">[required]</span> username of the user.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + user (User) - The requested user object.
+
+    + Body
+
+            {
+                "success": true,
+                "user": {
+                    "user_id": "5eee34b3ca37750008547375",
+                    "salt": "01048140c7eca69abc74c16dfd418bda",
+                    "username": "bernie4All",
+                    "email": "b@berniesanders.com",
+                    "type": "administrator",
+                    "views": 1234,
+                    "sections": {
+                        "about": null,
+                        "experience": [],
+                        "education": [],
+                        "volunteering": [],
+                        "skills": []
+                    },
+                    "createdAt": 1579345900650,
+                    "updatedAt": 1579345900650
+                }
+            }
+
+### /users/:user_id (PATCH) [PATCH /users/{user_id}]
+
+Update a user (`user_id`) in the system. Can be used to change a user's password (i.e. their `key` and `salt`), their email, and other properties. See [/users (POST)](#/reference/0/user-endpoints/users-post) for more information on the derivation of a login key and salt.
+
+The user's `updatedAt` timestamp is also updated.
+
+When updating a user's `sections`, the patch will be applied at the section level. For example, submitting `{ "sections": { "about": "My new about page" }}` would overwrite the entire `sections.about` section, but would not overwrite `sections.education`, `sections.volunteering`, or `sections.skills`.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547375` (user_id) - <span style="color: darkred">[required]</span> ID of the user.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + salt (optional, string) - A 16-byte (32 characters) hex string representing an updated salt corresponding to the updated login key. Must be present if `key` is present.
+        + key (optional, string) - A 64-byte (128 characters) hex string representing an updated login key. Must be present if `salt` is present.
+        + email (optional, string) - The user's updated email address.
+        + sections (optional, UserSections) - The user's updated section information.
+        + views: `"increment"` (optional, string) - If the views should be incremented. If this property is present, it must have the value `"increment"`.
+
+    + Body
+
+            {
+                "salt": "01048140c7eca69abc74c16dfd418bda",
+                "key": "3ab51f05b268492084d737b62a20e6f2cc6696a21edff5dc249a55aa4236ee933a9599b14860caa21017677156f16d0508f4deda1cbe0bea5ffcad8fa331b77e"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:user_id (DELETE) [DELETE /users/{user_id}]
+
+Completely and permanently remove a user from the system. Note that deleting a user will _not_ delete their opportunities.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547375` (user_id) - <span style="color: darkred">[required]</span> ID of the user.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:user_id/auth (POST) [POST /users/{user_id}/auth]
+
+Attempt to authenticate the credentials of a specific user.
+
+To check if a given username (corresponding to `user_id`) and password combination is valid, follow the same process as in [the example](https://codepen.io/xunnamius/pen/XWZzLmz) to derive a login key _using the salt accessible via the user endpoint_. Send the newly derived login key to the API via this endpoint and, if it matches the key stored in the API, you will receive an `HTTP 200` status code response. If the user credentials could not be authenticated, you will receive a `HTTP 403` status code instead.
+
+See [/users (POST)](#/reference/0/user-endpoints/users-post) for more information on the derivation of a login key and salt.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547375` (user_id) - <span style="color: darkred">[required]</span> ID of the user.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + key (string) - A 64-byte (128 characters) hex string representing a login key derived using PBKDF#2.
+
+    + Body
+
+            {
+                "key": "3ab51f05b268492084d737b62a20e6f2cc6696a21edff5dc249a55aa4236ee933a9599b14860caa21017677156f16d0508f4deda1cbe0bea5ffcad8fa331b77e"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
++ Response 403 (application/json)
+See an example (HTTP 403)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+### /users/:user_id/connections (GET) [GET /users/{user_id}/connections{?after}]
+
+Retrieve a user's first-order connections in [FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)) order.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547375` (user_id) - <span style="color: darkred">[required]</span> ID of the user.
+    + `after` (optional, connection_id) - <span style="color: gray">[optional]</span> Return only those results that occur *after* `after` in the result list.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + connections (array[string]) - The user's first-order connections as `user_id`s.
+
+    + Body
+
+            {
+                "success": true,
+                "connections": [
+                    "5eee34b3ca37750008547375",
+                    "5eee34b3ca37750008547376",
+                    "5eee34b3ca37750008547377",
+                    "5eee34b3ca37750008547378",
+                    "5eee34b3ca37750008547379",
+                    "5eee34b3ca37750008547380"
+                ]
+            }
+
+### /users/:user_id/connections/:connection_id (POST) [POST /users/{user_id}/connections/{connection_id}]
+
+Add a first-order connection between users `user_id` and `connection_id`.
+
+The user's `updatedAt` timestamp is also updated.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547375` (user_id) - <span style="color: darkred">[required]</span> ID of the first user.
+    + `connection_id`: `5eee34b3ca37750008547376` (connection_id) - <span style="color: darkred">[required]</span> ID of the second user.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:user_id/connections/:connection_id (DELETE) [DELETE /users/{user_id}/connections/{connection_id}]
+
+Remove a first-order connection between users `user_id` and `connection_id`.
+
+The user's `updatedAt` timestamp is also updated.
+
++ Parameters
+    + `user_id`: `5eee34b3ca37750008547375` (user_id) - <span style="color: darkred">[required]</span> ID of the first user.
+    + `connection_id`: `5eee34b3ca37750008547376` (connection_id) - <span style="color: darkred">[required]</span> ID of the second user.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+## Data Structures
+
+### Info (object)
+
++ opportunities (number) - The current number of opportunities in the system.
++ sessions (number) - The current number of sessions in the system.
++ users (number) - The current number of users in the system.
++ views (number) - The number of views across the entire system.
+
+### Opportunity (object)
+
++ opportunity_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing this opportunity. Generated automatically by the server.
++ title: `"My Little Opportunity"` (string) - The title of this opportunity.
++ views: `9001` (number) - The total number of views this opportunity has received.
++ contents (string) - The Markdown contents describing this opportunity.
++ createdAt: `1579345900650` (number) - When this opportunity was first created [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server.
++ updatedAt: `1579345900650` (number) - When this opportunity was last updated [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server.
+
+### UserSections (object)
+
++ about (string, nullable) - The contents of a user's About section.
++ experience (array[UserSectionEntry]) - The contents of a user's Experience section.
++ education (array[UserSectionEntry]) - The contents of a user's Education section.
++ volunteering (array[UserSectionEntry]) - The contents of a user's Volunteering section.
++ skills (array[string]) - The contents of a user's Skills section.
+
+### UserSectionEntry (object)
+
++ title (string) - The name of the entry.
++ startedAt (number) - When this entry began [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now).
++ endedAt (number, nullable) - When this entry ended [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now) or `null` if it is ongoing.
++ location (string) - The location of this entry.
++ description (string) - The description of this entry.
+
+### User (object)
+
++ user_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing this user. Generated automatically by the server.
++ salt: `"2d6843cfd2ad23906fe33a236ba842a5"` (string) - A 16-byte (32 characters) hex string representing a salt corresponding to the login key.
++ username: `"Oforce1"` (string) - This user's unique username within the system. Must be lowercase alphanumeric (`-` and `\_` are allowed).
++ email: `"o@barackobama.com"` (string) - This user's unique email address within the system.
++ type (string) - The type of this user. Possible values are: `"inner"`, `"staff"`, or `"administrator"`.
++ views: `1234` (number) - The total number of views this user's profile has received.
++ sections (UserSections) - This user's sectional information (e.g. Experience, Education, etc).
++ createdAt: `1579345900650` (number) - When this user was first created [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server.
++ updatedAt: `1579345900650` (number) - When this user was last updated [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server.

@@ -1,7 +1,7 @@
 # BDPA NHSCC 2023 Problem Statements
 
-[**BlogPress**](/2023/blogpress) (sample) and [**TBA**](#) (actual) were
-released during the 2023 competition.
+[**BlogPress**](/2023/blogpress) (sample) and [**InBDPA**](/2023/inbdpa)
+(actual) were released during the 2023 competition.
 
 ## Key Challenges
 
@@ -28,7 +28,7 @@ mind:
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2023">TBD</a> (actual)</strong></p>
+<p align="center"><strong><a href="/2023">InBDPA</a> (actual)</strong></p>
 </th>
 </tr>
 <tr>
@@ -44,6 +44,11 @@ mind:
 <td>
 <img width="500" height="1" />
 <p>
+📑 <a href="/2023/inbdpa">Problem statement</a>
+<br />
+🌍 <a href="https://inbdpa.solutions.hscc.bdpa.org">Live demo</a>
+<br />
+📚 <a href="https://hsccrkby0uo4.docs.apiary.io/">Interactive API docs</a>
 </p>
 </td>
 </tr>
@@ -51,11 +56,17 @@ mind:
 <td>
 <img width="500" height="1" />
 <p>
+📦 <a href="https://github.com/nhscc/blogpress.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/blogpress.api.hscc.bdpa.org">API source code</a>
 </p>
 </td>
 <td>
 <img width="500" height="1" />
 <p>
+📦 <a href="https://github.com/nhscc/inbdpa.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/inbdpa.api.hscc.bdpa.org">API source code</a>
 </p>
 </td>
 </tr>
