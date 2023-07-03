@@ -251,12 +251,14 @@ Creates a new opportunity.
     + Attributes
         + title: `"My Little Opportunity"` (string) - The title of the opportunity.
         + contents (string) - The Markdown contents describing the opportunity.
+        + creator_id: `"5eee34b3ca37750008547375"` (string) - The ID of the user that created the opportunity.
 
     + Body
 
             {
                 "title": "Unpaid Internship Requiring Masters Degree",
                 "contents": "...",
+                "creator_id": "5eee34b3ca37750008547375"
             }
 
 + Response 200 (application/json)
@@ -996,6 +998,7 @@ See an example (HTTP 200)
 ### Opportunity (object)
 
 + opportunity_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing this opportunity. Generated automatically by the server.
++ creator_id: `"5ec8adf06e38e58770ff2137"` (string) - A unique immutable MongoDB ID representing the user that created this opportunity.
 + title: `"My Little Opportunity"` (string) - The title of this opportunity.
 + views: `9001` (number) - The total number of views this opportunity has received.
 + contents (string) - The Markdown contents describing this opportunity.
