@@ -150,6 +150,11 @@ allows the user to edit their profile's information. Specifically:
   Experience, Education, etc)
 - They can change their public profile URL
 
+Authenticated users can also add and remove other users as
+[connections](#requirement-9) from this view. There is currently no permission
+system requirement, so any user can connect to or disconnect from any other user
+at any time.
+
 ### Profile URLs
 
 Each authenticated user has a unique URL that leads directly to their public
