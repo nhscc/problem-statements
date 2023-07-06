@@ -118,7 +118,8 @@ in an aesthetically pleasing manner:
 - The user's type
 - The user's About section (if available)
 - The number of [first and second -order connections](#requirement-9) the user
-  has
+  has (e.g. "X connections")
+  - Note that third-order connections should not be included in this count
 
 When viewed by an authenticated user, the "full" view displays the following in
 an aesthetically pleasing manner:
@@ -133,15 +134,28 @@ an aesthetically pleasing manner:
 - The user's status as a
   [first, second, or third -order connection](#requirement-9) relative to the
   authenticated viewer, or an appropriate indication if they are not connected
-- A list of this user's connections. That is: the usernames (as hyperlinks
-  leading to their profiles) of this user's first, second, and third -order
-  [connections](#requirement-9) _that are also_ first, second, or third -order
-  connections of the user viewing the Profile view
-  - For instance: **user-A, when viewing user-B's profile, will not be shown the
-    existing connection between user-B and user-C unless user-A is already
-    connected to _both_ user-B _and_ user-C**. This helps prevent the stalking
-    and harassment of your users and is the reason `guest` users cannot see any
-    details about any user's connections
+
+When an authenticated user views a profile to which they're
+[connected](#requirement-9), they can also view that profile's first, second,
+and third -order connections as a list of usernames (i.e. hyperlinks leading to
+their respective profiles). However, only usernames of users _to which the
+authenticated user is also connected_ are shown.
+
+For instance: suppose the connection between five users goes **A➔B➔C➔D➔E** where
+user `A` is connected to user `B`, `B` is connected to user `C`, and so on. Then
+`A`, viewing user `D`'s profile, can see a list of `D`'s connections since `A`
+and `D` are third-order connected. In that list, `A` will see a link to `C`'s
+profile but they _will not_ see user `E` at all since `A` and `E` are not
+connected. Regardless, `E`, as a first-order connection of `D`, will still be
+counted in the "X connections" displayed on `D`'s profile, so `A` would still
+see "4 connections".
+
+> Ensuring your users' social graphs cannot be arbitrarily crawled by the public
+> [is a huge privacy and security concern](https://www.theguardian.com/technology/2013/jan/23/facebook-graph-search-privacy-concerns).
+> Your app must balance the need to keep user data private with the inherently
+> leaky abstraction that is social media. This helps prevent the stalking and
+> harassment of your users and is the reason `guest` users cannot see any
+> details about any user connections.
 
 When an authenticated user views their own profile, the full view additionally
 allows the user to edit their profile's information. Specifically:
@@ -152,8 +166,8 @@ allows the user to edit their profile's information. Specifically:
 
 Authenticated users can also add and remove other users as
 [connections](#requirement-9) from this view. There is currently no permission
-system requirement, so any user can connect to or disconnect from any other user
-at any time.
+system requirement yet, so any user can connect to or disconnect from any other
+user at any time.
 
 ### Profile URLs
 
