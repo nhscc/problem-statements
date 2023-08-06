@@ -148,7 +148,9 @@ and `D` are third-order connected. In that list, `A` will see a link to `C`'s
 profile but they _will not_ see user `E` at all since `A` and `E` are not
 connected. Regardless, `E`, as a first-order connection of `D`, will still be
 counted in the "X connections" displayed on `D`'s profile, so `A` would still
-see "4 connections".
+see "3 connections" count. Note that `A` would see "3 connections" and _not "4
+connections"_ when viewing `D`'s profile since third-order connections (`A...D`)
+should not be included in this count.
 
 > Ensuring your users' social graphs cannot be arbitrarily crawled by the public
 > [is a huge privacy and security concern](https://www.theguardian.com/technology/2013/jan/23/facebook-graph-search-privacy-concerns).
