@@ -804,6 +804,7 @@ When updating a user's `sections`, the patch will be applied at the section leve
         + key (optional, string) - A 64-byte (128 characters) hex string representing an updated login key. Must be present if `salt` is present.
         + email (optional, string) - The user's updated email address.
         + sections (optional, UserSections) - The user's updated section information.
+        + type: `"inner"` (string) - The type of this user. Possible values are: `"inner"`, `"staff"`, or `"administrator"`.
         + views: `"increment"` (optional, string) - If the views should be incremented. If this property is present, it must have the value `"increment"`.
 
     + Body
