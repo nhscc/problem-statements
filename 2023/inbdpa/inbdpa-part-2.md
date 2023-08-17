@@ -136,20 +136,18 @@ accounts.
 Demoting a user should not affect their opportunities, even if they are no
 longer `staff` with control over opportunities that they created.
 
-## Change 8
+## ~~Change 8~~
 
-**The [_full_ Opportunity view](./inbdpa-part-1.md#requirement-4) is now capable
-of showing more detailed statistics.**
+~~**The _full_ Opportunity view is now capable of showing more detailed
+statistics.**~~
 
-Instead of simply showing how many active sessions are viewing an opportunity,
-the [_full_ Opportunity view](./inbdpa-part-1.md#requirement-4) now shows how
-many of the active sessions are authenticated users versus how many are
-unauthenticated users.
+~~Instead of simply showing how many active sessions are viewing an opportunity,
+the _full_ Opportunity view now shows how many of the active sessions are
+authenticated users versus how many are unauthenticated users.~~
 
-As before, this data must refresh in the view
-[asynchronously](./inbdpa-part-1.md#requirement-10). That is: the updated totals
-must eventually appear within this view _without the page refreshing_ or the
-user doing anything extra, like pressing a refresh button.
+~~As before, this data must refresh in the view asynchronously. That is: the
+updated totals must eventually appear within this view _without the page
+refreshing_ or the user doing anything extra, like pressing a refresh button.~~
 
 ## ✨Change 9✨
 
