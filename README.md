@@ -235,7 +235,9 @@ pretty easy).
 <br />
 🌍 <a href="https://inbdpa.solutions.hscc.bdpa.org">Live demo</a> (DFR)
 <br />
-📚 <a href="https://hsccrkby0uo4.docs.apiary.io/">Interactive API docs</a>
+📚 <a href="https://hsccrkby0uo4.docs.apiary.io/">Interactive API docs (version 1)</a>
+<br />
+📚 <a href="https://hscc3epkxdp7.docs.apiary.io/">Interactive API docs (version 2)</a>
 </p>
 </td>
 </tr>
