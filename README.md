@@ -20,11 +20,11 @@ excellent position to do well on the actual competition problem statement.
 <tr>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2023/blogpress">BlogPress</a> (sample)</p>
+<p align="center"><strong><a href="#">TBA</a> (sample)</p>
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2023/inbdpa">InBDPA</a> (actual)</p>
+<p align="center"><strong><a href="#">TBA</a> (actual)</p>
 </th>
 </tr>
 
