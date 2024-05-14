@@ -500,7 +500,7 @@ and
 (i.e. updating data only for elements that are currently visible). Another
 solution is to use
 [frontend timers](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Timeouts_and_intervals)
-to regularly check the API for new data every now and then.
+to regularly check a source for new data every now and then.
 
 </blockquote>
 

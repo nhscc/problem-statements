@@ -531,7 +531,7 @@ and
 (i.e. updating data only for elements that are currently visible). Another
 solution is to use
 [frontend timers](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Timeouts_and_intervals)
-to regularly check the API for new data every now and then.
+to regularly check a source for new data every now and then.
 
 </blockquote>
 
@@ -595,7 +595,7 @@ As for database security, any passwords present in the database must be
 (**not** encrypted). We recommend using a
 [salted SHA-256 hash construction](https://auth0.com/blog/adding-salt-to-hashing-a-better-way-to-store-passwords)
 or something similar. You don't need to do anything fancy.
-[There](https://nakedsecurity.sophos.com/2013/11/20/serious-security-how-to-store-your-users-passwords-safely)
+[There](https://web.archive.org/web/20230127140833/https://nakedsecurity.sophos.com/2013/11/20/serious-security-how-to-store-your-users-passwords-safely/)
 [are](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
 [many](https://www.vaadata.com/blog/how-to-securely-store-passwords-in-database)
 [tutorials](https://dev.to/kmistele/how-to-securely-hash-and-store-passwords-in-your-next-application-4e2f)

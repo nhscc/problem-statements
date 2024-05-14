@@ -383,7 +383,7 @@ There are
 [examples](https://www.internetlivestats.com/one-second/#tweets-band). One way
 to implement asynchronous features (and some forms of caching) is by using
 [frontend timers](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Timeouts_and_intervals)
-to regularly check the API for new data every now and then.
+to regularly check a source for new data every now and then.
 
 </blockquote>
 
