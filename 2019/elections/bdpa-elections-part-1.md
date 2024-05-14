@@ -353,7 +353,7 @@ IRV algorithm:
 1. All the top choices (meaning: rank 1) are counted.
 2. If a choice gets over 50% of the vote, that choice is declared the winner and
    the election is over.
-3. If no choice gets over 50% of the vote, the choice with the least rank 1
+3. If no choice gets under 50% of the vote, the choice with the least rank 1
    votes is eliminated.
 4. Voters who had the eliminated choice as their rank 1 have their vote go to
    their next top choice instead (meaning: their rank 2 becomes their new rank
