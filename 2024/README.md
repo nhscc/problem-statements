@@ -30,9 +30,9 @@ mind:
 <tr>
 <td>
 <p>
-📑 <a href="/2024/election_irv">Problem statement</a>
+📑 <a href="/2024/elections_irv">Problem statement</a>
 <br />
-🌍 <a href="https://election_irv.solutions.hscc.bdpa.org">Live demo</a>
+🌍 <a href="https://elections_irv.solutions.hscc.bdpa.org">Live demo</a>
 <br />
 📚 <a href="https://hscc18f802d3.docs.apiary.io">Interactive API docs</a>
 </p>
@@ -42,9 +42,9 @@ mind:
 <td>
 <img width="500" height="1" />
 <p>
-📦 <a href="https://github.com/nhscc/election_irv.solutions.hscc.bdpa.org">Demo source code</a>
+📦 <a href="https://github.com/nhscc/elections_irv.solutions.hscc.bdpa.org">Demo source code</a>
 <br />
-🎒 <a href="https://github.com/nhscc/election_irv.api.hscc.bdpa.org">API source code</a>
+🎒 <a href="https://github.com/nhscc/elections_irv.api.hscc.bdpa.org">API source code</a>
 </p>
 </td>
 </tr>
