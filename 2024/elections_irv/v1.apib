@@ -1,0 +1,590 @@
+FORMAT: 1A
+HOST: https://elections_irv.api.hscc.bdpa.org/v1
+
+# BDPA Elections (IRV) API
+
+> We're looking for feedback! If you have any opinions or ideas, contact us on Slack.
+
+Based on [simple REST principles](https://restfulapi.net), the Election (IRV) API returns JSON data responses to requests. This is the API used by teams and their apps for the BDPA National High School Computer Competition. It contains all of the data teams' apps must interact with. The API is live and will ideally remain online indefinitely.
+
+The base address of the Election (IRV) API is https://election_irv.api.hscc.bdpa.org/V where `V` is the version of the API you want to use. There is currently only one version, so `V = v1`. Each version of the API provides a set of endpoints with their own unique path and requirements.
+
+[The source code behind the API is available on GitHub](https://github.com/nhscc/election_irv.api.hscc.bdpa.org). If you have any trouble, [open an issue there](https://github.com/nhscc/election_irv.api.hscc.bdpa.org/issues/new) or contact us on Slack.
+
+> Notice: due to financial constraints, the oldest documents in the system will be dropped from the API to make room for the new. That is: `<item>_id`s are not guaranteed to exist forever!
+
+## Requesting a Key
+
+To access the majority of this API's endpoints requires a key. If your team needs a key, or to replace a lost or stolen key, either use our Slack bot (BDPABot) to manage your team's keys or contact us on Slack.
+
+When you get your key, include it as your request's [Authorization header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) and you will be immediately authenticated into the system. For example: `Authorization: bearer your-special-api-key-here`.
+
+## Rules of API Access
+
+1. Do not bombard the API with requests or you risk permanent IP/subnet ban. **Limit your teams to no more than 10 requests per second per API key**. If your team ends up sending too many requests over some time period, you'll get a `HTTP 429` response along with a monotonically increasing soft ban (starting at 15 minutes). Similarly, the size of requests is strictly limited, so you must limit the amount of data you're sending. When you send a request that is too large (>100KB), it will fail with a `HTTP 413` response.
+
+2. **Do not reveal your API key to anyone** not on your own team. It is how the API identifies your team. Do not upload it to GitHub or leave it lying around in your source code. Save it to a file and `.gitignore` it or save it to an environment variable.
+
+3. Since the API is live, you might be able to see or interact with content posted by other teams. If this is the case, please do not post anything inappropriate.
+
+4. If you have a relevant feature request or you encounter any vulnerabilities, errors, or other issues, don't hesitate to contact NHSCC staff via Slack or [open an issue on GitHub](https://github.com/nhscc/elections_irv.api.hscc.bdpa.org). For significant enough finds, bonus points may be awarded. On the other hand, abusing any vulnerability or bug may result in disqualification.
+
+5. **The API was built to randomly return errors every so often**. That means your team must be prepared to deal with `HTTP 555` and other bad responses. However, if you're consistently getting `HTTP 5xx` errors back to back, then something is wrong. Please report this if it happens.
+
+6. All responses are raw JSON. All request payloads must be sent as raw JSON. `JSON.stringify()` and `JSON.parse()` or whatever language equivalent is available to you is your friend!
+
+## Request Methods
+
+This API is based on [simple REST principles](https://restfulapi.net). Resources are accessed via standard HTTPS requests in UTF-8 format to an API endpoint. This API understands the following HTTP request methods:
+
+| METHOD | MEANING |
+|-----   |-----    |
+| GET    | Return data about something |
+| POST   | Create something new        |
+| PUT    | Modify something            |
+| PATCH  | Partially modify something  |
+| DELETE | Delete something            |
+
+## Rate Limits
+
+As said earlier, do not bombard the API with requests. If you do, the API will soft ban you for fifteen minutes the first time before accepting requests from your API key or IP address again. Each following time this happens within a certain period, your ban time will quadruple.
+
+So **limit your teams to no more than 10 requests per second per API key**. You know you've been soft banned if you receive an `HTTP 429` response. Check the JSON response for the `retryAfter` key, which represents for how long your API key and/or IP are banned from making further requests (in milliseconds).
+
+If you have access to our Slack bot and this is the first time you've been banned, you can use the Slack bot to unban yourself immediately.
+
+## Pagination
+
+Endpoints that might return a lot of items (users, documents, etc) are paginated via [range queries](https://en.wikipedia.org/wiki/Range_query_(database)). Such endpoints optionally accept an `after` parameter, which is an `<item>_id` or other identifier that determines which API item is returned first. That is: the first item will be the first `<item>_id` that comes *after* the `after` `<item>_id`. Omitting the `after` parameter returns the first 100 items in the system.
+
+For example, given the following dataset and an API with a default result size (or "page" size) of 3:
+
+```JavaScript
+[
+    { item_id: 0xabc123, name: 'Item 1 name' },
+    { item_id: 0xabc124, name: 'Item 2 name' },
+    { item_id: 0xabc125, name: 'Item 3 name' },
+    { item_id: 0xabc126, name: 'Item 4 name' },
+    { item_id: 0xabc127, name: 'Item 5 name' },
+]
+```
+
+Suppose we issued the following requests to an API:
+
+`/api?after=0xabc123`: responds with an array of 3 items: *0xabc124* through *0xabc126*  
+`/api?after=0xabcXYZ`: responds with an array of 0 items since `item_id` *0xabcXYZ* doesn't exist  
+`/api?after=0xabc124`: responds with an array of 3 items: *0xabc125* through *0xabc127*  
+`/api?after=0xabc127`: responds with an array of 0 items since there is nothing after *0xabc127*  
+`/api?after=0xabc125`: responds with an array of 2 items: *0xabc126* and *0xabc127*  
+
+## Status Codes
+
+This API will issue responses with one of the following status codes:
+
+| STATUS | MEANING |
+|-----   |-----    |
+| 200    | Your request completed successfully. |
+| 400    | Your request was malformed or otherwise bad. Check the requirements. |
+| 401    | Session is not authenticated. Put your API key in the header! |
+| 403    | Session is not authorized. You tried to do something you can't do. |
+| 404    | The resource (or endpoint) was not found. Check your syntax. |
+| 405    | Bad method. The endpoint does not support your request's method. |
+| 413    | Your request was too large and was dropped. Max body size is 100KB. |
+| 415    | Your request was made using the wrong Content-Type header value. |
+| 429    | You've been rate limited. Try your request again after a few minutes. |
+| 4xx    | Your request was malformed in some way. |
+| 5xx    | Something happened on the server that is outside your control. |
+
+## Response Schema
+
+All responses issued by the API will follow one of the two following schemas.
+
+### Success Schema
+
+When a request you've issued succeeds, the response will look like the following:
+
+```json
+{
+    "success": "true",
+    // any other data you requested
+}
+```
+
+Note that all time data is represented as the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC, or the same thing that is returned by JavaScript's `Date.now()` method.
+
+### Error Schema
+
+When a request you've issued fails, along with the non-200 status code, the response will look like the following:
+
+```json
+{
+    "error": "an error message describing what went wrong",
+    // any other relevant data (like retryAfter)
+}
+```
+
+## CORS Support
+
+The API has full support for Cross Origin Resource Sharing (CORS) for AJAX requests.
+
+## Tips for Debugging
+
+- Are you using the right method?
+- Use this documentation (click "see example," then click "Try console") or use [Postman](https://www.postman.com/downloads) to play with the API.
+- Expect a raw JSON response body that you must parse manually, not raw text or something else.
+- Are you sending properly formatted JSON payloads in your request body when necessary?
+- Try outputting to stdout, use `console.log`, or output to some log file when API requests are made and responses received.
+- All time data is represented as [the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now).
+- Are you sending the correct headers? You need to specify the `Authorization: bearer your-special-api-key-here` header for all requests and the `'content-type': 'application/json'` header when making POST and PUT requests.
+- Are you [encoding your URI components](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) properly, especially when you're trying to send the API [JSON objects](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON) via [GET request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods)?
+
+## Globally Unique IDs
+
+To retrieve data about one or more API items, you must know that item's `<item>_id`. These and other IDs are globally unique within the API. That is: no two items will ever have the same ID in any instance. Use this fact to your advantage.
+
+## Info Endpoints [/info]
+
+These endpoints allow retrieval of statistics describing the entire system.
+
+Note that deleted elections are excluded from analysis.
+
+- [/info (GET)](#/reference/0/info-endpoints/info-get)
+
+### /info (GET) [GET /info]
+
+Retrieve metadata about the entire system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + upcomingElections (number) - Total number of elections not yet open.
+        + openElections (number) - Total number of elections currently open.
+        + closedElections (number) - Total number of elections that have closed.
+
+    + Body
+
+            {
+                "success": true,
+                "upcomingElections": 12,
+                "openElections": 20,
+                "closedElections": 423
+            }
+
+## Elections Endpoints [/elections]
+
+These endpoints deal with all election data in the system.
+
+- [/elections (GET)](#/reference/0/elections-endpoints/elections-get)
+- [/elections (POST)](#/reference/0/elections-endpoints/elections-post)
+- [/elections/:election_id (GET)](#/reference/0/elections-endpoints/elections-election-id-get)
+- [/elections/:election_id (PATCH)](#/reference/0/elections-endpoints/elections-election-id-patch)
+- [/elections/:election_id (DELETE)](#/reference/0/elections-endpoints/elections-election-id-delete)
+- [/elections/:election_id/ballots (GET)](#/reference/0/elections-endpoints/elections-election-id-ballots-get)
+- [/elections/:election_id/ballots/:voter_id (GET)](#/reference/0/elections-endpoints/elections-election-id-ballots-voter-id-get)
+- [/elections/:election_id/ballots/:voter_id (PUT)](#/reference/0/elections-endpoints/elections-election-id-ballots-voter-id-put)
+- [/elections/:election_id/ballots/:voter_id (DELETE)](#/reference/0/elections-endpoints/elections-election-id-ballots-voter-id-delete)
+
+### /elections (GET) [GET /elections{?after}]
+
+Retrieve all elections in the system in [LIFO](https://en.wikipedia.org/wiki/Stack_(abstract_data_type)) order.
+
+Retrievals are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + `after` (optional, election_id) - <span style="color: gray">[optional]</span> Return only those results that occur *after* `after` in the result list.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + elections (array[Election]) - An array of election objects. Empty if there are no elections left to show.
+
+    + Body
+
+            {
+                "success": true,
+                "elections": [
+                    {
+                        "election_id": "5ec8adf06e38137ff2e5876f",
+                        "title": "My election #1",
+                        "description": "My demo election!",
+                        "options": [],
+                        "createdAt": 1589347376211,
+                        "opensAt": 1589347379811,
+                        "closesAt": 1589347380731,
+                        "owned": true,
+                        "deleted": false
+                    },
+                    {
+                        "election_id": "5ec8adf06e38137ff2e5876e",
+                        "title": "My election #2",
+                        "description": "A custom election I made",
+                        "options": ["Option 1", "Option 2"],
+                        "createdAt": 1589347376211,
+                        "opensAt": 1589347379811,
+                        "closesAt": 1589347380731,
+                        "owned": false,
+                        "deleted": true
+                    },
+                    {
+                        "election_id": "5ec8adf06e38137ff2e5876d",
+                        "title": "My election #3",
+                        "description": "An election to end all elections?",
+                        "options": ["Vanilla", "Chocolate"],
+                        "createdAt": 1589347376211,
+                        "opensAt": 1589347379811,
+                        "closesAt": 1589347380731,
+                        "owned": true,
+                        "deleted": false
+                    }
+                ]
+            }
+
+### /elections (POST) [POST /elections]
+
+Create a new election.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + title: `"My Election"` (string) - Title of the election.
+        + description: `"An election"` (string) - Description of the election.
+        + options: `["Biden", "Warren"]` (array[string]) - Array of options that eligible voters must rank via their ballots.
+        + opensAt: `1589346000600` (number) - When this election opens for voting [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Must be smaller than `closesAt` and may be larger than [`Date.now()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now).
+        + closesAt: `1589346900600` (number) - When this election closes to voting [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Must be larger than `opensAt`.
+
+    + Body
+
+            {
+                "title": "My election #4",
+                "description": "Posting a new election, look at me!",
+                "options": ["Option A", "Option B", "Option C"],
+                "opensAt": 1889347379811,
+                "closesAt": 1989347380731
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + election (Election) - The newly created election object.
+
+    + Body
+
+            {
+                "success": true,
+                "election": {
+                    "election_id": "5ec8adf06e38137ff2e58700",
+                    "title": "My election #4",
+                    "description": "Posting a new election, look at me!",
+                    "options": ["Option A", "Option B", "Option C"],
+                    "opensAt": 1889347379811,
+                    "closesAt": 1989347380731
+                    "owned": true,
+                    "deleted": false
+                }
+            }
+
+### /elections/:election_id (GET) [GET /election/{election_id}{?after}]
+
+Retrieve a single election.
+
++ Parameters
+    + election_id: `5eee34b3ca37750008547375` (string) - <span style="color: darkred">[required]</span> The unique MongoDB ID of the election targeted by some operation.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + election (Election) - The newly created election object.
+
+    + Body
+
+            {
+                "success": true,
+                "election": {
+                    "election_id": "5ec8adf06e38137ff2e5876b",
+                    "title": "My election #2",
+                    "description": "A custom election I made",
+                    "options": ["Option 1", "Option 2"],
+                    "createdAt": 1589347376211,
+                    "opensAt": 1589347379811,
+                    "closesAt": 1589347380731,
+                    "owned": false,
+                    "deleted": true
+                }
+            }
+
+### /elections/:election_id (PATCH) [PATCH /election/{election_id}]
+
+Update an election.
+
+> Note: attempting to mutate an election your team does not own will fail with a HTTP 4xx error.
+
++ Parameters
+    + election_id: `5eee34b3ca37750008547375` (string) - <span style="color: darkred">[required]</span> The unique MongoDB ID of the election targeted by some operation.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + title: `"My Election"` (string) - Title of the election.
+        + description: `"An election"` (string) - Description of the election.
+        + options: `["Biden", "Warren"]` (array[string]) - Array of options that eligible voters must rank via their ballots.
+        + opensAt: `1589346000600` (number) - When this election opens for voting [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Must be smaller than `closesAt` and may be larger than [`Date.now()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now).
+        + closesAt: `1589346900600` (number) - When this election closes to voting [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Must be larger than `opensAt`.
+
+    + Body
+
+            {
+                "description": "Posting a new description, look at me!",
+                "options": ["Option X", "Option Y", "Option Z"]
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /elections/:election_id (DELETE) [DELETE /election/{election_id}]
+
+Soft delete an election from the system.
+
+> Note: attempting to mutate an election your team does not own will fail with a HTTP 4xx error.
+
++ Parameters
+    + election_id: `5eee34b3ca37750008547375` (string) - <span style="color: darkred">[required]</span> The unique MongoDB ID of the election targeted by some operation.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /elections/:election_id/ballots (GET) [GET /election/{election_id}/ballots]
+
+Retrieve a mapping of all voter IDs to their ballots (votes) for a specific election.
+
+> Note: an election can have at most 100 ballots.
+
++ Parameters
+    + election_id: `5eee34b3ca37750008547375` (string) - <span style="color: darkred">[required]</span> The unique MongoDB ID of the election targeted by some operation.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + ballots (array[Ballot]) - Array of ballot objects representing the ranked choices of eligible voters.
+
+    + Body
+
+            {
+                "success": true,
+                "ballots": [
+                    {
+                        "voter_id": "1",
+                        "ranking": { "1": "Biden", "2": "Warren", "3": "Sanders" }
+                    },
+                    {
+                        "voter_id": "2",
+                        "ranking": { "1": "Sanders", "2": "Warren", "3": "Biden" }
+                    },
+                    {
+                        "voter_id": "3",
+                        "ranking": { "1": "Warren", "2": "Sanders", "3": "Biden" }
+                    },
+                    {
+                        "voter_id": "4",
+                        "ranking": { "1": "Warren", "2": "Biden", "3": "Sanders" }
+                    }
+                ]
+            }
+
+### /elections/:election_id/ballots/:voter_id (GET) [GET /election/{election_id}/ballots/{voter_id}]
+
+Retrieve a single ballot.
+
++ Parameters
+    + election_id: `5eee34b3ca37750008547375` (string) - <span style="color: darkred">[required]</span> The unique MongoDB ID of the election targeted by some operation.
+    + voter_id: `5eee34b3ca37750008547376` (string) - <span style="color: darkred">[required]</span> The unique (with respect to each team) ID of the voter that owns the ballot.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + ballot (Ballot) - The ballot object representing the ranked choices of an eligible voter.
+
+    + Body
+
+            {
+                "success": true,
+                "ballot": {
+                    "voter_id": "1",
+                    "ranking": { "1": "Biden", "2": "Warren", "3": "Sanders" }
+                }
+            }
+
+### /elections/:election_id/ballots/:voter_id (PUT) [PUT /election/{election_id}/ballots/{voter_id}]
+
+Create or replace a single ballot in an idempotent manner.
+
+> Note: an election can have at most 100 ballots.
+
+> Note: attempting to mutate an election your team does not own will fail with a HTTP 4xx error.
+
++ Parameters
+    + election_id: `5eee34b3ca37750008547375` (string) - <span style="color: darkred">[required]</span> The unique MongoDB ID of the election targeted by some operation.
+    + voter_id: `5eee34b3ca37750008547376` (string) - <span style="color: darkred">[required]</span> The unique (with respect to each team) ID of the voter that owns the ballot.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + voter_id: `"my-app-custom-id-1"` (string) - A unique (relative to your team) identifier representing a voter in your own system.
+        + ranking (Ranking) - A collection of key-value mappings of a voter's latest preferences.
+
+    + Body
+
+            {
+                "voter_id": "voter1@email.com",
+                "ranking": { "1": "Option Y", "2": "Option X" }
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /elections/:election_id/ballots/:voter_id (DELETE) [DELETE /election/{election_id}/ballots/{voter_id}]
+
+Delete a single ballot.
+
+> Note: attempting to mutate an election your team does not own will fail with a HTTP 4xx error.
+
++ Parameters
+    + election_id: `5eee34b3ca37750008547375` (string) - <span style="color: darkred">[required]</span> The unique MongoDB ID of the election targeted by some operation.
+    + voter_id: `5eee34b3ca37750008547376` (string) - <span style="color: darkred">[required]</span> The unique (with respect to each team) ID of the voter that owns the ballot.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+## Data Structures
+
+### Election (object)
+
++ election_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing the election. Generated automatically by the API.
++ title: `"My Election"` (string) - Title of the election.
++ description: `"An election"` (string) - Description of the election.
++ options: `["Biden", "Warren"]` (array[string]) - Array of options that eligible voters must rank via their ballots.
++ createdAt: `1579345900650` (number) - When this election was created [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server. Not guaranteed to be smaller than `opens`.
++ opensAt: `1589346000600` (number) - When this election opens for voting [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Must be smaller than `closesAt` and may be larger than [`Date.now()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now).
++ closesAt: `1589346900600` (number) - When this election closes to voting [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Must be larger than `opensAt`.
++ owned (boolean) - If the API `Key` making the request created this election or not.
++ deleted (boolean) - If this election has been marked as deleted.
+
+### Ballot (object)
+
++ voter_id: `"my-app-custom-id-1"` (string) - A unique (relative to your team) identifier representing a voter in your own system. This can be any arbitrary string.
++ ranking (Ranking) - A collection of key-value mappings of voter preferences.
+
+### Ranking (object)
+
++ *[key] (string)* (string) - A single key-value mapping of a voter's preference. Said key is the rank or score representing their preference. The value is the option being ranked or scored. For example: `{ "1": "Obama", "2": "Romney" }` means, of the choices given, the voter prefers Obama over Romney.

@@ -20,7 +20,7 @@ excellent position to do well on the actual competition problem statement.
 <tr>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="#">TBA</a> (sample)</p>
+<p align="center"><strong><a href="/2024/elections_irv">Elections (IRV)</a> (sample)</p>
 </th>
 <th>
 <img width="500" height="1" />
@@ -100,6 +100,8 @@ pretty easy).
 </p>
 </td>
 </tr>
+</table>
+
 <table>
 <tr>
 <th>
@@ -153,6 +155,7 @@ pretty easy).
 </td>
 </tr>
 </table>
+
 <table>
 <tr>
 <th>
@@ -207,6 +210,7 @@ pretty easy).
 </td>
 </tr>
 </table>
+
 <table>
 <tr>
 <th>
@@ -257,6 +261,44 @@ pretty easy).
 <br />
 🎒 <a href="https://github.com/nhscc/inbdpa.api.hscc.bdpa.org">API source code</a>
 </p>
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th>
+<img width="500" height="1" />
+<p align="center"><strong><a href="/2024">BDPA Elections IRV</a> (sample)</strong></p>
+</th>
+<th>
+</th>
+</tr>
+<tr>
+<td>
+<p>
+📑 <a href="/2024/election_irv">Problem statement</a>
+<br />
+🌍 <a href="https://election_irv.solutions.hscc.bdpa.org">Live demo</a> (DFR)
+<br />
+📚 <a href="https://hscc18f802d3.docs.apiary.io">Interactive API docs</a>
+</p>
+</td>
+<td>
+<img width="500" height="1" />
+</td>
+</tr>
+<tr>
+<td>
+<img width="500" height="1" />
+<p>
+📦 <a href="https://github.com/nhscc/election_irv.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/election_irv.api.hscc.bdpa.org">API source code</a>
+</p>
+</td>
+<td>
+<img width="500" height="1" />
 </td>
 </tr>
 </table>
