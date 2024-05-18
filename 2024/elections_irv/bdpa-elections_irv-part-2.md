@@ -231,6 +231,9 @@ selling this personal information to interested third parties. So,
 see the names of voters associated with their votes in an aesthetically pleasing
 manner.
 
+In the case that a voter's real name is not available, such as when displaying
+elections unowned by your team, showing the voter's ID is sufficient.
+
 ## Change 8
 
 **Human-friendly timestamps and timezone locale awareness.**
