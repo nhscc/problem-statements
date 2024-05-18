@@ -449,7 +449,7 @@ algorithm:
 1. All voters' top choices (meaning: rank 1) are counted.
 2. If an option gets over 50% of the vote, that option is declared the winner
    and the election is over.
-3. If no option gets under 50% of the vote, the option with the least rank 1
+3. If no option gets over 50% of the vote, the option with the least rank 1
    votes is eliminated.
 4. Voters who had the eliminated option as their rank 1 have their vote go to
    their next top choice instead (meaning: their rank 2 becomes their new rank
