@@ -166,17 +166,17 @@ See an example (HTTP 200)
 
     + Attributes (object)
         + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
-        + upcomingElections (number) - Total number of elections not yet open.
-        + openElections (number) - Total number of elections currently open.
-        + closedElections (number) - Total number of elections that have closed.
+        + info (Info) - Metadata about the entire system.
 
     + Body
 
             {
                 "success": true,
-                "upcomingElections": 12,
-                "openElections": 20,
-                "closedElections": 423
+                "info": {
+                    "upcomingElections": 12,
+                    "openElections": 20,
+                    "closedElections": 423
+                }
             }
 
 ## Elections Endpoints [/elections]
@@ -567,6 +567,12 @@ See an example (HTTP 200)
             }
 
 ## Data Structures
+
+### Info (object)
+
++ upcomingElections (number) - Total number of elections not yet open.
++ openElections (number) - Total number of elections currently open.
++ closedElections (number) - Total number of elections that have closed.
 
 ### Election (object)
 
