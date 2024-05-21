@@ -519,13 +519,11 @@ Create or replace a single ballot in an idempotent manner.
             content-type: application/json
 
     + Attributes (object)
-        + voter_id: `"my-app-custom-id-1"` (string) - A unique (relative to your team) identifier representing a voter in your own system.
         + ranking (Ranking) - A collection of key-value mappings of a voter's latest preferences.
 
     + Body
 
             {
-                "voter_id": "voter1@email.com",
                 "ranking": { "Option Y": 1, "Option X": 2 }
             }
 
