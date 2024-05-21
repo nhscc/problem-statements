@@ -127,31 +127,31 @@ the following ballots:
 [
   {
     "voter_id": "voter1_<timestamp>",
-    "ranking": { "1": "green", "2": "blue" }
+    "ranking": { "green": 1, "blue": 2 }
   },
   {
     "voter_id": "voter2_<timestamp>",
-    "ranking": { "1": "blue" }
+    "ranking": { "blue": 1 }
   },
   {
     "voter_id": "voter3_<timestamp>",
-    "ranking": { "1": "blue", "2": "green" }
+    "ranking": { "blue": 1, "green": 2 }
   },
   {
     "voter_id": "voter4_<timestamp>",
-    "ranking": { "1": "blue", "2": "green", "3": "red" }
+    "ranking": { "blue": 1, "green": 2, "red": 3 }
   },
   {
     "voter_id": "voter5_<timestamp>",
-    "ranking": { "1": "red", "2": "blue", "3": "green" }
+    "ranking": { "red": 1, "blue": 2, "green": 3 }
   },
   {
     "voter_id": "voter6_<timestamp>",
-    "ranking": { "1": "red", "2": "green" }
+    "ranking": { "red": 1, "green": 2 }
   },
   {
     "voter_id": "voter7_<timestamp>",
-    "ranking": { "1": "red" }
+    "ranking": { "red": 1 }
   }
 ]
 ```

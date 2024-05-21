@@ -154,11 +154,11 @@ Each election in the system has at least the following components:
   [
     {
       voter_id: 'someThey425',
-      ranking: { 1: 'peanut butter', 2: 'jelly', 3: 'butter' }
+      ranking: { 'peanut butter': 1, jelly: 2, butter: 3 }
     },
     {
       voter_id: 'someThem3312',
-      ranking: { 1: 'butter', 2: 'jelly', 3: 'peanut butter' }
+      ranking: { butter: 1, jelly: 2, 'peanut butter': 3 }
     }
   ];
   ```

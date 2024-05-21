@@ -422,6 +422,8 @@ Retrieve a mapping of all voter IDs to their ballots (votes) for a specific elec
 
 > Note: an election can have at most 100 ballots.
 
+> Note: this data is not checked for correctness. That means there can be outdated, non-existent, or invalid election options among the `ranking` keys; and/or one or more of the given `ranking` values may be illegally duplicated, unexpectedly zero, or too large. Your application must handle this eventuality gracefully.
+
 + Parameters
     + election_id: `5eee34b3ca37750008547375` (string) - <span style="color: darkred">[required]</span> The unique MongoDB ID of the election targeted by some operation.
 
@@ -446,19 +448,19 @@ See an example (HTTP 200)
                 "ballots": [
                     {
                         "voter_id": "1",
-                        "ranking": { "1": "Biden", "2": "Warren", "3": "Sanders" }
+                        "ranking": { "Biden": 1, "Warren": 2, "Sanders": 3 }
                     },
                     {
                         "voter_id": "2",
-                        "ranking": { "1": "Sanders", "2": "Warren", "3": "Biden" }
+                        "ranking": { "Sanders": 1, "Warren": 2, "Biden": 3 }
                     },
                     {
                         "voter_id": "3",
-                        "ranking": { "1": "Warren", "2": "Sanders", "3": "Biden" }
+                        "ranking": { "Warren": 1, "Sanders": 2, "Biden": 3 }
                     },
                     {
                         "voter_id": "4",
-                        "ranking": { "1": "Warren", "2": "Biden", "3": "Sanders" }
+                        "ranking": { "Warren": 1, "Biden": 2, "Sanders": 3 }
                     }
                 ]
             }
@@ -466,6 +468,8 @@ See an example (HTTP 200)
 ### /elections/:election_id/ballots/:voter_id (GET) [GET /election/{election_id}/ballots/{voter_id}]
 
 Retrieve a single ballot.
+
+> Note: this data is not checked for correctness. That means there can be outdated, non-existent, or invalid election options among the `ranking` keys; and/or one or more of the given `ranking` values may be illegally duplicated, unexpectedly zero, or too large. Your application must handle this eventuality gracefully.
 
 + Parameters
     + election_id: `5eee34b3ca37750008547375` (string) - <span style="color: darkred">[required]</span> The unique MongoDB ID of the election targeted by some operation.
@@ -491,7 +495,7 @@ See an example (HTTP 200)
                 "success": true,
                 "ballot": {
                     "voter_id": "1",
-                    "ranking": { "1": "Biden", "2": "Warren", "3": "Sanders" }
+                    "ranking": { "Biden": 1, "Warren": 2, "Sanders": 3 }
                 }
             }
 
@@ -522,7 +526,7 @@ Create or replace a single ballot in an idempotent manner.
 
             {
                 "voter_id": "voter1@email.com",
-                "ranking": { "1": "Option Y", "2": "Option X" }
+                "ranking": { "Option Y": 1, "Option X": 2 }
             }
 
 + Response 200 (application/json)
@@ -593,4 +597,4 @@ See an example (HTTP 200)
 
 ### Ranking (object)
 
-+ *[key] (string)* (string) - A single key-value mapping of a voter's preference. Said key is the rank or score representing their preference. The value is the option being ranked or scored. For example: `{ "1": "Obama", "2": "Romney" }` means, of the choices given, the voter prefers Obama over Romney.
++ *[key] (string)* (number) - A single key-value mapping of a voter's preference. The key is the option (string) being ranked or scored. The value is the rank or score (non-negative integer) representing their preference. For example: `{ "Obama": 1, "Romney": 2 }` means, of the choices given, the voter prefers Obama over Romney.
