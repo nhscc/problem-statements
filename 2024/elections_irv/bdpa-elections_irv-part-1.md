@@ -187,15 +187,14 @@ election itself cannot be deleted by `administrators`.
 
 The [super user](#the-super-administrator-user) is exempt from these
 restrictions; they can delete closed elections or modify some parts of them;
-specifically: _title_, _description_, _opening time_, _closure timestamp_,
-_deletion flag_. Updating the closure timestamp to a time in the future will
-effectively re-open a closed election, making it no different than any other
-open election.
+specifically: _title_, _description_, _opening time_, and _closure timestamp_.
+Updating the closure timestamp to a time in the future will effectively re-open
+a closed election, making it no different than any other open election.
 
 Therefore, unless re-opened, the outcomes of closed elections can never be
 modified. This also implies that if a user voted in an election before their
-account was [deleted](#administrators) or [unassigned](#moderators), their vote
-must still count and the outcome of the election cannot change.
+account was [deleted](#administrators) or [unassigned](#moderators), their
+ballot must still count and the outcome of the election cannot change.
 
 When using the API to update owned elections based on the actions of moderators
 and administrators, you must decide what edge cases like changing an election's
