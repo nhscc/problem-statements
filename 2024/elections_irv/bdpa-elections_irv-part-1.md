@@ -247,7 +247,7 @@ You are free to display any other relevant information.
 
 The very first time a newly-created user logs in, whereupon they are redirected
 to this view, said user will be forced to change their password before being
-allowed further interacts with the system.
+allowed to interact with the system.
 
 Additionally:
 
