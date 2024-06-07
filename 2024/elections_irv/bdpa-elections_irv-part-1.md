@@ -126,6 +126,7 @@ such user.
 
 ### Reporters
 
+- Are authenticated users (i.e. users that have already logged in)
 - Can view a complete paginated listing of all past (closed) elections in the
   system
 
@@ -248,8 +249,6 @@ You are free to display any other relevant information.
 The very first time a newly-created user logs in, whereupon they are redirected
 to this view, said user will be forced to change their password before being
 allowed to interact with the system.
-
-Additionally:
 
 > Note that deleted elections should never be displayed to users that are not
 > `administrators`. In such cases, deleted elections should be treated as if
