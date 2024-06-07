@@ -254,6 +254,8 @@ allowed to interact with the system.
 > `administrators`. In such cases, deleted elections should be treated as if
 > they don't exist at all.
 
+Additionally:
+
 **When accessed by a `voter`, this view will show:**
 
 - The most recent _open_ elections the user can currently participate in
