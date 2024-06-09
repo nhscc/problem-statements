@@ -308,7 +308,7 @@ See an example (HTTP 200)
                 }
             }
 
-### /elections/:election_id (GET) [GET /election/{election_id}]
+### /elections/:election_id (GET) [GET /elections/{election_id}]
 
 Retrieve a single election.
 
@@ -346,7 +346,7 @@ See an example (HTTP 200)
                 }
             }
 
-### /elections/:election_id (PATCH) [PATCH /election/{election_id}]
+### /elections/:election_id (PATCH) [PATCH /elections/{election_id}]
 
 Update an election.
 
@@ -388,7 +388,7 @@ See an example (HTTP 200)
                 "success": true
             }
 
-### /elections/:election_id (DELETE) [DELETE /election/{election_id}]
+### /elections/:election_id (DELETE) [DELETE /elections/{election_id}]
 
 Soft delete an election from the system.
 
@@ -416,7 +416,7 @@ See an example (HTTP 200)
                 "success": true
             }
 
-### /elections/:election_id/ballots (GET) [GET /election/{election_id}/ballots]
+### /elections/:election_id/ballots (GET) [GET /elections/{election_id}/ballots]
 
 Retrieve a mapping of all voter IDs to their ballots (votes) for a specific election.
 
@@ -465,7 +465,7 @@ See an example (HTTP 200)
                 ]
             }
 
-### /elections/:election_id/ballots/:voter_id (GET) [GET /election/{election_id}/ballots/{voter_id}]
+### /elections/:election_id/ballots/:voter_id (GET) [GET /elections/{election_id}/ballots/{voter_id}]
 
 Retrieve a single ballot.
 
@@ -499,7 +499,7 @@ See an example (HTTP 200)
                 }
             }
 
-### /elections/:election_id/ballots/:voter_id (PUT) [PUT /election/{election_id}/ballots/{voter_id}]
+### /elections/:election_id/ballots/:voter_id (PUT) [PUT /elections/{election_id}/ballots/{voter_id}]
 
 Create or replace a single ballot in an idempotent manner.
 
@@ -539,7 +539,7 @@ See an example (HTTP 200)
                 "success": true
             }
 
-### /elections/:election_id/ballots/:voter_id (DELETE) [DELETE /election/{election_id}/ballots/{voter_id}]
+### /elections/:election_id/ballots/:voter_id (DELETE) [DELETE /elections/{election_id}/ballots/{voter_id}]
 
 Delete a single ballot.
 
