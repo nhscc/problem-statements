@@ -1,6 +1,7 @@
 # BDPA NHSCC 2024 Problem Statements
 
-[**Elections IRV**](/2024/elections_irv) (sample) was released during the 2024
+[**Elections IRV**](/2024/elections_irv) (sample) and
+[**Election CPL**](/2024/elections_cpl) (actual) were released during the 2024
 competition.
 
 ## Key Challenges
@@ -26,6 +27,10 @@ mind:
 <img width="500" height="1" />
 <p align="center"><strong><a href="/2024">BDPA Elections IRV</a> (sample)</strong></p>
 </th>
+<th>
+<img width="500" height="1" />
+<p align="center"><strong><a href="/2024">BDPA Elections CPL</a> (actual)</strong></p>
+</th>
 </tr>
 <tr>
 <td>
@@ -37,6 +42,16 @@ mind:
 📚 <a href="https://hscc18f802d3.docs.apiary.io">Interactive API docs</a>
 </p>
 </td>
+<td>
+<img width="500" height="1" />
+<p>
+📑 <a href="/2024/elections_cpl">Problem statement</a>
+<br />
+🌍 <a href="https://elections_cpl.solutions.hscc.bdpa.org">Live demo</a>
+<br />
+📚 <a href="https://hscc35a947d8.docs.apiary.io">Interactive API docs</a>
+</p>
+</td>
 </tr>
 <tr>
 <td>
@@ -45,6 +60,14 @@ mind:
 📦 <a href="https://github.com/nhscc/elections_irv.solutions.hscc.bdpa.org">Demo source code</a>
 <br />
 🎒 <a href="https://github.com/nhscc/elections_irv.api.hscc.bdpa.org">API source code</a>
+</p>
+</td>
+<td>
+<img width="500" height="1" />
+<p>
+📦 <a href="https://github.com/nhscc/elections_cpl.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/elections_cpl.api.hscc.bdpa.org">API source code</a>
 </p>
 </td>
 </tr>

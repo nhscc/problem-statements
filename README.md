@@ -24,7 +24,7 @@ excellent position to do well on the actual competition problem statement.
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="#">TBA</a> (actual)</p>
+<p align="center"><strong><a href="/2024/elections_cpl">Elections (CPL)</a> (actual)</p>
 </th>
 </tr>
 
@@ -272,6 +272,8 @@ pretty easy).
 <p align="center"><strong><a href="/2024">BDPA Elections IRV</a> (sample)</strong></p>
 </th>
 <th>
+<img width="500" height="1" />
+<p align="center"><strong><a href="/2024">BDPA Elections CPL</a> (actual)</strong></p>
 </th>
 </tr>
 <tr>
@@ -286,6 +288,13 @@ pretty easy).
 </td>
 <td>
 <img width="500" height="1" />
+<p>
+📑 <a href="/2024/elections_cpl">Problem statement</a>
+<br />
+🌍 <a href="https://elections_cpl.solutions.hscc.bdpa.org">Live demo</a> (DFR)
+<br />
+📚 <a href="https://hscc35a947d8.docs.apiary.io">Interactive API docs</a>
+</p>
 </td>
 </tr>
 <tr>
@@ -299,6 +308,11 @@ pretty easy).
 </td>
 <td>
 <img width="500" height="1" />
+<p>
+📦 <a href="https://github.com/nhscc/elections_cpl.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/elections_cpl.api.hscc.bdpa.org">API source code</a>
+</p>
 </td>
 </tr>
 </table>
