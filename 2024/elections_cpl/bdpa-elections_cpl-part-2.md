@@ -101,7 +101,8 @@ election, also known as
 [First Past The Post](https://ballotpedia.org/Plurality_voting_system) (FPTP),
 the option with the most first-preference votes is the calculated winner. After
 the election closes, the system will calculate the winner by the rules of this
-very simple algorithm described [here](https://ballotpedia.org/STAR_voting).
+very simple algorithm described
+[here](https://en.wikipedia.org/wiki/First-past-the-post_voting).
 
 > This is the election system used in most of the United States of America
 > (except when voting for president, which uses a system that is somehow even
