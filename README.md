@@ -20,7 +20,7 @@ excellent position to do well on the actual competition problem statement.
 <tr>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="#">TBA</a> (sample)</p>
+<p align="center"><strong><a href="/2025/bdpadrive">BDPADrive</a> (sample)</p>
 </th>
 <th>
 <img width="500" height="1" />
@@ -160,7 +160,7 @@ pretty easy).
 <tr>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2022">BDPADrive</a> (sample)</strong></p>
+<p align="center"><strong><a href="/2022">BDPADrive</a> (sample) (2022)</strong></p>
 </th>
 <th>
 <img width="500" height="1" />
