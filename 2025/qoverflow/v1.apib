@@ -1,0 +1,1792 @@
+FORMAT: 1A
+HOST: https://qoverflow.api.hscc.bdpa.org/v1
+
+# qOverflow API
+
+> We're looking for feedback! If you have any opinions or ideas, contact us on Slack.
+
+Based on [simple REST principles](https://restfulapi.net), the qOverflow API returns JSON data responses to requests. This is the API used by teams and their apps for the BDPA National High School Computer Competition. It contains all of the data teams' apps must interact with. The API is live and will ideally remain online indefinitely.
+
+The base address of the qOverflow API is https://qoverflow.api.hscc.bdpa.org/V where `V` is the version of the API you want to use. There is currently only one version, so `V = v1`. Each version of the API provides a set of endpoints with their own unique path and requirements.
+
+[The source code behind the API is available on GitHub](https://github.com/nhscc/qoverflow.api.hscc.bdpa.org). If you have any trouble, [open an issue there](https://github.com/nhscc/qoverflow.api.hscc.bdpa.org/issues/new) or contact us on Slack.
+
+> Notice: due to financial constraints, the oldest documents in the system will be dropped from the API to make room for the new. That is: `username`s and `<item>_id`s are not guaranteed to exist forever!
+
+## Requesting a Key
+
+To access the majority of this API's endpoints requires a key. If your team needs a key, or to replace a lost or stolen key, use our Slack bot (BDPABot) to manage your team's keys.
+
+When you get your key, include it as your request's [Authorization header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) and you will be immediately authenticated into the system. For example: `Authorization: bearer your-special-api-key-here`.
+
+## Rules of API Access
+
+1. Do not bombard the API with requests or you risk permanent IP/subnet ban. **Limit your apps to no more than 10 requests per second per API key**. If your app ends up sending too many requests over some time period, you'll get a `HTTP 429` response along with a monotonically increasing soft ban (starting at 15 minutes). Similarly, the size of requests is strictly limited, so you must limit the amount of data you're sending. When you send a request that is too large (>100KB), it will fail with a `HTTP 413` response.
+
+2. **Do not reveal your API key to anyone** not on your own team. It is how the API identifies your team. Do not upload it to GitHub or leave it lying around in your source code. Save it to a file and `.gitignore` it or save it to an environment variable.
+
+3. Since the API is live, you might be able to see or interact with content posted by other teams. If this is the case, please do not post anything inappropriate.
+
+4. If you have a relevant feature request or you encounter any vulnerabilities, errors, or other issues, don't hesitate to contact NHSCC staff via Slack or [open an issue on GitHub](https://github.com/nhscc/qoverflow.api.hscc.bdpa.org). For significant enough finds, bonus points may be awarded. On the other hand, abusing any vulnerability or bug may result in disqualification.
+
+5. **The API was built to randomly return errors every so often**. That means your app must be prepared to deal with `HTTP 555` and other bad responses. However, if you're consistently getting `HTTP 5xx` errors back to back, then something is wrong. Please report this if it happens.
+
+6. All responses are raw JSON. All request payloads must be sent as raw JSON. `JSON.stringify()` and `JSON.parse()` or whatever language equivalent is available to you is your friend!
+
+## Request Methods
+
+This API is based on [simple REST principles](https://restfulapi.net). Resources are accessed via standard HTTPS requests in UTF-8 format to an API endpoint. This API understands the following HTTP request methods:
+
+| METHOD | MEANING |
+|-----   |-----    |
+| GET    | Return data about something |
+| POST   | Create something new        |
+| PATCH    | Modify something            |
+| PATCH  | Partially modify something  |
+| DELETE | Delete something            |
+
+## Rate Limits
+
+As said earlier, do not bombard the API with requests. If you do, the API will soft ban you for fifteen minutes the first time before accepting requests from your API key or IP address again. Each following time this happens within a certain period, your ban time will quadruple.
+
+So **limit your apps to no more than 10 requests per second per API key**. You know you've been soft banned if you receive an `HTTP 429` response. Check the JSON response for the `retryAfter` key, which represents for how long your API key and/or IP are banned from making further requests (in milliseconds).
+
+If you have access to our Slack bot and this is the first time you've been banned, you can use the Slack bot to unban yourself immediately.
+
+## Pagination
+
+Endpoints that might return a lot of items (users, documents, etc) are paginated via [range queries](https://en.wikipedia.org/wiki/Range_query_(database)). Such endpoints optionally accept an `after` parameter, which is an `<item>_id` or other identifier that determines which API item is returned first. That is: the first item will be the first `<item>_id` that comes *after* the `after` `<item>_id`. Omitting the `after` parameter returns the first 100 items in the system.
+
+For example, given the following dataset and an API with a default result size (or "page" size) of 3:
+
+```JavaScript
+[
+    { item_id: 0xabc123, name: 'Item 1 name' },
+    { item_id: 0xabc124, name: 'Item 2 name' },
+    { item_id: 0xabc125, name: 'Item 3 name' },
+    { item_id: 0xabc126, name: 'Item 4 name' },
+    { item_id: 0xabc127, name: 'Item 5 name' },
+]
+```
+
+Suppose we issued the following requests to an API:
+
+`/api?after=0xabc123`: responds with an array of 3 items: *0xabc124* through *0xabc126*
+`/api?after=0xabcXYZ`: responds with an array of 0 items since `item_id` *0xabcXYZ* doesn't exist
+`/api?after=0xabc124`: responds with an array of 3 items: *0xabc125* through *0xabc127*
+`/api?after=0xabc127`: responds with an array of 0 items since there is nothing after *0xabc127*
+`/api?after=0xabc125`: responds with an array of 2 items: *0xabc126* and *0xabc127*
+
+## Status Codes
+
+This API will issue responses with one of the following status codes:
+
+| STATUS | MEANING |
+|-----   |-----    |
+| 200    | Your request completed successfully. |
+| 400    | Your request was malformed or otherwise bad. Check the requirements. |
+| 401    | Session is not authenticated. Put your API key in the header! |
+| 403    | Session is not authorized. You tried to do something you can't do. |
+| 404    | The resource (or endpoint) was not found. Check your syntax. |
+| 405    | Bad method. The endpoint does not support your request's method. |
+| 413    | Your request was too large and was dropped. Max body size is 100KB. |
+| 415    | Your request was made using the wrong Content-Type header value. |
+| 429    | You've been rate limited. Try your request again after a few minutes. |
+| 4xx    | Your request was malformed in some way. |
+| 5xx    | Something happened on the server that is outside your control. |
+
+## Response Schema
+
+All responses issued by the API will follow one of the two following schemas.
+
+### Success Schema
+
+When a request you've issued succeeds, the response will look like the following:
+
+```json
+{
+    "success": "true",
+    // any other data you requested
+}
+```
+
+Note that all time data is represented as the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC, or the same thing that is returned by JavaScript's `Date.now()` method.
+
+### Error Schema
+
+When a request you've issued fails, along with the non-200 status code, the response will look like the following:
+
+```json
+{
+    "error": "an error message describing what went wrong",
+    // any other relevant data (like retryAfter)
+}
+```
+
+## CORS Support
+
+The API has full support for Cross Origin Resource Sharing (CORS) for AJAX requests.
+
+## Tips for Debugging
+
+- Are you using the right method?
+- Use this documentation (click "see example," then click "Try console") or use [Postman](https://www.postman.com/downloads) to play with the API.
+- Expect a raw JSON response body that you must parse manually, not raw text or something else.
+- Are you sending properly formatted JSON payloads in your request body when necessary?
+- Try outputting to stdout, use `console.log`, or output to some log file when API requests are made and responses received.
+- All time data is represented as [the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now).
+- Are you sending the correct headers? You need to specify the `Authorization: bearer your-special-api-key-here` header for all requests and the `'content-type': 'application/json'` header when making POST and PATCH requests.
+- Are you [encoding your URI components](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) properly, especially when you're trying to send the API [JSON objects](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON) via [GET request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods)?
+
+## Globally Unique IDs
+
+To retrieve data about one or more API items, you must know that item's `<item>_id`. These and other IDs are globally unique within the API. That is: no two items will ever have the same ID in any instance. Use this fact to your advantage.
+
+## Mail Endpoints [/mail]
+
+These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-whats-the-difference) on user mail.
+
+- [/mail (POST)](#/reference/0/mail-endpoints/mail-post)
+- [/mail/:username (GET)](#/reference/0/mail-endpoints/mail-username-get)
+
+### /mail (POST) [POST /mail]
+
+Send a new mail message.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes
+        + sender: `"someuser"` (string) - The username of the user that is sending this message.
+        + receiver: `"anotheruser"` (string) - The username of the user that should receive this message.
+        + subject: "Hey, 7 ate 9!" (string) - The subject of the message, which is usually a quick summation.
+        + text (string) - The full body text of the message.
+
+    + Body
+
+            {
+                "sender": "someUser",
+                "receiver": "anotherUser",
+                "subject": "Got your message",
+                "text": "**Supports markdown**!"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + message (Mail) - The newly created mail message.
+
+    + Body
+
+            {
+                "success": true,
+                "message": {
+                    "mail_id": "5ec8adf06e38137ff2e58998",
+                    "sender": "someUser",
+                    "receiver": "anotherUser",
+                    "subject": "Got your message",
+                    "text": "**Supports markdown**!",
+                    "createdAt": 1621894097785
+                }
+            }
+
+### /mail/:username (GET) [GET /mail/{username}{?after}]
+
+Get all mail messages that have `:username` as their `receiver` in chronological order beginning with the most recent message.
+
++ Parameters
+    + `username`: `"thehill"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+    + `after` (optional, mail_id) - <span style="color: gray">[optional]</span> Return only those messages that occur *after* `mail_id` in the result list.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + messages (array[Mail]) - An array of mail messages.
+
+    + Body
+
+            {
+                "success": true,
+                "messages": [
+                    {
+                        "mail_id": "5ec8adf06e38137ff2e58998",
+                        "subject": "You've got mail!",
+                        "text": "Some mail 4 U.",
+                        "sender": "someUser",
+                        "receiver": "anotherUser",
+                        "createdAt": 1621894097785
+                    },
+                    {
+                        "mail_id": "38137ff2e589985ec8adf06e",
+                        "subject": "Got your message",
+                        "text": "Thanks 4 the mail.",
+                        "sender": "anotherUser",
+                        "receiver": "someUser",
+                        "createdAt": 1621894785097
+                    }
+                ]
+            }
+
+## Question Endpoints [/questions]
+
+These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-whats-the-difference) on questions.
+
+- [/questions/search (GET)](#/reference/0/question-endpoints/questions-search-get)
+- [/questions (POST)](#/reference/0/question-endpoints/questions-post)
+- [/questions/:question_id (GET)](#/reference/0/question-endpoints/questions-question-id-get)
+- [/questions/:question_id (PATCH)](#/reference/0/question-endpoints/questions-question-id-patch)
+- [/questions/:question_id/vote/:username (GET)](#/reference/0/question-endpoints/questions-question-id-vote-username-get)
+- [/questions/:question_id/vote/:username (PATCH)](#/reference/0/question-endpoints/questions-question-id-vote-username-patch)
+- [/questions/:question_id/comments (GET)](#/reference/0/question-endpoints/questions-question-id-comments-get)
+- [/questions/:question_id/comments (POST)](#/reference/0/question-endpoints/questions-question-id-comments-post)
+- [/questions/:question_id/comments/:comment_id (DELETE)](#/reference/0/question-endpoints/questions-question-id-comments-comment-id-delete)
+- [/questions/:question_id/comments/:comment_id/vote/:username (GET)](#/reference/0/question-endpoints/questions-question-id-comments-comment-id-vote-username-get)
+- [/questions/:question_id/comments/:comment_id/vote/:username (PATCH)](#/reference/0/question-endpoints/questions-question-id-comments-comment-id-vote-username-patch)
+- [/questions/:question_id/answers (GET)](#/reference/0/question-endpoints/questions-question-id-answers-get)
+- [/questions/:question_id/answers (POST)](#/reference/0/question-endpoints/questions-question-id-answers-post)
+- [/questions/:question_id/answers/:answer_id (PATCH)](#/reference/0/question-endpoints/questions-question-id-answers-answer-id-patch)
+- [/questions/:question_id/answers/:answer_id/vote/:username (GET)](#/reference/0/question-endpoints/questions-question-id-answers-answer-id-vote-username-get)
+- [/questions/:question_id/answers/:answer_id/vote/:username (PATCH)](#/reference/0/question-endpoints/questions-question-id-answers-answer-id-vote-username-patch)
+- [/questions/:question_id/answers/:answer_id/comments (GET)](#/reference/0/question-endpoints/questions-question-id-answers-answer-id-comments-get)
+- [/questions/:question_id/answers/:answer_id/comments (POST)](#/reference/0/question-endpoints/questions-question-id-answers-answer-id-comments-post)
+- [/questions/:question_id/answers/:answer_id/comments/:comment_id (DELETE)](#/reference/0/question-endpoints/questions-question-id-answers-answer-id-comments-comment-id-delete)
+- [/questions/:question_id/answers/:answer_id/comments/:comment_id/vote/:username (GET)](#/reference/0/question-endpoints/questions-question-id-answers-answer-id-comments-comment-id-vote-username-get)
+- [/questions/:question_id/answers/:answer_id/comments/:comment_id/vote/:username (PATCH)](#/reference/0/question-endpoints/questions-question-id-answers-answer-id-comments-comment-id-vote-username-patch)
+
+
+### /questions/search (GET) [GET /questions/search{?after,match,regexMatch,sort}]
+
+This endpoint allows you to search through all questions in the system. Returns at most 100 questions per query. Without any parameters, the latest questions are returned. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`. Other available parameters are: `match`, `regexMatch`, and `sort`. `match` and `regexMatch` let you filter out which questions you want returned in the response. `sort` determines in which order results will be returned.
+
+`sort` can be one of `"u"`, which sorts by upvotes (highest first), `"uvc"`, which sorts by upvotes + views + comments (highest first), or `"uvac"` which sorts by upvotes + views + answers + comments (highest first). When `sort` is omitted, results are sorted by most recent first.
+
+Note that the values of `match` and `regexMatch` **must be [URI encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) [JSON objects](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON)**! If they aren't, you'll receive an error.
+
+Examples:
+
+Suppose you want to find all the questions created by a specific user that are unanswered. There are several ways this might be accomplished, _some more performant than others_. One way is by using this endpoint to perform a [brute-force search](https://en.wikipedia.org/wiki/Brute-force_search):
+
+1. Come up with the JSON object to describe your query:
+
+```JavaScript
+let myQueryObject = { "creator": "elizabethWarren", "answers": 0 }
+```
+
+2. Stringify the JSON object and then URI encode it in whatever language you're using.
+
+```JavaScript
+let myQuery = encodeURIComponent(JSON.stringify(myQueryObject))
+```
+
+3. Add the stringified JSON to your request URL and send it
+
+```JavaScript
+let myURL = "https://qoverflow.api.hscc.bdpa.org/v1/questions/search?match=" + myQuery
+
+sendRequestToAPI(myURL)
+```
+
+You can also use `match` queries to search for questions where some numerical property is greater than or less than some threshold. For example:
+
+```JavaScript
+let myQueryObject = {
+    "creator": "elizabethWarren",
+    "createdAt": {
+        "$gt": (new Date('6/1/2021 3:00:00 PM PST')).getTime()
+    },
+    "upvotes": {
+        "$gte": 100
+    }
+}
+```
+
+This means _retrieve all the questions that were created by the "elizabethWarren" user after 6/1/2021 3:00:00 PM PST that have at least 100 upvotes_.
+
+Along with `"$gt"` for "greater than," there's also `"$gte"` for "greater than or equal to," `"$lt"` for "less than," and `"$lte"` for "less than or equal to". These operations can also be combined using `"$or"`. For example:
+
+```JavaScript
+let myQueryObject = {
+    "creator": "elizabethWarren",
+    "createdAt": {
+        "$gt": (new Date('6/1/2021 3:00:00 PM PST')).getTime()
+    },
+    "upvotes": {
+        // "$or" can only be used with the four numerical comparison
+        // operators like so:
+        "$or": [
+            { "$gte": 100 },
+            { "$lte": 1000 }
+        ]
+    }
+}
+```
+
+This means _retrieve all the questions that were created by the "elizabethWarren" user after 6/1/2021 3:00:00 PM PST that have at least 100 upvotes but no more than 1000 upvotes_. If you've used MongoDB before, note that `"$or"` here works differently.
+
+Note that any `match` filters are applied **in a case-sensitive and holistic manner**, meaning `"hello world"` won't match `"Hello World"` and `"hello"` won't match `"hello to the wide world!"`, so watch out! The only exceptions are searches for question `title`s, which are treated as case-insensitive searches. If you want case-insensitive searching more broadly, or you want to search for specific words or phrases in `text`, or you're an otherwise advanced programmer, you can use [regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions) via `regexMatch`. Unlike `match`, `regexMatch` does not allow for less than/greater than queries.
+
+> All regular expressions are processed using the [Multiline (m) and Insensitive (i)](https://www.mongodb.com/docs/manual/reference/operator/query/regex/#mongodb-query-op.-options) options.
+
+For example, to find all questions without accepted answers that were created by the "elizabethWarren" user after 6/1/2021 3:00:00 PM PST _that contain the words "batman", "superman", or "wonder woman" in their text_ and sorted by most upvotes:
+
+```JavaScript
+let myQueryObject = {
+    "creator": "elizabethWarren",
+    "hasAcceptedAnswer": false,
+    "createdAt": {
+        "$gt": (new Date('6/1/2021 3:00:00 PM PST')).getTime()
+    }
+}
+
+let myRegexQueryObject = {
+    // Regex explained interactively: https://regex101.com/r/wPkD0z/1
+    // Also: all the normal JS string escaping rules apply (i.e. \ becomes \\)
+    "text": "(batman)|(superman)|(wonder woman)"
+}
+
+let myQuery = encodeURIComponent(JSON.stringify(myQueryObject))
+let myRegexQuery = encodeURIComponent(JSON.stringify(myRegexQueryObject))
+
+let myURL = "https://qoverflow.api.hscc.bdpa.org/v1/questions/search?sort=u&match=" + myQuery + "&regexMatch=" + myRegexQuery
+
+sendRequestToAPI(myURL)
+```
+
+> Notice: when testing using this Apiary documentation, they are nice enough to handle the URI encode and JSON stringify steps for you! All you have to do is type in a proper JSON object for the request to succeed. You can even copy and paste the `myQueryObject`s from the examples above directly into the Try Console! Try it out by clicking "See an example" and then "Try console".
+
++ Parameters
+    + `after` (optional, question_id) - <span style="color: gray">[optional]</span> Return only those questions that occur *after* `question_id` in the result list.
+    + `match` (optional, string) - <span style="color: gray">[optional]</span> A URI encoded JSON object describing the question properties you're looking for. Case sensitive. Can also do greater than/less than queries as well. **If you're using the Apiary Try Console, you do not have to URI encode or stringify the JSON object, just type it in directly!**
+    + `regexMatch` (optional, string) - <span style="color: gray">[optional]</span> A URI encoded JSON object describing the question properties that you're looking for. Case-*insensitive* regular expressions can be used here. You **cannot** do greater than/less than queries and **all regexes must be strings** (no numbers). **If you're using the Apiary Try Console, you do not have to URI encode or stringify the JSON object, just type it in directly!**
+    + `sort` (optional, string) - <span style="color: gray">[optional]</span> Determines the order in which results are returned. Valid values are: `"u"`, `"uvc"`, and `"uvac"`. If not defined, results are returned sorted by creation (latest first).
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + questions (array[Question]) - An array of questions. Empty if there are no questions left to show or your search query returned no results.
+
+    + Body
+
+            {
+                "success": true,
+                "questions": [
+                    {
+                        "question_id": "5ec8adf06e38137ff2e58770",
+                        "creator": "TheWatcher",
+                        "createdAt": 1579489874164,
+                        "status": "open",
+                        "title": "Who watches the watchmen?",
+                        "text": "Is this real life?",
+                        "views": 64,
+                        "answers": 2,
+                        "comments": 0,
+                        "upvotes": 25,
+                        "downvotes": 5,
+                        "hasAcceptedAnswer": false,
+                    },
+                    {
+                        "question_id": "5ec8af2e58770df06e38137f",
+                        "creator": "helloworld123",
+                        "createdAt": 1579489416874,
+                        "status": "protected",
+                        "title": "Why is 2 + 2 = 4?",
+                        "text": "As the title says.",
+                        "views": 176,
+                        "answers": 9,
+                        "comments": 3,
+                        "upvotes": 8,
+                        "downvotes": 7,
+                        "hasAcceptedAnswer": true,
+                    }
+                ]
+            }
+
+### /questions (POST) [POST /questions]
+
+Create a new question.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + creator: `"helloworld123"` (string) - The username of the user that created this question.
+        + title: "What if 7 ate 9?" (string) - The title of the question, which is usually a quick summation.
+        + text (string) - The full body text of this question.
+
+    + Body
+
+            {
+                "creator": "helloworld123",
+                "title": "Why is 2 + 2 = 4?",
+                "text": "As the title says."
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + question (Question) - The newly created question object.
+
+    + Body
+
+            {
+                "success": true,
+                "question": {
+                    "question_id": "5ec8af2e58770df06e38137f",
+                    "creator": "helloworld123",
+                    "createdAt": 1579489416874,
+                    "status": "open",
+                    "title": "Why is 2 + 2 = 4?",
+                    "text": "As the title says.",
+                    "views": 0,
+                    "answers": 0,
+                    "comments": 0,
+                    "upvotes": 0,
+                    "downvotes": 0,
+                    "hasAcceptedAnswer": false,
+                }
+            }
+
+### /questions/:question_id (GET) [GET /questions/{question_id}]
+
+Retrieve a question.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + question (Question) - The requested question object.
+
+    + Body
+
+            {
+                "success": true,
+                "question": {
+                    "question_id": "5ec8af2e58770df06e38137f",
+                    "creator": "helloworld123",
+                    "createdAt": 1579489416874,
+                    "status": "protected",
+                    "title": "Why is 2 + 2 = 4?",
+                    "text": "As the title says.",
+                    "views": 176,
+                    "answers": 9,
+                    "comments": 3,
+                    "upvotes": 8,
+                    "downvotes": 7,
+                    "hasAcceptedAnswer": true,
+                }
+            }
+
+### /questions/:question_id (PATCH) [PATCH /questions/{question_id}]
+
+Update the properties of a question.
+
+Also supports passing the string `"increment"` as the value of `views` instead of a number. This allows for safe incrementing of the view count by `1`, which avoids race conditions and allows updating the count without requiring a prior GET request.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + status (optional, string) - The current status of this question. Possible values are: `"open"`, `"protected"`, and `"closed"`.
+        + title: "What if 7 ate 9?" (optional, string) - The title of the question, which is usually a quick summation.
+        + text (optional, string) - The full body text of this question.
+        + views (optional, enum[number, string]) - The number of views this question has, or the string `"increment"` to increase view count `+1`.
+        + upvotes (optional, number) - The number of upvotes this question has.
+        + downvotes (optional, number) - The number of downvotes this question has.
+
+    + Body
+
+            {
+                "status": "closed"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /questions/:question_id/vote/:username (GET) [GET /questions/{question_id}/vote/{username}]
+
+Responds with an `HTTP 200` status code—and the contents of the vote—if user `username` has already voted for question `question_id`, or an
+`HTTP 404` otherwise.
+
+Note that `success` will be `true` in both cases.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `username`: `"thehill"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + vote (string) - How the user voted. Valid values are: `"upvoted"` and `"downvoted"`.
+
+    + Body
+
+            {
+                "success": true,
+                "vote": "upvoted"
+            }
+
++ Response 404 (application/json)
+See an example (HTTP 404)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /questions/:question_id/vote/:username (PATCH) [PATCH /questions/{question_id}/vote/{username}]
+
+Increment/decrement the `upvote` or `downvote` properties of the specified question by 1. The difference between using this endpoint and using the [/questions/:question_id (PATCH)](#/reference/0/question-endpoints/questions-question-id-patch) endpoint for updating vote counts is that this endpoint is safer, easier to use, and avoids race conditions.
+
+If the specified user has already upvoted or downvoted this question via a previous `"increment"` update operation, any other `"increment"` update operations will be rejected with a `HTTP 403` status code. If an upvote or downvote was first undone (a `"decrement"`), then a subsequent `"increment"` update operation will succeed. Multiple `"decrement"` update operations will similarly be rejected with a `HTTP 403` status code.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `username`: `"thehill"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (UpdateOperation)
+
+    + Body
+
+            {
+                "operation": "increment",
+                "target": "upvotes"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
++ Response 403 (application/json)
+See an example (HTTP 403)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": false
+            }
+
+### /questions/:question_id/comments (GET) [GET /questions/{question_id}/comments{?after}]
+
+Retrieves all comments associated with a question in chronological order beginning with the oldest comment.
+
+Retrievals are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `after` (optional, comment_id) - <span style="color: gray">[optional]</span> Return only those comments that occur *after* `comment_id` in the result list.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + comments (array[Comment]) - The requested comments.
+
+    + Body
+
+            {
+                "success": true,
+                "comments": [
+                    {
+                        "comment_id": "5ec8adf06e38137ff2e58770",
+                        "creator": "someUser",
+                        "createdAt": 1579345900650,
+                        "text": "This is a great question!",
+                        "upvotes": 2,
+                        "downvotes": 0
+                    },
+                    {
+                        "comment_id": "5ec8adf06e38137ff2e58771",
+                        "creator": "anotherUser",
+                        "createdAt": 1579345650900,
+                        "text": "This is a terrible question!",
+                        "upvotes": 0,
+                        "downvotes": 9
+                    }
+                ]
+            }
+
+### /questions/:question_id/comments (POST) [POST /questions/{question_id}/comments]
+
+Create a new comment on a question.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + creator: `"helloworld123"` (string) - The username of the user that created this comment.
+        + text (string) - The full body text of this comment.
+
+    + Body
+
+            {
+                "creator": "helloworld123",
+                "text": "Are you seriously asking this question here?"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + comment (Comment) - The newly created comment object.
+
+    + Body
+
+            {
+                "success": true,
+                "comment": {
+                    "comment_id": "5ec8adf06e38137ff2e58773",
+                    "creator": "helloworld123",
+                    "createdAt": 1579345900650,
+                    "text": "Are you seriously asking this question here?",
+                    "upvotes": 0,
+                    "downvotes": 0
+                }
+            }
+
+### /questions/:question_id/comments/:comment_id (DELETE) [DELETE /questions/{question_id}/comments/{comment_id}]
+
+Permanently delete a comment on a question.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `comment_id`: `5ec8af2e58770df06e38137g` (comment_id) - <span style="color: darkred">[required]</span> ID of the comment.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /questions/:question_id/comments/:comment_id/vote/:username (GET) [GET /questions/{question_id}/comments/{comment_id}/vote/{username}]
+
+Responds with an `HTTP 200` status code—and the contents of the vote—if user `username` has already voted for comment `comment_id`, or an
+`HTTP 404` otherwise.
+
+Note that `success` will be `true` in both cases.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `comment_id`: `5ec8af2e58770df06e38137g` (comment_id) - <span style="color: darkred">[required]</span> ID of the comment.
+    + `username`: `"thehill"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + vote (string) - How the user voted. Valid values are: `"upvoted"` and `"downvoted"`.
+
+    + Body
+
+            {
+                "success": true,
+                "vote": "downvoted"
+            }
+
++ Response 404 (application/json)
+See an example (HTTP 404)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /questions/:question_id/comments/:comment_id/vote/:username (PATCH) [PATCH /questions/{question_id}/comments/{comment_id}/vote/{username}]
+
+Increment/decrement the `upvote` or `downvote` properties of a comment by 1.
+
+If the specified user has already upvoted or downvoted this comment via a previous `"increment"` update operation, any other `"increment"` update operations will be rejected with a `HTTP 403` status code. If an upvote or downvote was first undone (a `"decrement"`), then a subsequent `"increment"` update operation will succeed. Multiple `"decrement"` update operations will similarly be rejected with a `HTTP 403` status code.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `comment_id`: `5ec8af2e58770df06e38137g` (comment_id) - <span style="color: darkred">[required]</span> ID of the comment.
+    + `username`: `"thehill"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (UpdateOperation)
+
+    + Body
+
+            {
+                "operation": "increment",
+                "target": "upvotes"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
++ Response 403 (application/json)
+See an example (HTTP 403)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": false
+            }
+
+### /questions/:question_id/answers (GET) [GET /questions/{question_id}/answers{?after}]
+
+Retrieves all answers associated with a question in chronological order beginning with the oldest answer.
+
+Retrievals are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `after` (optional, answer_id) - <span style="color: gray">[optional]</span> Return only those answers that occur *after* `answer_id` in the result list.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + answers (array[Answer]) - The requested answers.
+
+    + Body
+
+            {
+                "success": true,
+                "answers": [
+                    {
+                        "answer_id": "5ec8adf06e38137ff2e58773",
+                        "question_id": "5ec8adf06e58773f2e38137e",
+                        "creator": "helloworld123",
+                        "createdAt": 1579345900650,
+                        "text": "2+2 is equal to 4.",
+                        "upvotes": 114,
+                        "downvotes": 1,
+                        "accepted": true
+                    },
+                    {
+                        "answer_id": "5ec8adf06e38137ff2e58774",
+                        "question_id": "5ec8adf06e58773f2e38137e",
+                        "creator": "ThatGuy555",
+                        "createdAt": 1579345900999,
+                        "text": "2+2 is actually equal to 22, don't cha know.",
+                        "upvotes": 2,
+                        "downvotes": 56,
+                        "accepted": false
+                    }
+                ]
+            }
+
+### /questions/:question_id/answers (POST) [POST /questions/{question_id}/answers]
+
+Create a new answer to a question.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + creator: `"someuser"` (string) - The username of the user that created this answer.
+        + text (string) - The full body text of this answer.
+
+    + Body
+
+            {
+                "creator": "helloworld123",
+                "text": "2+2 is equal to 4."
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + answer (Answer) - The newly created answer object.
+
+    + Body
+
+            {
+                "success": true,
+                "answer": {
+                    "answer_id": "5ec8adf06e38137ff2e58773",
+                    "question_id": "5ec8af2e58770df06e38137f",
+                    "creator": "helloworld123",
+                    "createdAt": 1579345900650,
+                    "text": "2+2 is equal to 4.",
+                    "upvotes": 0,
+                    "downvotes": 0,
+                    "accepted": false
+                }
+            }
+
+### /questions/:question_id/answers/:answer_id (PATCH) [PATCH /questions/{question_id}/answers/{answer_id}]
+
+Update the properties of an answer.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `answer_id`: `5ec8af2e58770df06e38137g` (answer_id) - <span style="color: darkred">[required]</span> ID of the answer.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + text (optional, string) - The full body text of this answer.
+        + upvotes (optional, number) - The current number of upvotes this answer has.
+        + downvotes (optional, number) - The current number of downvotes this answer has.
+        + accepted (optional, boolean) - `true` if the answer is the accepted answer or `false` if it is not. There will only ever be one accepted answer per question.
+
+    + Body
+
+            {
+                "accepted": true
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /questions/:question_id/answers/:answer_id/vote/:username (GET) [GET /questions/{question_id}/answers/{answer_id}/vote/{username}]
+
+Responds with an `HTTP 200` status code—and the contents of the vote—if user `username` has already voted for answer `answer_id`, or an
+`HTTP 404` otherwise.
+
+Note that `success` will be `true` in both cases.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `answer_id`: `5ec8af2e58770df06e38137g` (answer_id) - <span style="color: darkred">[required]</span> ID of the answer.
+    + `username`: `"thehill"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + vote (string) - How the user voted. Valid values are: `"upvoted"` and `"downvoted"`.
+
+    + Body
+
+            {
+                "success": true,
+                "vote": "downvoted"
+            }
+
++ Response 404 (application/json)
+See an example (HTTP 404)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /questions/:question_id/answers/:answer_id/vote/:username (PATCH) [PATCH /questions/{question_id}/answers/{answer_id}/vote/{username}]
+
+Increment/decrement the `upvote` or `downvote` properties of the specified answer. The difference between using this endpoint and using the [/questions/:question_id/answers/:answer_id (PATCH)](#/reference/0/question-endpoints/questions-question-id-answers-answer-id-patch) endpoint for updating vote counts is that this endpoint is safer, easier to use, and avoids race conditions.
+
+If the specified user has already upvoted or downvoted this answer via a previous `"increment"` update operation, any other `"increment"` update operations will be rejected with a `HTTP 403` status code. If an upvote or downvote was first undone (a `"decrement"`), then a subsequent `"increment"` update operation will succeed. Multiple `"decrement"` update operations will similarly be rejected with a `HTTP 403` status code.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `answer_id`: `5ec8af2e58770df06e38137g` (answer_id) - <span style="color: darkred">[required]</span> ID of the answer.
+    + `username`: `"thehill"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (UpdateOperation)
+
+    + Body
+
+            {
+                "operation": "increment",
+                "target": "upvotes"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
++ Response 403 (application/json)
+See an example (HTTP 403)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": false
+            }
+
+### /questions/:question_id/answers/:answer_id/comments (GET) [GET /questions/{question_id}/answers/{answer_id}/comments{?after}]
+
+Retrieves all comments associated with an answer in chronological order beginning with the oldest comment.
+
+Retrievals are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `answer_id`: `5ec8af2e58770df06e38137f` (answer_id) - <span style="color: darkred">[required]</span> ID of the answer.
+    + `after` (optional, comment_id) - <span style="color: gray">[optional]</span> Return only those comments that occur *after* `comment_id` in the result list.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + comments (array[Comment]) - The requested comments.
+
+    + Body
+
+            {
+                "success": true,
+                "comments": [
+                    {
+                        "comment_id": "5ec8adf06e38137ff2e58770",
+                        "creator": "someUser",
+                        "createdAt": 1579345900650,
+                        "text": "This is a great answer!",
+                        "upvotes": 2,
+                        "downvotes": 0
+                    },
+                    {
+                        "comment_id": "5ec8adf06e38137ff2e58771",
+                        "creator": "anotherUser",
+                        "createdAt": 1579345650900,
+                        "text": "This is a terrible answer!",
+                        "upvotes": 0,
+                        "downvotes": 9
+                    }
+                ]
+            }
+
+### /questions/:question_id/answers/:answer_id/comments (POST) [POST /questions/{question_id}/answers/{answer_id}/comments]
+
+Create a new comment on an answer.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `answer_id`: `5ec8af2e58770df06e38137f` (answer_id) - <span style="color: darkred">[required]</span> ID of the answer.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + creator: `"helloworld123"` (string) - The username of the user that created this comment.
+        + text (string) - The full body text of this comment.
+
+    + Body
+
+            {
+                "creator": "helloworld123",
+                "text": "Are you seriously positing this as an answer?"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + comment (Comment) - The newly created comment object.
+
+    + Body
+
+            {
+                "success": true,
+                "comment": {
+                    "comment_id": "5ec8adf06e38137ff2e58774",
+                    "creator": "helloworld123",
+                    "createdAt": 1579345900650,
+                    "text": "Are you seriously positing this as an answer?",
+                    "upvotes": 0,
+                    "downvotes": 0
+                }
+            }
+
+### /questions/:question_id/answers/:answer_id/comments/:comment_id (DELETE) [DELETE /questions/{question_id}/answers/{answer_id}/comments/{comment_id}]
+
+Permanently delete a comment on an answer.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `answer_id`: `5ec8af2e58770df06e38137g` (answer_id) - <span style="color: darkred">[required]</span> ID of the answer.
+    + `comment_id`: `5ec8af2e58770df06e38137g` (comment_id) - <span style="color: darkred">[required]</span> ID of the comment.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /questions/:question_id/answers/:answer_id/comments/:comment_id/vote/:username (GET) [GET /questions/{question_id}/answers/{answer_id}/comments/{comment_id}/vote/{username}]
+
+Responds with an `HTTP 200` status code—and the contents of the vote—if user `username` has already voted for comment `comment_id`, or an
+`HTTP 404` otherwise.
+
+Note that `success` will be `true` in both cases.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `answer_id`: `5ec8af2e58770df06e38137g` (answer_id) - <span style="color: darkred">[required]</span> ID of the answer.
+    + `comment_id`: `5ec8af2e58770df06e38137h` (comment_id) - <span style="color: darkred">[required]</span> ID of the comment.
+    + `username`: `"thehill"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + vote (string) - How the user voted. Valid values are: `"upvoted"` and `"downvoted"`.
+
+    + Body
+
+            {
+                "success": true,
+                "vote": "downvoted"
+            }
+
++ Response 404 (application/json)
+See an example (HTTP 404)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /questions/:question_id/answers/:answer_id/comments/:comment_id/vote/:username (PATCH) [PATCH /questions/{question_id}/answers/{answer_id}/comments/{comment_id}/vote/{username}]
+
+Increment/decrement the `upvote` or `downvote` properties of a comment by 1.
+
+If the specified user has already upvoted or downvoted this comment via a previous `"increment"` update operation, any other `"increment"` update operations will be rejected with a `HTTP 403` status code. If an upvote or downvote was first undone (a `"decrement"`), then a subsequent `"increment"` update operation will succeed. Multiple `"decrement"` update operations will similarly be rejected with a `HTTP 403` status code.
+
++ Parameters
+    + `question_id`: `5ec8af2e58770df06e38137f` (question_id) - <span style="color: darkred">[required]</span> ID of the question.
+    + `answer_id`: `5ec8af2e58770df06e38137g` (answer_id) - <span style="color: darkred">[required]</span> ID of the answer.
+    + `comment_id`: `5ec8af2e58770df06e38137h` (comment_id) - <span style="color: darkred">[required]</span> ID of the comment.
+    + `username`: `"thehill"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (UpdateOperation)
+
+    + Body
+
+            {
+                "operation": "increment",
+                "target": "upvotes"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
++ Response 403 (application/json)
+See an example (HTTP 403)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": false
+            }
+
+## User Endpoints [/users]
+
+These endpoints deal with [CRUD operations](https://nordicapis.com/crud-vs-rest-whats-the-difference) on a user.
+
+- [/users (GET)](#/reference/0/user-endpoints/users-get)
+- [/users (POST)](#/reference/0/user-endpoints/users-post)
+- [/users/:username (GET)](#/reference/0/user-endpoints/users-username-get)
+- [/users/:username (PATCH)](#/reference/0/user-endpoints/users-username-patch)
+- [/users/:username (DELETE)](#/reference/0/user-endpoints/users-username-delete)
+- [/users/:username/auth (POST)](#/reference/0/user-endpoints/users-username-auth-post)
+- [/users/:username/questions (GET)](#/reference/0/user-endpoints/users-username-questions-get)
+- [/users/:username/answers (GET)](#/reference/0/user-endpoints/users-username-answers-get)
+- [/users/:username/points (PATCH)](#/reference/0/user-endpoints/users-username-points-patch)
+
+### /users (GET) [GET /users{?after}]
+
+Retrieves all users in the system in chronological order beginning with the most recently created user.
+
+Retrievals are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + `after` (optional, user_id) - <span style="color: gray">[optional]</span> Return only those users that occur *after* `user_id` in the result list.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + users (array[User]) - An array of user objects. Empty if there are no users left to show.
+
+    + Body
+
+            {
+                "success": true,
+                "users": [
+                    {
+                        "user_id": "5eee34b3ca37750008547372",
+                        "salt": "01048140c7eca69abc74c16dfd418bda",
+                        "username": "dummyuser1",
+                        "email": "dummy@email.com",
+                        "points": 5
+                    },
+                    {
+                        "user_id": "5eee34b3ca37750008547373",
+                        "salt": "c16dfd418bda01048140c7eca69abc74",
+                        "username": "dummy-user-2",
+                        "email": "dummy2@email.com",
+                        "points": 9001,
+                    }
+                ]
+            }
+
+### /users (POST) [POST /users]
+
+Creates a new user.
+
+Note that the API manages all user credentials. Passwords must **NEVER** be stored in any form ever (locally in your app or database or anywhere else), but are instead communicated as a special one-way "login key".
+
+The [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) and [Password-Based Key Derivation Function #2 (PBKDF2)](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey#pbkdf2) must be used to derive this key. Here is [an example](https://codepen.io/xunnamius/pen/XWZzLmz) using the Web Crypto API to derive a login key and salt from a password. Once this login key is derived, it and the salt must be sent to the API for storage.
+
+**NOTICE: all teams should use 100,000 iterations for PBKDF2 to make cross-app logins easier for the judges!**
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes
+        + username: `"thehill"` (string) - The user's unique username within the system.
+        + email: `"h@hillaryclinton.com"` (string) - The user's email address.
+        + salt (string) - A 16-byte (32 characters) hex string representing a salt corresponding to the login key.
+        + key (string) - A 64-byte (128 characters) hex string representing a login key.
+
+    + Body
+
+            {
+                "username": "thehill",
+                "email": "h@hillaryclinton.com",
+                "salt": "01048140c7eca69abc74c16dfd418bda",
+                "key": "3ab51f05b268492084d737b62a20e6f2cc6696a21edff5dc249a55aa4236ee933a9599b14860caa21017677156f16d0508f4deda1cbe0bea5ffcad8fa331b77e"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + user (User) - The newly created user object.
+
+    + Body
+
+            {
+                "success": true,
+                "user": {
+                    "user_id": "5eee34b3ca37750008547374",
+                    "salt": "01048140c7eca69abc74c16dfd418bda",
+                    "username": "thehill",
+                    "email": "h@hillaryclinton.com",
+                    "points": 0,
+                }
+            }
+
+### /users/:username (GET) [GET /users/{username}]
+
+Retrieve a user by their `username`.
+
++ Parameters
+    + `username`: `"bernie4All"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + user (User) - The requested user object.
+
+    + Body
+
+            {
+                "success": true,
+                "user": {
+                    "user_id": "5eee34b3ca37750008547375",
+                    "salt": "01048140c7eca69abc74c16dfd418bda",
+                    "username": "bernie4All",
+                    "email": "b@berniesanders.com",
+                    "points": 987,
+                }
+            }
+
+### /users/:username (PATCH) [PATCH /users/{username}]
+
+This endpoint can be used to change a user's password (i.e. their `key` and `salt`), their email, and/or their point score. See [/users (POST)](#/reference/0/user-endpoints/users-post) for more information on the derivation of a login key and salt.
+
++ Parameters
+    + `username`: `"lizWarren"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + salt (optional, string) - A 16-byte (32 characters) hex string representing an updated salt corresponding to the updated login key. Must be present if `key` is present.
+        + key (optional, string) - A 64-byte (128 characters) hex string representing an updated login key. Must be present if `salt` is present.
+        + email (optional, string) - The user's updated email address.
+        + points (optional, number) - The updated number of points this user has.
+
+    + Body
+
+            {
+                "salt": "01048140c7eca69abc74c16dfd418bda",
+                "key": "3ab51f05b268492084d737b62a20e6f2cc6696a21edff5dc249a55aa4236ee933a9599b14860caa21017677156f16d0508f4deda1cbe0bea5ffcad8fa331b77e"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:username (DELETE) [DELETE /users/{username}]
+
+Completely and permanently remove a user from the system. Note that deleting a user does not affect their questions, answers, or comments in the system.
+
++ Parameters
+    + `username`: `"joeBiden"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+### /users/:username/auth (POST) [POST /users/{username}/auth]
+
+Attempt to authenticate the credentials of a specific user.
+
+To check if a given username and password combination is valid, follow the same process as in [the example](https://codepen.io/xunnamius/pen/XWZzLmz) to derive a login key _using the salt accessible via the user endpoint_. Send the newly derived login key to the API via this endpoint and, if it matches the key stored in the API, you will receive an `HTTP 200` status code response. If the user credentials could not be authenticated, you will receive a `HTTP 403` status code instead.
+
+See [/users (POST)](#/reference/0/user-endpoints/users-post) for more information on the derivation of a login key and salt.
+
++ Parameters
+    + `username`: `"kamalaHarris"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + key (string) - A 64-byte (128 characters) hex string representing a login key derived using PBKDF#2.
+
+    + Body
+
+            {
+                "key": "3ab51f05b268492084d737b62a20e6f2cc6696a21edff5dc249a55aa4236ee933a9599b14860caa21017677156f16d0508f4deda1cbe0bea5ffcad8fa331b77e"
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
++ Response 403 (application/json)
+See an example (HTTP 403)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+
+### /users/:username/questions (GET) [GET /users/{username}/questions{?after}]
+
+Retrieves all questions created by this user in chronological order beginning with the most recently created question.
+
+Retrievals are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + `username`: `"lizWarren"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+    + `after` (optional, question_id) - <span style="color: gray">[optional]</span> Return only those questions that occur *after* `question_id` in the result list.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + questions (array[Question]) - The requested questions.
+
+    + Body
+
+            {
+                "success": true,
+                "questions": [
+                    {
+                        "question_id": "5ec8adf06e38137ff2e58770",
+                        "creator": "lizWarren",
+                        "createdAt": 1579489874164,
+                        "status": "closed",
+                        "title": "Who watches The Watcher?",
+                        "text": "For real though.",
+                        "views": 604,
+                        "answers": 2,
+                        "comments": 0,
+                        "upvotes": 295,
+                        "downvotes": 1,
+                        "hasAcceptedAnswer": false,
+                    },
+                    {
+                        "question_id": "5ec8af2e58770df06e38137f",
+                        "creator": "lizWarren",
+                        "createdAt": 1579489416874,
+                        "status": "protected",
+                        "title": "Let's talk thermodynamics.",
+                        "text": "As the title says.",
+                        "views": 1760,
+                        "answers": 9,
+                        "comments": 3,
+                        "upvotes": 80,
+                        "downvotes": 2,
+                        "hasAcceptedAnswer": true,
+                    }
+                ]
+            }
+
+### /users/:username/answers (GET) [GET /users/{username}/answers{?after}]
+
+Retrieves all answers created by this user in chronological order beginning with the most recently created answer.
+
+Retrievals are limited to at most 100 results per query. Supports [range queries](https://en.wikipedia.org/wiki/Range_query_(database)) using `after`.
+
++ Parameters
+    + `username`: `"lizWarren"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+    + `after` (optional, answer_id) - <span style="color: gray">[optional]</span> Return only those answers that occur *after* `answer_id` in the result list.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+        + answers (array[Answer]) - The requested answers.
+
+    + Body
+
+            {
+                "success": true,
+                "answers": [
+                    {
+                        "answer_id": "5ec8adf06e38137ff2e58783",
+                        "question_id": "5ec8adf06e58773f2e38137e",
+                        "creator": "lizWarren",
+                        "createdAt": 1579345900650,
+                        "text": "I've got a plan for that. (lengthy elaboration here)",
+                        "upvotes": 1140,
+                        "downvotes": 0,
+                        "accepted": true
+                    },
+                    {
+                        "answer_id": "5ec8adf06e38137ff2e58784",
+                        "question_id": "5ec8ad137e8773e382f06ef5",
+                        "creator": "lizWarren",
+                        "createdAt": 1579345900999,
+                        "text": "Tax the rich! LFG!",
+                        "upvotes": 9314,
+                        "downvotes": 0,
+                        "accepted": false
+                    }
+                ]
+            }
+
+### /users/:username/points (PATCH) [PATCH /users/{username}/points]
+
+Increment/decrement the `points` property of the specified user by a custom amount. The difference between using this endpoint and using the [/users/:username (PATCH)](#/reference/0/user-endpoints/users-username-patch) endpoint for updating a user's `point` count is that this endpoint is safer, easier to use, and avoids race conditions.
+
++ Parameters
+    + `username`: `"thehill"` (username) - <span style="color: darkred">[required]</span> The target user's unique username within the system.
+
++ Request
+
+    + Headers
+
+            Authorization: bearer your-special-api-key-here
+            content-type: application/json
+
+    + Attributes (object)
+        + operation: `"increment"` (string) - The type of update operation to perform. Valid values are: `"increment"` and `"decrement"`.
+        + amount (number) - The amount to increment or decrement `points` by. Must be a positive number.
+
+    + Body
+
+            {
+                "operation": "increment",
+                "amount": 50
+            }
+
++ Response 200 (application/json)
+See an example (HTTP 200)
+
+    + Attributes (object)
+        + success (boolean) - If the request succeeded. Always `true` when status code is 200 and `false` or `undefined` otherwise.
+
+    + Body
+
+            {
+                "success": true
+            }
+
+## Data Structures
+
+### Answer (object)
+
++ answer_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing this answer. Generated automatically by the server.
++ question_id: `"5ec8adf06e38e587702137ff"` (string) - A unique immutable MongoDB ID representing the question to which this answer belongs. Generated automatically by the server.
++ creator: `"someuser"` (string) - The username of the user that created this answer.
++ createdAt: `1579345900650` (number) - When this answer was created [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server.
++ text (string) - The full body text of this answer.
++ upvotes (number) - The current number of upvotes this answer has.
++ downvotes (number) - The current number of downvotes this answer has.
++ accepted (boolean) - `true` if the answer is the accepted answer or `false` if it is not. There will only ever be one accepted answer per question.
+
+### Comment (object)
+
++ comment_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing this comment. Generated automatically by the server.
++ creator: `"someuser"` (string) - The username of the user that created this comment.
++ createdAt: `1579345900650` (number) - When this comment was created [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server.
++ text (string) - The full body text of this comment.
++ upvotes (number) - The current number of upvotes this comment has.
++ downvotes (number) - The current number of downvotes this comment has.
+
+### Mail (object)
+
++ mail_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing this mail. Generated automatically by the server.
++ sender: `"someuser"` (string) - The username of the user that is sending this message.
++ receiver: `"anotheruser"` (string) - The username of the user that should receive this message.
++ createdAt: `1579345900650` (number) - When this message was created [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server.
++ subject: "Hey, 7 ate 9!" (string) - The subject of this message, which is usually a quick summation.
++ text (string) - The full body text of this message.
+
+### Question (object)
+
++ question_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing this question. Generated automatically by the server.
++ creator: `"someuser"` (string) - The username of the user that created this question.
++ createdAt: `1579345900650` (number) - When this question was created [in milliseconds since the unix epoch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now). Generated automatically by the server.
++ status (string) - The current status of this question. Possible values are: `"open"`, `"protected"`, and `"closed"`.
++ title: "What if 7 ate 9?" (string) - The title of the question, which is usually a quick summation.
++ text (string) - The full body text of this question.
++ views (number) - The current number of views this question has.
++ answers (number) - The current number of answers this question has.
++ comments (number) - The current number of comments this question has.
++ upvotes (number) - The current number of upvotes this question has.
++ downvotes (number) - The current number of downvotes this question has.
++ hasAcceptedAnswer (boolean) - `true` if this question has an accepted answer or `false` if otherwise.
+
+### User (object)
+
++ user_id: `"5ec8adf06e38137ff2e58770"` (string) - A unique immutable MongoDB ID representing this user. Generated automatically by the server.
++ salt: `"2d6843cfd2ad23906fe33a236ba842a5"` (string) - A 16-byte (32 characters) hex string representing a salt corresponding to the login key.
++ username: `"Oforce1"` (string) - The user's unique username within the system.
++ email: `"o@barackobama.com"` (string) - The user's email address.
++ points (number) - The current number of points this user has.
+
+### UpdateOperation (object)
+
++ operation: `"increment"` (string) - The type of update operation to attempt. Valid values are: `"increment"` and `"decrement"`.
++ target: `"upvotes"` (string) - The target property to update. Valid values are: `"upvotes"` and `"downvotes"`.

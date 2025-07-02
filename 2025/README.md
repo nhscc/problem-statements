@@ -1,7 +1,7 @@
 # BDPA NHSCC 2025 Problem Statements
 
-[**bdpadrive**](/2025/bdpadrive) (sample) and [**TBA**](/2025/#) (actual) were
-released during the 2025 competition.
+[**bdpadrive**](/2025/bdpadrive) (sample) and [**qOverflow**](/2025/qoverflow)
+(actual) were released during the 2025 competition.
 
 ## Key Challenges
 
@@ -29,7 +29,7 @@ mind:
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2025">TBA</a> (actual)</strong></p>
+<p align="center"><strong><a href="/2025">qOverflow</a> (actual)</strong></p>
 </th>
 </tr>
 <tr>
@@ -43,6 +43,16 @@ mind:
 📚 <a href="https://hsccebun98j2.docs.apiary.io/">Interactive API docs</a>
 </p>
 </td>
+<td>
+<p>
+📑 <a href="/2025/qoverflow">Problem statement</a>
+<br />
+🌍 <a href="https://qoverflow.solutions.hscc.bdpa.org">Live demo</a>
+<br />
+📚 <a href="https://hscc8udvc7gs.docs.apiary.io/">Interactive API docs</a>
+<br />
+</p>
+</td>
 </tr>
 <tr>
 <td>
@@ -51,6 +61,14 @@ mind:
 📦 <a href="https://github.com/nhscc/drive.solutions.hscc.bdpa.org">Demo source code</a>
 <br />
 🎒 <a href="https://github.com/nhscc/drive.api.hscc.bdpa.org">API source code</a>
+</p>
+</td>
+<td>
+<img width="500" height="1" />
+<p>
+📦 <a href="https://github.com/nhscc/qoverflow.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/qoverflow.api.hscc.bdpa.org">API source code</a>
 </p>
 </td>
 </tr>

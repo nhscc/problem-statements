@@ -24,7 +24,7 @@ excellent position to do well on the actual competition problem statement.
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="#">TBA</a> (actual)</p>
+<p align="center"><strong><a href="/2025/qoverflow">qOverflow</a> (actual)</p>
 </th>
 </tr>
 
@@ -164,7 +164,7 @@ pretty easy).
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2022">qOverflow</a> (actual)</strong></p>
+<p align="center"><strong><a href="/2022">qOverflow</a> (actual) (2022)</strong></p>
 </th>
 </tr>
 <tr>
