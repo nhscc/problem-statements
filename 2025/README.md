@@ -1,6 +1,6 @@
 # BDPA NHSCC 2025 Problem Statements
 
-[**bdpadrive**](/2025/bdpadrive) (sample) and [**qOverflow**](/2025/qoverflow)
+[**BDPADrive**](/2025/bdpadrive) (sample) and [**qOverflow**](/2025/qoverflow)
 (actual) were released during the 2025 competition.
 
 ## Key Challenges
@@ -25,7 +25,7 @@ mind:
 <tr>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2025">bdpadrive</a> (sample)</strong></p>
+<p align="center"><strong><a href="/2025">BDPADrive</a> (sample)</strong></p>
 </th>
 <th>
 <img width="500" height="1" />

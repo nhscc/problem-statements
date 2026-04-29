@@ -20,11 +20,11 @@ excellent position to do well on the actual competition problem statement.
 <tr>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2025/bdpadrive">BDPADrive</a> (sample)</p>
+<p align="center"><strong><a href="/2026/elections_irv">Elections (IRV)</a> (sample)</p>
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2025/qoverflow">qOverflow</a> (actual)</p>
+<p align="center"><strong><a href="#">TBA</a> (actual)</p>
 </th>
 </tr>
 
@@ -269,7 +269,7 @@ pretty easy).
 <tr>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="/2024">BDPA Elections IRV</a> (sample)</strong></p>
+<p align="center"><strong><a href="/2024">BDPA Elections IRV</a> (sample) (2024)</strong></p>
 </th>
 <th>
 <img width="500" height="1" />
@@ -312,6 +312,59 @@ pretty easy).
 📦 <a href="https://github.com/nhscc/elections_cpl.solutions.hscc.bdpa.org">Demo source code</a>
 <br />
 🎒 <a href="https://github.com/nhscc/elections_cpl.api.hscc.bdpa.org">API source code</a>
+</p>
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th>
+<img width="500" height="1" />
+<p align="center"><strong><a href="/2025">BDPADrive</a> (sample) (2025)</strong></p>
+</th>
+<th>
+<img width="500" height="1" />
+<p align="center"><strong><a href="/2025">qOverflow</a> (actual) (2025)</strong></p>
+</th>
+</tr>
+<tr>
+<td>
+<img width="500" height="1" />
+<p>
+📑 <a href="/2025/bdpadrive">Problem statement</a>
+<br />
+🌍 <a href="https://drive.solutions.hscc.bdpa.org">Live demo</a> (DFR)
+<br />
+📚 <a href="https://hsccebun98j2.docs.apiary.io/">Interactive API docs</a>
+</p>
+</td>
+<td>
+<p>
+📑 <a href="/2025/qoverflow">Problem statement</a>
+<br />
+🌍 <a href="https://qoverflow.solutions.hscc.bdpa.org">Live demo</a> (DFR)
+<br />
+📚 <a href="https://hscc8udvc7gs.docs.apiary.io/">Interactive API docs</a>
+<br />
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<img width="500" height="1" />
+<p>
+📦 <a href="https://github.com/nhscc/drive.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/drive.api.hscc.bdpa.org">API source code</a>
+</p>
+</td>
+<td>
+<img width="500" height="1" />
+<p>
+📦 <a href="https://github.com/nhscc/qoverflow.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/qoverflow.api.hscc.bdpa.org">API source code</a>
 </p>
 </td>
 </tr>
