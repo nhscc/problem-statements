@@ -24,7 +24,7 @@ excellent position to do well on the actual competition problem statement.
 </th>
 <th>
 <img width="500" height="1" />
-<p align="center"><strong><a href="#">TBA</a> (actual)</p>
+<p align="center"><strong><a href="/2026/airports">Airports</a> (actual)</p>
 </th>
 </tr>
 

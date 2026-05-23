@@ -1,6 +1,7 @@
 # BDPA NHSCC 2026 Problem Statements
 
-[**Elections IRV**](/2026/elections_irv) (sample) was released during the 2026
+[**Elections IRV**](/2026/elections_irv) (sample) and
+[**BDPA Airports**](/2026/airports) (actual) were released during the 2026
 competition.
 
 ## Key Challenges
@@ -24,6 +25,10 @@ mind:
 <img width="500" height="1" />
 <p align="center"><strong><a href="/2026">BDPA Elections IRV</a> (sample)</strong></p>
 </th>
+<th>
+<img width="500" height="1" />
+<p align="center"><strong><a href="/2026">BDPA Airports</a> (actual)</strong></p>
+</th>
 </tr>
 <tr>
 <td>
@@ -35,6 +40,16 @@ mind:
 📚 <a href="https://hscc18f802d3.docs.apiary.io">Interactive API docs</a>
 </p>
 </td>
+<td>
+<img width="500" height="1" />
+<p>
+📑 <a href="/2026/airports">Problem statement</a>
+<br />
+🌍 <a href="https://airports.solutions.hscc.bdpa.org">Live demo</a>
+<br />
+📚 <a href="https://hsccdfbb7244.docs.apiary.io/">Interactive API docs</a>
+</p>
+</td>
 </tr>
 <tr>
 <td>
@@ -43,6 +58,14 @@ mind:
 📦 <a href="https://github.com/nhscc/elections_irv.solutions.hscc.bdpa.org">Demo source code</a>
 <br />
 🎒 <a href="https://github.com/nhscc/elections_irv.api.hscc.bdpa.org">API source code</a>
+</p>
+</td>
+<td>
+<img width="500" height="1" />
+<p>
+📦 <a href="https://github.com/nhscc/airports.solutions.hscc.bdpa.org">Demo source code</a>
+<br />
+🎒 <a href="https://github.com/nhscc/airports.api.hscc.bdpa.org">API source code</a>
 </p>
 </td>
 </tr>
