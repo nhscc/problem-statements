@@ -513,8 +513,9 @@ The app will use modern software engineering practices that protect from common
 [SQL injection](https://owasp.org/www-community/attacks/SQL_Injection), and
 [other security vulnerabilities](https://owasp.org/www-project-top-ten).
 Specifically: **form inputs** and the like **will not be vulnerable to SQL
-injection attacks. User-generated outputs will not be vulnerable to XSS or
-similar attacks.**
+injection attacks. User-generated outputs _(like the titles/names of items and
+the result of rendered Markdown)_ will not be vulnerable to XSS or similar
+attacks.**
 
 As for database security, any passwords present in the database must be
 [hashed](https://auth0.com/blog/hashing-passwords-one-way-road-to-security)

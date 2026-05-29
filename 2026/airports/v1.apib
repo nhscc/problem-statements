@@ -3,105 +3,61 @@ HOST: https://airports.api.hscc.bdpa.org/v1
 
 # BDPA Airports API
 
-> We're looking for feedback! If you have any opinions or ideas,
-> [start a discussion](https://github.com/nhscc/problem-statements/discussions/new).
+> We're looking for feedback! If you have any opinions or ideas, contact us on Slack.
 
-Based on [simple REST
-principles](https://restfulapi.net),
-the BDPA Airports API returns JSON data responses to requests. This is the API
-used by teams and their apps for the 2026 BDPA National High School Computer
-Competition. It holds all of the airline and flight data teams' apps must
-interact with. The API is live and will ideally remain online indefinitely.
+Based on [simple REST principles](https://restfulapi.net), the airports API returns JSON data responses to requests. This is the API used by teams and their apps for the BDPA National High School Computer Competition. It contains all of the data teams' apps must interact with. The API is live and will ideally remain online indefinitely.
 
-The base address of BDPA Airports API is https://airports.api.hscc.bdpa.org/X
-where `X` is the version of the API you want to use. There is currently only one
-version, so `X = v1`. Each version of the API provides a set of endpoints with
-their own unique path and requirements.
+The base address of the airports API is https://airports.api.hscc.bdpa.org/V where `V` is the version of the API you want to use. There is currently only one version, so `V = v1`. Each version of the API provides a set of endpoints with their own unique path and requirements.
 
-[The source code behind the API is available on
-GitHub](https://github.com/nhscc/airports.api.hscc.bdpa.org). If you have any
-trouble, [open an issue
-there](https://github.com/nhscc/airports.api.hscc.bdpa.org/issues/new) or
-[start a
-discussion](https://github.com/nhscc/problem-statements/discussions/new).
+[The source code behind the API is available on GitHub](https://github.com/nhscc/airports.api.hscc.bdpa.org). If you have any trouble, [open an issue there](https://github.com/nhscc/airports.api.hscc.bdpa.org/issues/new) or contact us on Slack.
+
+> Notice: due to financial constraints, the oldest documents in the system will be dropped from the API to make room for the new. That is: `username`s and `<item>_id`s are not guaranteed to exist forever!
 
 ## Requesting a Key
 
-To access the majority of this API's endpoints requires a key. If your team
-needs a key, or to replace a lost or stolen key, please contact NHSCC
-staff through Slack or [open an issue on
-GitHub](https://github.com/nhscc/airports.api.hscc.bdpa.org).
+To access the majority of this API's endpoints requires a key. If your team needs a key, or to replace a lost or stolen key, use our Slack bot (BDPABot) to manage your team's keys.
 
-When you get your key, include it in your requests' header as `key:
-your-special-api-key-here` and you will be immediately authenticated into the
-system.
+When you get your key, include it as your request's [Authorization header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) and you will be immediately authenticated into the system. For example: `Authorization: bearer your-special-api-key-here`.
 
 ## Rules of API Access
 
-1. Do not bombard the API with requests or you risk permanent IP/subnet ban.
-   **Limit your apps to no more than 10 requests per second per API key**. If
-   your app ends up sending too many requests over some time period, you'll get
-   a `HTTP 429` response along with a monotonically increasing soft ban
-   (starting at 15 minutes). Similarly, the size of requests is strictly
-   limited, so you must limit the amount of data you're sending. When you send a
-   request that is too large (>100KB), it will fail with a `HTTP 413` response.
+1. Do not bombard the API with requests or you risk permanent IP/subnet ban. **Limit your apps to no more than 10 requests per second per API key**. If your app ends up sending too many requests over some time period, you'll get a `HTTP 429` response along with a monotonically increasing soft ban (starting at 15 minutes). Similarly, the size of requests is strictly limited, so you must limit the amount of data you're sending. When you send a request that is too large (>100KB), it will fail with a `HTTP 413` response.
 
-2. **Do not reveal your API key to anyone** not on your own team. It is how the
-   API identifies your team. Do not upload it to GitHub or leave it lying around
-   in your source code. Save it to a file and `.gitignore` it or save it to an
-   environment variable.
+2. **Do not reveal your API key to anyone** not on your own team. It is how the API identifies your team. Do not upload it to GitHub or leave it lying around in your source code. Save it to a file and `.gitignore` it or save it to an environment variable.
 
-3. Since the API is live, you might be able to see or interact
-   with content posted by other teams. If this is the case, please do not post
-   anything inappropriate.
+3. Since the API is live, you might be able to see or interact with content posted by other teams. If this is the case, please do not post anything inappropriate.
 
-4. **The API was built to randomly return errors every so often**. That means
-   your app must be prepared to deal with `HTTP 555` and other bad responses.
-   However, if you're consistently getting `HTTP 5xx` errors back to back, then
-   something is wrong. Please report this if it happens.
+4. If you have a relevant feature request or you encounter any vulnerabilities, errors, or other issues, don't hesitate to contact NHSCC staff via Slack or [open an issue on GitHub](https://github.com/nhscc/airports.api.hscc.bdpa.org). For significant enough finds, bonus points may be awarded. On the other hand, abusing any vulnerability or bug may result in disqualification.
 
-5. All responses are raw JSON. All request payloads must be sent as raw JSON.
-   `JSON.stringify()` and `JSON.parse()` or whatever language equivalent is
-   available to you is your friend!
+5. **The API was built to randomly return errors every so often**. That means your app must be prepared to deal with `HTTP 555` and other bad responses. However, if you're consistently getting `HTTP 5xx` errors back to back, then something is wrong. Please report this if it happens.
+
+6. All responses are raw JSON. All request payloads must be sent as raw JSON. `JSON.stringify()` and `JSON.parse()` or whatever language equivalent is available to you is your friend!
 
 ## Request Methods
 
-This API is based on [simple REST
-principles](https://restfulapi.net).
-Resources are accessed via standard HTTPS requests in UTF-8 format to an API
-endpoint. This API understands the following HTTP request methods:
+This API is based on [simple REST principles](https://restfulapi.net). Resources are accessed via standard HTTPS requests in UTF-8 format to an API endpoint. This API understands the following HTTP request methods:
 
 | METHOD | MEANING |
 |-----   |-----    |
 | GET    | Return data about something |
 | POST   | Create something new        |
 | PUT    | Modify something            |
+| PATCH  | Partially modify something  |
 | DELETE | Delete something            |
 
 ## Rate Limits
 
-As said earlier, do not bombard the API with requests. If you do, the API will
-soft ban you for fifteen minutes the first time before accepting requests from
-your API key or IP address again. Each following time this happens within a
-certain period, your ban time will quadruple.
+As said earlier, do not bombard the API with requests. If you do, the API will soft ban you for fifteen minutes the first time before accepting requests from your API key or IP address again. Each following time this happens within a certain period, your ban time will quadruple.
 
-So **limit your apps to no more than 10 requests per second per API key**. You
-know you've been soft banned if you receive an `HTTP 429` response. Check the
-JSON response for the `retryAfter` key, which holds a number representing how
-long your API key and/or IP are banned from making further requests (in
-milliseconds).
+So **limit your apps to no more than 10 requests per second per API key**. You know you've been soft banned if you receive an `HTTP 429` response. Check the JSON response for the `retryAfter` key, which represents for how long your API key and/or IP are banned from making further requests (in milliseconds).
+
+If you have access to our Slack bot and this is the first time you've been banned, you can use the Slack bot to unban yourself immediately.
 
 ## Pagination
 
-Endpoints that might return a lot of data are paginated using [range
-queries](https://en.wikipedia.org/wiki/Range_query_(database)). These endpoints
-optionally accept an `after` parameter, which is an ID that determines which
-item is returned first. The first item will be the first ID that comes *after*
-the `after` ID. Omitting `after` returns the first 100 items in
-the system in ascending ID order.
+Endpoints that might return a lot of items (users, documents, etc) are paginated via [range queries](https://en.wikipedia.org/wiki/Range_query_(database)). Such endpoints optionally accept an `after` parameter, which is an `<item>_id` or other identifier that determines which API item is returned first. That is: the first item will be the first `<item>_id` that comes *after* the `after` `<item>_id`. Omitting the `after` parameter returns the first 100 items in the system.
 
-For example, given the following dataset and an API with a default result size
-(or "page" size) of 3:
+For example, given the following dataset and an API with a default result size (or "page" size) of 3:
 
 ```JavaScript
 [
@@ -119,7 +75,7 @@ Suppose we issued the following requests to an API:
 `/api?after=0xabcXYZ`: responds with an array of 0 items since `item_id` *0xabcXYZ* doesn't exist  
 `/api?after=0xabc124`: responds with an array of 3 items: *0xabc125* through *0xabc127*  
 `/api?after=0xabc127`: responds with an array of 0 items since there is nothing after *0xabc127*  
-`/api?after=0xabc125`: responds with an array of 2 items: *0xabc126* and *0xabc127*  
+`/api?after=0xabc125`: responds with an array of 2 items: *0xabc126* and *0xabc127*
 
 ## Status Codes
 
@@ -134,6 +90,7 @@ This API will issue responses with one of the following status codes:
 | 404    | The resource (or endpoint) was not found. Check your syntax. |
 | 405    | Bad method. The endpoint does not support your request's method. |
 | 413    | Your request was too large and was dropped. Max body size is 100KB. |
+| 415    | Your request was made using the wrong Content-Type header value. |
 | 429    | You've been rate limited. Try your request again after a few minutes. |
 | 4xx    | Your request was malformed in some way. |
 | 5xx    | Something happened on the server that is outside your control. |
@@ -144,8 +101,7 @@ All responses issued by the API will follow one of the two following schemas.
 
 ### Success Schema
 
-When a request you've issued succeeds, the response will look like the
-following:
+When a request you've issued succeeds, the response will look like the following:
 
 ```json
 {
@@ -154,14 +110,11 @@ following:
 }
 ```
 
-Note that all time data is represented as the number of milliseconds elapsed
-since January 1, 1970 00:00:00 UTC, or the same thing that is returned by
-JavaScript's `Date.now()` method.
+Note that all time data is represented as the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC, or the same thing that is returned by JavaScript's `Date.now()` method.
 
 ### Error Schema
 
-When a request you've issued fails, along with the non-200 status code, the
-response will look like the following:
+When a request you've issued fails, along with the non-200 status code, the response will look like the following:
 
 ```json
 {
@@ -182,15 +135,12 @@ The API has full support for Cross Origin Resource Sharing (CORS) for AJAX reque
 - Are you sending properly formatted JSON payloads in your request body when necessary?
 - Try outputting to stdout, use `console.log`, or output to some log file when API requests are made and responses received.
 - All time data is represented as [the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now).
-- Are you sending the correct headers? You need to specify the `key: your-special-api-key-here` header for all requests and the `'content-type': 'application/json'` header when making POST and PUT requests.
+- Are you sending the correct headers? You need to specify the `Authorization: bearer your-special-api-key-here` header for all requests and the `'content-type': 'application/json'` header when making POST and PATCH requests.
 - Are you [encoding your URI components](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) properly, especially when you're trying to send the API [JSON objects](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON) via [GET request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods)?
 
 ## Globally Unique IDs
 
-To retrieve data about one or more flights, you must know that flight's
-`flight_id`. These IDs are globally unique within the API. That is: no two
-flights will ever have the same ID in any instance. Use this fact to your
-advantage.
+To retrieve data about one or more API items, you must know that item's `<item>_id`. These and other IDs are globally unique within the API. That is: no two items will ever have the same ID in any instance. Use this fact to your advantage.
 
 ## Metadata Endpoints [/info]
 
