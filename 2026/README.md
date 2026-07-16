@@ -47,7 +47,9 @@ mind:
 <br />
 🌍 <a href="https://airports.solutions.hscc.bdpa.org">Live demo</a>
 <br />
-📚 <a href="https://hsccdfbb7244.docs.apiary.io/">Interactive API docs</a>
+📚 <a href="https://hsccdfbb7244.docs.apiary.io/">Interactive API docs</a> (version 1)
+<br />
+📚 <a href="https://hscc210ff8c0.docs.apiary.io/">Interactive API docs</a> (version 2)
 </p>
 </td>
 </tr>
